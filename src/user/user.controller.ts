@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { User } from './user.model';
 import { syncTables } from '../infrastructure/database/sync-tables';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -12,8 +12,8 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Post()
-  async create(@Body() user: User): Promise<User> {
+  @Post('register')
+  async create(@Body() user: Partial<User>): Promise<Partial<User>> {
     return this.userService.create(user);
   }
 }
