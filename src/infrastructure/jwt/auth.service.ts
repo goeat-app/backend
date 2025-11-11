@@ -22,9 +22,14 @@ export class AuthService {
   }
 
   async login(user: { id: number; email: string }) {
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id, email: user.email, tokenVersion: (user as any).tokenVersion };
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async logout(userId: number) {
+    await this.usersService.incrementTokenVersion(userId);
+    return { success: true };
   }
 }

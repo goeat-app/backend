@@ -17,6 +17,12 @@ export class User extends Model {
     @Column
     declare password: string;
 
+    @Column({ defaultValue: 0 })
+    declare tokenVersion: number;
+
+    @Column 
+    declare phone: string;
+
     @Column
     declare createdAt: Date;
 
