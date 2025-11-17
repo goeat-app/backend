@@ -1,15 +1,19 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Default, Model, Table, PrimaryKey, AllowNull } from 'sequelize-typescript';
 
 @Table({
     tableName: 'user',
     freezeTableName: true
     })
 export class User extends Model {
-    @Column({ primaryKey: true, autoIncrement: true })
-    declare id: number;
+    
+    @Default(DataType.UUIDV4)
+    @PrimaryKey
+    @AllowNull(false)
+    @Column({ type: DataType.UUID })
+    declare id: string;
 
     @Column
-    declare username: string;
+    declare name: string;
 
     @Column
     declare email: string;

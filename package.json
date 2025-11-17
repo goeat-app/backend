@@ -29,6 +29,7 @@
     "@nestjs/sequelize": "^11.0.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.2",
+    "jwt-decode": "^4.0.0",
     "mysql2": "^3.14.5",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

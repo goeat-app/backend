@@ -19,11 +19,11 @@ export class UserService {
     return this.userModel.findOne({ where: { email } });
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     return this.userModel.findByPk(id);
   }
 
-  async incrementTokenVersion(id: number): Promise<void> {
+  async incrementTokenVersion(id: string): Promise<void> {
     const user = await this.findById(id);
     if (!user) return;
     try {
@@ -45,13 +45,13 @@ export class UserService {
     const hash = await bcrypt.hash(password, saltRounds);
 
     const payload: any = {
-      username: (user as any).username,
+      name: (user as any).name,
       email: (user as any).email,
       phone: (user as any).phone,
       password: hash,
     };
 
-  const created = await this.userModel.create(payload as any, { fields: ['username', 'email', 'password', 'phone'] });
+  const created = await this.userModel.create(payload as any, { fields: ['name', 'email', 'password', 'phone'] });
 
     const plain = created.get({ plain: true }) as any;
     delete plain.password;
