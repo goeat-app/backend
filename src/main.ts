@@ -1,11 +1,17 @@
+import 'tsconfig-paths/register';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { syncTables } from './infrastructure/database/sync-tables';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
 
-  const syncDatabase = await syncTables();
+  app.useGlobalPipes(new ZodValidationPipe());
+
+  await app.listen(3000);
 }
-bootstrap();
+
+bootstrap().catch((error) => {
+  console.error('Error starting application:', error);
+  process.exit(1);
+});
