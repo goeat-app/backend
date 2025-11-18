@@ -18,13 +18,15 @@ if (!DB_PASSWORD) missing.push('PASSWORD');
 if (!DB_NAME) missing.push('DATABASE');
 
 if (missing.length > 0) {
-	throw new Error(`Missing required DB environment variables: ${missing.join(', ')}.\n` +
-		`Set them in your environment or create a .env file with the values.`);
+  throw new Error(
+    `Missing required DB environment variables: ${missing.join(', ')}.\n` +
+      `Set them in your environment or create a .env file with the values.`,
+  );
 }
 
-export const sequelize = new Sequelize(DB_NAME!, DB_USER!, DB_PASSWORD!, {
-	host: DB_HOST!,
-	port: parseInt(DB_PORT!, 10),
-	dialect: 'mysql',
-	logging: false,
+export const sequelize = new Sequelize(DB_NAME!, DB_USER!, DB_PASSWORD, {
+  host: DB_HOST!,
+  port: parseInt(DB_PORT!, 10),
+  dialect: 'mysql',
+  logging: false,
 });

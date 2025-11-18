@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UserModule } from './user/user.module';
-import { JwtAuthModule } from './infrastructure/jwt/jwt.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { User } from './user/user.model';
+import { UserModel } from './modules/auth/infra/database/user.model';
 
 @Module({
   imports: [
-    UserModule,
+    AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
@@ -18,15 +15,10 @@ import { User } from './user/user.model';
       username: process.env.USER!,
       password: process.env.PASSWORD!,
       database: process.env.DATABASE!,
-      autoLoadModels: false, //manter false                                                                                                                             
+      autoLoadModels: false,
       synchronize: true,
-      models: [User]
-    })
-    ,
-    JwtAuthModule
+      models: [UserModel],
+    }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-export class AppModule { }
-
+export class AppModule {}
