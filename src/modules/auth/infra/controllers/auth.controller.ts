@@ -17,6 +17,8 @@ import {
   LogoutParam,
   LogoutResponse,
 } from '../../domain/entities/logout.entity';
+import { RefreshTokenDto } from '../../dtos/refresh-token.dto';
+import { RefreshTokenResponse } from '../../domain/entities/refresh-token.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -32,11 +34,18 @@ export class AuthController {
   }
 
   @Post('login')
-  @HttpCode(201)
+  @HttpCode(200)
   async login(@Body() loginData: LoginUserDto): Promise<LoginResponse> {
     const token = await this.authService.login(loginData);
 
     return token;
+  }
+
+  @Post('refresh')
+  @HttpCode(200)
+  async refresh(@Body() body: RefreshTokenDto): Promise<RefreshTokenResponse> {
+    const tokens = await this.authService.refresh(body);
+    return tokens;
   }
 
   @UseGuards(JwtAuthGuard)

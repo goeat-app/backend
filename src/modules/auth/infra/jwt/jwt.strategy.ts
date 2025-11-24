@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 interface JwtPayload {
   sub: string;
   email: string;
+  type: 'access' | 'refresh';
 }
 
 @Injectable()
@@ -19,8 +20,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: JwtPayload) {
-    if (!payload.sub) {
-      throw new UnauthorizedException('Invalid token');
+    if (payload.type !== 'access') {
+      throw new UnauthorizedException('Invalid token type');
     }
 
     return {
