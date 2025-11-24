@@ -12,6 +12,7 @@ async function bootstrap() {
 
   const syncTablesModule = await import('./modules/auth/infra/database/sync-tables.js');
   await syncTablesModule.syncTables();
+  app.enableCors();
 }
 
 bootstrap().catch((error) => {

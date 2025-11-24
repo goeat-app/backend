@@ -41,10 +41,4 @@ export class UserModel extends Model {
     allowNull: true,
   })
   declare phone: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  declare refreshToken: string;
 }

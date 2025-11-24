@@ -5,4 +5,6 @@ export abstract class IUserRepository {
   abstract create(data: RegisterUserDto): Promise<void>;
 
   abstract findByEmail(email: string): Promise<RegisterUser | null>;
+
+  abstract findById(id: string): Promise<RegisterUser | null>;
 }

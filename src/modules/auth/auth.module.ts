@@ -13,6 +13,7 @@ import { AuthService } from './app/services/auth.service';
 import { jwtConstants } from './infra/jwt/constants';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './infra/jwt/jwt-auth.guard';
+import { RefreshTokenUseCase } from './app/use-cases/refresh-token.use-case';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { JwtAuthGuard } from './infra/jwt/jwt-auth.guard';
   providers: [
     CreateUserUseCase,
     LoginUseCase,
+    RefreshTokenUseCase,
     AuthService,
     JwtAuthGuard,
     {
