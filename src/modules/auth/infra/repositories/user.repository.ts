@@ -28,4 +28,12 @@ export class SequelizeUserRepository implements IUserRepository {
 
     return user ?? null;
   }
+
+  async findById(id: string): Promise<RegisterUser | null> {
+    const user = await this.userModel.findOne({
+      where: { id },
+    });
+
+    return user ?? null;
+  }
 }

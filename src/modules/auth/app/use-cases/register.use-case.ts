@@ -17,7 +17,7 @@ export class CreateUserUseCase {
     const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
-      throw new HttpException('Email already in use', 409);
+      throw new HttpException('User already exists', 409);
     }
 
     const hashedPassword: string = await bcrypt.hash(password, 10);
