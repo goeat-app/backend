@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { UserModel } from '../database/user.model';
 import { RegisterUser } from '../../domain/entities/register-user.entity';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
-import { RegisterUserDto } from '../../dtos/register-user.dto';
 
 @Injectable()
 export class SequelizeUserRepository implements IUserRepository {

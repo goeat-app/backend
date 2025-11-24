@@ -9,6 +9,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ZodValidationPipe());
 
   await app.listen(3000);
+
+  const syncTablesModule = await import('./modules/auth/infra/database/sync-tables.js');
+  await syncTablesModule.syncTables();
 }
 
 bootstrap().catch((error) => {
