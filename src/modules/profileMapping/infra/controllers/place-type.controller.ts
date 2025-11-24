@@ -19,6 +19,7 @@ export class PlaceTypeController {
     return this.placeTypeUseCase.findByName({ name });
   }
 
+  // Remover depois de testes - Popular a tabela de tipos de lugar
   @Post()
   //@UseGuards(JwtAuthGuard)
   @HttpCode(201)

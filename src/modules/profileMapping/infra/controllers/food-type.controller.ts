@@ -19,6 +19,7 @@ export class FoodTypeController {
     return this.foodTypeUseCase.findByName({ name });
   }
 
+  // Remover depois de testes - Popular a tabela de tipos de comida
   @Post()
   //@UseGuards(JwtAuthGuard)
   @HttpCode(201)
