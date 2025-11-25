@@ -17,7 +17,8 @@ export class SequelizeProfileMappingRepository
     try {
       const profileMapping = await this.profileMappingModel.create({
         userId: data.userId,
-        priceRange: data.priceRange,
+        minPrice: data.priceRange.minValue,
+        maxPrice: data.priceRange.maxValue,
       });
 
       await Promise.all([

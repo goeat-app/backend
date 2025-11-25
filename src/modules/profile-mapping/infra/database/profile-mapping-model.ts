@@ -22,7 +22,7 @@ export class ProfileMappingModel extends Model {
 
   @ForeignKey(() => UserModel)
   @Column({ type: DataType.UUID, allowNull: false })
-  userId: string;
+  declare userId: string;
 
   @BelongsTo(() => UserModel)
   user: UserModel;
@@ -31,17 +31,17 @@ export class ProfileMappingModel extends Model {
     type: DataType.DECIMAL,
     allowNull: false,
   })
-  declare maxValue: number;
+  declare maxPrice: number;
 
   @Column({
     type: DataType.DECIMAL,
     allowNull: false,
   })
-  declare minValue: number;
+  declare minPrice: number;
 
   @BelongsToMany(() => FoodTypeModel, () => ProfileMappingFoodTypeModel)
-  foodTypes: ProfileMappingFoodTypeModel[];
+  declare foodTypes: ProfileMappingFoodTypeModel[];
 
   @BelongsToMany(() => PlaceTypeModel, () => ProfileMappingPlaceTypeModel)
-  placeTypes: ProfileMappingPlaceTypeModel[];
+  declare placeTypes: ProfileMappingPlaceTypeModel[];
 }
