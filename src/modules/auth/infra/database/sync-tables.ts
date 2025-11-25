@@ -1,10 +1,10 @@
-import { FoodTypeModel } from '@/modules/profileMapping/infra/database/food-type.model';
+import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import { sequelize } from './sequelize-instance';
 import { UserModel } from './user.model';
-import { PlaceTypeModel } from '@/modules/profileMapping/infra/database/place-type.model';
-import { ProfileMappingModel } from '@/modules/profileMapping/infra/database/profile-mapping-model';
-import { ProfileMappingPlaceTypeModel } from '@/modules/profileMapping/infra/database/profile-mapping-place-type.model';
-import { ProfileMappingFoodTypeModel } from '@/modules/profileMapping/infra/database/profile-mapping-food-type.model';
+import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
+import { ProfileMappingModel } from '@/modules/profile-mapping/infra/database/profile-mapping-model';
+import { ProfileMappingPlaceTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-place-type.model';
+import { ProfileMappingFoodTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-food-type.model';
 
 async function syncTables() {
   try {

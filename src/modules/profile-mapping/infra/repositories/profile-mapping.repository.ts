@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpCode,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { IProfileMappingRepository } from '../../domain/interfaces/profile-mapping.interface';
 import { CreateProfileMappingDto } from '../../dtos/create-profile.dto';
 import { InjectModel } from '@nestjs/sequelize';
