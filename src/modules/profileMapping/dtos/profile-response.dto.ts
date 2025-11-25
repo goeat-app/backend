@@ -10,18 +10,22 @@ const ProfileMappingResponseSchema = z.object({
   }),
   foodTypes: z.array(
     z.object({
-      id: z.uuid()
-    })
+      id: z.uuid(),
+    }),
   ),
   placeTypes: z.array(
     z.object({
-      id: z.uuid()
-    })
+      id: z.uuid(),
+    }),
   ),
-    createdAt: z.date(),
-    updatedAt: z.date(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
-export class ProfileMappingResponseDto extends createZodDto(ProfileMappingResponseSchema) {}
+export class ProfileMappingResponseDto extends createZodDto(
+  ProfileMappingResponseSchema,
+) {}
 
-export type ProfileMappingResponseType = z.infer<typeof ProfileMappingResponseSchema>;
+export type ProfileMappingResponseType = z.infer<
+  typeof ProfileMappingResponseSchema
+>;

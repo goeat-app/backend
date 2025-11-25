@@ -1,9 +1,7 @@
-import { PlaceTypeDto } from "../../dtos/place-type.dto";
+import { PlaceTypesDtoModel } from '../model/place-type.model';
 
 export abstract class IPlaceTypeRepository {
-    abstract create(data: PlaceTypeDto): Promise<void>;
+  abstract findAll(): Promise<PlaceTypesDtoModel[]>;
 
-    abstract findAll(): Promise<PlaceTypeDto[]>;
-    
-    abstract findByName(name: string): Promise<PlaceTypeDto | null>;
-}   
+  abstract findByName(name: string): Promise<PlaceTypesDtoModel>;
+}

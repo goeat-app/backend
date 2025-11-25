@@ -8,7 +8,7 @@ import {
   AllowNull,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'food_types' })
+@Table({ tableName: 'food_types', timestamps: false })
 export class FoodTypeModel extends Model {
   @Default(DataType.UUIDV4)
   @PrimaryKey

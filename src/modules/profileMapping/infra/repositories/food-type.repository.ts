@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { FoodTypeModel } from '../database/food-type.model';
 import { IFoodTypeRepository } from '../../domain/interfaces/food-type.interface';
@@ -12,21 +12,24 @@ export class SequelizeFoodTypeRepository implements IFoodTypeRepository {
   ) {}
 
   async findAll(): Promise<FoodTypeDtoModel[]> {
-    try {
-      return await this.foodTypeModel.findAll();
-    } catch (error) {
-      throw new error('Food types not found.');
-    }
-  }
-  async findByName(name: string): Promise<FoodTypeDtoModel> {
-    try {
-      const foodType = await this.foodTypeModel.findOne({
-        where: { name },
-      });
+    const foodTypes = await this.foodTypeModel.findAll();
 
-      return foodType as FoodTypeDtoModel;
-    } catch (error) {
-      throw new error('Food type not found.');
+    if (!foodTypes || foodTypes.length === 0) {
+      throw new NotFoundException('No food types found in database.');
     }
+
+    return foodTypes;
+  }
+
+  async findByName(name: string): Promise<FoodTypeDtoModel> {
+    const foodType = await this.foodTypeModel.findOne({
+      where: { name },
+    });
+
+    if (!foodType) {
+      throw new NotFoundException(`Food type "${name}" not found.`);
+    }
+
+    return foodType as FoodTypeDtoModel;
   }
 }

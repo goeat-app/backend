@@ -1,6 +1,14 @@
-import { Column, DataType, Default, Model, Table, PrimaryKey, AllowNull } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  Default,
+  Model,
+  Table,
+  PrimaryKey,
+  AllowNull,
+} from 'sequelize-typescript';
 
-@Table({ tableName: 'place_types' })
+@Table({ tableName: 'place_types', timestamps: false })
 export class PlaceTypeModel extends Model {
   @Default(DataType.UUIDV4)
   @PrimaryKey
@@ -12,5 +20,11 @@ export class PlaceTypeModel extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  declare name: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  declare tag_image: string;
 }
