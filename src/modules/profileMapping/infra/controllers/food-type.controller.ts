@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpCode, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { FoodTypeDto } from '../../dtos/food-type.dto';
 //import { JwtAuthGuard } from '@/modules/auth/infra/jwt/jwt-auth.guard';
 import { FoodTypeUseCase } from '../../app/use-cases/food-type.use-case';
@@ -9,21 +9,13 @@ export class FoodTypeController {
 
   @Get()
   //@UseGuards(JwtAuthGuard)
-  findAll(){
-    return this.foodTypeUseCase.findAll();
+  findAll(): Promise<FoodTypeDto> {
+    return this.foodTypeUseCase.getCategories();
   }
 
   @Get('by-name')
   //@UseGuards(JwtAuthGuard)
   findByName(@Query('name') name: string) {
-    return this.foodTypeUseCase.findByName({ name });
-  }
-
-  // Remover depois de testes - Popular a tabela de tipos de comida
-  @Post()
-  //@UseGuards(JwtAuthGuard)
-  @HttpCode(201)
-  create(@Body() data: FoodTypeDto): Promise<void> {
-    return this.foodTypeUseCase.create(data);
+    return this.foodTypeUseCase.findByName(name);
   }
 }

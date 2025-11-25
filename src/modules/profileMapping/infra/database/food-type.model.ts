@@ -1,4 +1,12 @@
-import { Column, DataType, Default, Model, Table, PrimaryKey, AllowNull } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  Default,
+  Model,
+  Table,
+  PrimaryKey,
+  AllowNull,
+} from 'sequelize-typescript';
 
 @Table({ tableName: 'food_types' })
 export class FoodTypeModel extends Model {
@@ -12,5 +20,11 @@ export class FoodTypeModel extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  declare name: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  declare tag_image: string;
 }

@@ -1,9 +1,8 @@
-import { FoodTypeDto } from "../../dtos/food-type.dto";
+import { FoodTypeDto } from '../../dtos/food-type.dto';
+import { FoodTypeDtoModel } from '../model/food-type.model';
 
 export abstract class IFoodTypeRepository {
-    abstract create(data: FoodTypeDto): Promise<void>;
+  abstract findAll(): Promise<FoodTypeDtoModel[]>;
 
-    abstract findAll(): Promise<FoodTypeDto[]>;
-    
-    abstract findByName(name: string): Promise<FoodTypeDto | null>;
-}   
+  abstract findByName(name: string): Promise<FoodTypeDtoModel>;
+}
