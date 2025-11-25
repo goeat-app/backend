@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpCode,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { IProfileMappingRepository } from '../../domain/interfaces/profile-mapping.interface';
 import { CreateProfileMappingDto } from '../../dtos/create-profile.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -22,7 +17,8 @@ export class SequelizeProfileMappingRepository
     try {
       const profileMapping = await this.profileMappingModel.create({
         userId: data.userId,
-        priceRange: data.priceRange,
+        minPrice: data.priceRange.minValue,
+        maxPrice: data.priceRange.maxValue,
       });
 
       await Promise.all([

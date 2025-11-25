@@ -6,19 +6,19 @@ const CreateProfileMappingSchema = z.object({
   foodTypes: z
     .array(
       z.object({
-        id: z.uuid(),
+        id: z.string(),
         name: z.string().optional(),
       }),
     )
-    .min(3),
+    .max(3),
   placeTypes: z
     .array(
       z.object({
-        id: z.uuid(),
+        id: z.string(),
         name: z.string().optional(),
       }),
     )
-    .min(3),
+    .max(3),
   priceRange: z.object({
     maxValue: z.number().min(1).max(1000),
     minValue: z.number().min(1).max(1000),
