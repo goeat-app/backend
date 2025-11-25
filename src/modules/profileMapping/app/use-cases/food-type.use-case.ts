@@ -1,33 +1,41 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { IFoodTypeRepository } from '../../domain/interfaces/food-type.interface';
-import { FoodTypeDto } from '../../dtos/food-type.dto';
+import { FoodTypeByNameDto, FoodTypeDto } from '../../dtos/food-type.dto';
 
 @Injectable()
 export class FoodTypeUseCase {
-    constructor(
-        private readonly foodTypeRepository: IFoodTypeRepository
-    ) { }
+  constructor(private readonly foodTypeRepository: IFoodTypeRepository) {}
 
-    async findByName(dto: FoodTypeDto) : Promise<FoodTypeDto> {
+  async getCategories(): Promise<FoodTypeDto> {
+    const response = await this.foodTypeRepository.findAll();
 
-        if (!dto.name) throw new BadRequestException('Name is required');
+    if (!response) throw new NotFoundException('No food types found');
 
-        const foodType = await this.foodTypeRepository.findByName(dto.name);
+    const data = response.map((item) => ({
+      id: item.id,
+      name: item.name,
+      tagImage: item.tag_image,
+    }));
 
-        if (!foodType) throw new NotFoundException();
+    return data;
+  }
 
-        return foodType;
-    }
+  async findByName(name: string): Promise<FoodTypeByNameDto> {
+    if (!name) throw new BadRequestException(400, 'Name is required');
 
-    async findAll() : Promise<FoodTypeDto[]> {
-        return this.foodTypeRepository.findAll();
-    }
+    const response = await this.foodTypeRepository.findByName(name);
 
-    async create(dto: FoodTypeDto) : Promise<void> {
-        const foodType = await this.foodTypeRepository.findByName(dto.name);
+    if (!response) throw new NotFoundException(404, 'Food type not found');
 
-        if (foodType) throw new UnauthorizedException('Food type already exists');
+    const data = {
+      ...response,
+      tagImage: response.tag_image,
+    };
 
-        await this.foodTypeRepository.create(dto as any);
-    }
+    return data;
+  }
 }
