@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { IaService } from './app/services/ia.service';
+import { IaService } from './infra/external/ia.service';
 import { SendRecommendationUseCase } from './app/use-cases/send-recommendation.use-case';
 import { IaController } from './infra/controllers/ia.controller';
 

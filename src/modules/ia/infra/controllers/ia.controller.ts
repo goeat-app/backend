@@ -1,5 +1,4 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ValidationPipe } from '@nestjs/common';
 import { RecommenderRequestDto } from '../../dtos/recommender-request.dto';
 import { SendRecommendationUseCase } from '../../app/use-cases/send-recommendation.use-case';
 

@@ -1,10 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import { axiosRequest } from '../../app/services/api/axios-request';
-import { RecommenderPort } from '../../domain/ports/recommender.port';
 
 @Injectable()
-export class IaService implements RecommenderPort {
+export class IaService {
   private readonly logger = new Logger(IaService.name);
   // instantiate the axiosRequest wrapper with a real AxiosInstance
   private axiosInstance = new axiosRequest(axios.create());

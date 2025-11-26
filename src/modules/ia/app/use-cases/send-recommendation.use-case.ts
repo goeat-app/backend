@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { RecommenderRequestDto } from '../../dtos/recommender-request.dto';
-import { IaService } from '../services/ia.service';
+import { IaService } from '../../infra/external/ia.service';
 
 @Injectable()
 export class SendRecommendationUseCase {
