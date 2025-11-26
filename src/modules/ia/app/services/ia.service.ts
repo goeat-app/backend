@@ -1,39 +1,20 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
+import { axiosRequest } from './api/axios-request';
 
 @Injectable()
 export class IaService {
   private readonly logger = new Logger(IaService.name);
+  // instantiate the axiosRequest wrapper with a real AxiosInstance
+  private axiosInstance = new axiosRequest(axios.create());
 
   async getContentRecommendations(payload) {
-    try {
-      const res = await axios.post(process.env.RECOMMENDATION_VISITED_API_URL!, payload,
-        {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return res.data;
-    } catch (err) {
-      this.logger.error(
-        'Error sending payload to recommender',
-        err?.stack ?? err,
-      );
-      throw err;
-    }
+    const result = await this.axiosInstance.post(process.env.RECOMMENDATION_CONTENT_API_URL!, payload);
+    return result;
   }
 
   async getProfileBasedRecommendations(payload) {
-    try {
-      const res = await axios.post(process.env.RECOMMENDATION_PROFILE_API_URL!, payload,
-        {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return res.data;
-    } catch (err) {
-      this.logger.error(
-        'Error sending payload to profile recommender',
-        err?.stack ?? err,
-      );
-      throw err;
-    }
-}
+    const result = await this.axiosInstance.post(process.env.RECOMMENDATION_PROFILE_API_URL!, payload);
+    return result;
+  }
 }
