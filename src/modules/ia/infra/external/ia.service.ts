@@ -1,26 +1,33 @@
 import { Injectable, Logger } from '@nestjs/common';
-import axios from 'axios';
-import { axiosRequest } from '../../app/services/api/axios-request';
+import { api } from '../../app/services/api/api';
 
 @Injectable()
 export class IaService {
   private readonly logger = new Logger(IaService.name);
-  // instantiate the axiosRequest wrapper with a real AxiosInstance
-  private axiosInstance = new axiosRequest(axios.create());
 
   async getContentRecommendations(payload: any) {
-    const result = await this.axiosInstance.post(
-      process.env.RECOMMENDATION_CONTENT_API_URL!,
-      payload,
-    );
-    return result;
+    try {
+      const result = await api.post("/similar", payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      this.logger.log('Content recommendation received from external API');
+      return result.data;
+    } catch (error) {
+      this.logger.error('Error fetching content recommendations', error);
+      throw error;
+    }
   }
 
   async getProfileBasedRecommendations(payload: any) {
-    const result = await this.axiosInstance.post(
-      process.env.RECOMMENDATION_PROFILE_API_URL!,
-      payload,
-    );
-    return result;
+    try {
+      const result = await api.post("/profile", payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      this.logger.log('Profile-based recommendation received from external API');
+      return result.data;
+    } catch (error) {
+      this.logger.error('Error fetching profile-based recommendations', error);
+      throw error;
+    }
   }
 }
