@@ -9,11 +9,13 @@ import { PlaceTypeModel } from './modules/profile-mapping/infra/database/place-t
 import { ProfileMappingModel } from './modules/profile-mapping/infra/database/profile-mapping-model';
 import { ProfileMappingPlaceTypeModel } from './modules/profile-mapping/infra/database/profile-mapping-place-type.model';
 import { ProfileMappingFoodTypeModel } from './modules/profile-mapping/infra/database/profile-mapping-food-type.model';
+import { IaModule } from './modules/ia/ia.module';
 
 @Module({
   imports: [
     AuthModule,
     ProfileMappingModule,
+    IaModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
