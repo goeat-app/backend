@@ -1,10 +1,6 @@
-import { RecommenderRequestDto, RecommenderResponseDto } from "../../dtos/recommender-request.dto";
+import { RecommendationRequestPayloadDto } from "../../dtos/recommendation-request.dto";
+import { RecommendationApiResponse } from "../../dtos/recommendation-api-response.dto";
 
-export abstract class IaService {
-  abstract getRecommendationBasedOnContent(
-    recommendationData: RecommenderRequestDto,
-  ): Promise<RecommenderResponseDto>;
-  abstract getRecommendationBasedOnProfiles(
-    recommendationData: RecommenderRequestDto,
-  ): Promise<RecommenderResponseDto>;
+export abstract class IIAService {
+  abstract sendRecommendationBasedOnboarding(payload: RecommendationRequestPayloadDto): Promise<RecommendationApiResponse>;
 }

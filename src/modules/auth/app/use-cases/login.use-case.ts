@@ -13,10 +13,23 @@ export class LoginUseCase {
   async execute(dto: LoginUserDto) {
     const user = await this.userRepository.findByEmail(dto.email);
 
-    if (!user) throw new UnauthorizedException();
+    if (!user) {
+      throw new UnauthorizedException({
+        message: 'Email ou senha incorretos',
+        code: 'INVALID_CREDENTIALS',
+        field: 'email',
+      });
+    }
 
     const match = await this.hashService.compare(dto.password, user.password);
-    if (!match) throw new UnauthorizedException();
+
+    if (!match) {
+      throw new UnauthorizedException({
+        message: 'Email ou senha incorretos',
+        code: 'INVALID_CREDENTIALS',
+        field: 'password',
+      });
+    }
 
     return user;
   }

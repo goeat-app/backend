@@ -10,6 +10,8 @@ import { ProfileMappingModel } from './modules/profile-mapping/infra/database/pr
 import { ProfileMappingPlaceTypeModel } from './modules/profile-mapping/infra/database/profile-mapping-place-type.model';
 import { ProfileMappingFoodTypeModel } from './modules/profile-mapping/infra/database/profile-mapping-food-type.model';
 import { IaModule } from './modules/ia/ia.module';
+import { RestaurantsModel } from './modules/ia/infra/database/restaurant.model';
+import { ReviewModel } from './modules/ia/infra/database/review.model';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { IaModule } from './modules/ia/ia.module';
         ProfileMappingModel,
         ProfileMappingPlaceTypeModel,
         ProfileMappingFoodTypeModel,
+        RestaurantsModel,
+        ReviewModel,
       ],
     }),
   ],

@@ -61,14 +61,13 @@ import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-fo
     },
   ],
   exports: [
+    SequelizeModule,
     IFoodTypeRepository,
     FoodTypeUseCase,
     JwtAuthGuard,
     IPlaceTypeRepository,
     PlaceTypeUseCase,
     IProfileMappingRepository,
-    ProfileMappingUseCase,
-    ProfileMappingUseCase,
     ProfileMappingUseCase,
   ],
 })

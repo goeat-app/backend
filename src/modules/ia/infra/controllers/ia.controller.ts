@@ -1,29 +1,25 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { RecommenderRequestDto } from '../../dtos/recommender-request.dto';
-import { SendRecommendationUseCase } from '../../app/use-cases/send-recommendation.use-case';
+import {
+  Controller,
+  Get,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
+import { RecommendationUseCase } from '../../app/use-cases/recommendation.use-case';
+import { RecommendationBasedOnboardingDto } from '../../dtos/recommendation-based-onboarding.dto';
 
 @Controller('recommender')
 export class IaController {
   constructor(
-    private readonly sendRecommendationUseCase: SendRecommendationUseCase,
+    private readonly recommendationUseCase: RecommendationUseCase,
   ) {}
 
-  @Post('visited')
-  @HttpCode(HttpStatus.OK)
-  async getRecommendationBasedOnContent(@Body() recommendationData: RecommenderRequestDto) {
-    const result =
-      await this.sendRecommendationUseCase.getRecommendationBasedOnContent(
-        recommendationData,
-      );
-    return { data: result };
-  }
-  @Post('profile')
-  @HttpCode(HttpStatus.OK)
-  async getRecommendationBasedOnProfiles(@Body() recommendationData: RecommenderRequestDto) {
-    const result =
-      await this.sendRecommendationUseCase.getRecommendationBasedOnProfiles(
-        recommendationData,
-      );
-    return { data: result };
+  @Get('onboarding')
+  async getRecommendationBasedOnboarding(
+    @Query('userId') userId: string,
+  ): Promise<RecommendationBasedOnboardingDto> {
+    if (!userId) {
+      throw new BadRequestException('userId is required');
+    }
+    return await this.recommendationUseCase.getRecommendationBasedOnboarding(userId);
   }
 }
