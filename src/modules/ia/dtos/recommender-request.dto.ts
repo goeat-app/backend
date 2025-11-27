@@ -29,7 +29,7 @@ export class RestaurantDto {
   restaurantType: string;
 
   @IsNumber()
-  averagePrice: number;
+  averagePrice?: number;
 
   @IsNumber()
   @IsOptional()
@@ -66,4 +66,11 @@ export class RecommenderRequestDto {
   @ValidateNested({ each: true })
   @Type(() => ReviewDto)
   Review: ReviewDto[];
+}
+
+export class RecommenderResponseDto {
+  @IsArray()
+  @IsNotEmpty()
+  @IsString({ each: true })
+  restaurants: RestaurantDto[];
 }
