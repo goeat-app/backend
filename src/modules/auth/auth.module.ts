@@ -14,14 +14,20 @@ import { jwtConstants } from './infra/jwt/constants';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './infra/jwt/jwt-auth.guard';
 import { RefreshTokenUseCase } from './app/use-cases/refresh-token.use-case';
+import { JwtStrategy } from './infra/jwt/jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([UserModel]),
     PassportModule,
-    JwtModule.register({
-      secret: jwtConstants.secret || 'default-secret-key',
-      signOptions: { expiresIn: '3600s' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET') || 'fallback-secret',
+        signOptions: { expiresIn: '1h' },
+      }),
+      inject: [ConfigService],
     }),
   ],
   providers: [
@@ -30,6 +36,7 @@ import { RefreshTokenUseCase } from './app/use-cases/refresh-token.use-case';
     RefreshTokenUseCase,
     AuthService,
     JwtAuthGuard,
+    JwtStrategy,
     {
       provide: IUserRepository,
       useClass: SequelizeUserRepository,

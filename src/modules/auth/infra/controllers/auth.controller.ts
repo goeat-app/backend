@@ -6,6 +6,7 @@ import {
   UseGuards,
   Req,
   UnauthorizedException,
+  Get,
 } from '@nestjs/common';
 import { CreateUserUseCase } from '../../app/use-cases/register.use-case';
 import { RegisterUserDto } from '../../dtos/register-user.dto';
@@ -29,8 +30,13 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(201)
-  async create(@Body() registerData: RegisterUserDto): Promise<void> {
+  async create(@Body() registerData: RegisterUserDto): Promise<LoginResponse> {
     await this.createUserUseCase.execute(registerData);
+
+    return this.authService.login({
+      email: registerData.email,
+      password: registerData.password,
+    });
   }
 
   @Post('login')
@@ -46,6 +52,17 @@ export class AuthController {
   async refresh(@Body() body: RefreshTokenDto): Promise<RefreshTokenResponse> {
     const tokens = await this.authService.refresh(body);
     return tokens;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getMe(@Req() req: Request & LogoutParam) {
+    if (!req.user?.id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+
+    const user = await this.authService.getUserById(req.user.id);
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)

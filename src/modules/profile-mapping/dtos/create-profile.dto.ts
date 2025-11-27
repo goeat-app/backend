@@ -3,22 +3,8 @@ import { z } from 'zod';
 
 const CreateProfileMappingSchema = z.object({
   userId: z.uuid(),
-  foodTypes: z
-    .array(
-      z.object({
-        id: z.string(),
-        name: z.string().optional(),
-      }),
-    )
-    .max(3),
-  placeTypes: z
-    .array(
-      z.object({
-        id: z.string(),
-        name: z.string().optional(),
-      }),
-    )
-    .max(3),
+  foodTypes: z.array(z.string()).max(3),
+  placeTypes: z.array(z.string()).max(3),
   priceRange: z.object({
     maxValue: z.number().min(1).max(1000),
     minValue: z.number().min(1).max(1000),
