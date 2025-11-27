@@ -24,11 +24,11 @@ export class SequelizeProfileMappingRepository
       await Promise.all([
         profileMapping.$set(
           'foodTypes',
-          data.foodTypes.map((categories) => categories.id),
+          data.foodTypes.map((id) => id),
         ),
         profileMapping.$set(
           'placeTypes',
-          data.placeTypes.map((types) => types.id),
+          data.placeTypes.map((id) => id),
         ),
       ]);
     } catch (error) {

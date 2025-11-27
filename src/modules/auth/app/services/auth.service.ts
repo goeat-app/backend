@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
 import { LoginResponse } from '../../domain/entities/login.entity';
@@ -37,31 +41,63 @@ export class AuthService {
   }
 
   async refresh(dto: RefreshTokenDto): Promise<RefreshTokenResponse> {
-    const payload = this.jwtService.verify(dto.refreshToken);
+    try {
+      const payload = this.jwtService.verify<{
+        sub: string;
+        username: string;
+        type: 'access' | 'refresh';
+        iat: number;
+        exp: number;
+      }>(dto.refreshToken);
 
-    const { sub, email } = payload;
+      if (payload.type !== 'refresh') {
+        throw new UnauthorizedException('Invalid token type');
+      }
 
-    const user = await this.refreshTokenUseCase.execute(
-      email as string,
-      sub as string,
-    );
+      const user = await this.userModel.findByPk(payload.sub);
 
-    return this.generateToken({
-      username: user.userEmail,
-      sub: user.userId,
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return this.generateToken({
+        username: payload.username,
+        sub: payload.sub,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
+
+  async getUserById(userId: string) {
+    const user = await this.userModel.findByPk(userId, {
+      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   private async generateToken(
     payload: PayloadRefreshToken,
   ): Promise<RefreshTokenResponse> {
-    const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '3600',
-    });
+    const accessToken = await this.jwtService.signAsync(
+      { ...payload, type: 'access' },
+      { expiresIn: '15m' },
+    );
 
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '1h',
-    });
+    const refreshToken = await this.jwtService.signAsync(
+      { ...payload, type: 'refresh' },
+      { expiresIn: '2h' },
+    );
+
+    await this.userModel.update(
+      { refreshToken },
+      { where: { id: payload.sub } },
+    );
 
     return { accessToken, refreshToken };
   }
