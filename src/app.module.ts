@@ -1,44 +1,17 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { UserModel } from './modules/auth/infra/database/user.model';
 import { ProfileMappingModule } from './modules/profile-mapping/profile-mapping.module';
-import { FoodTypeModel } from './modules/profile-mapping/infra/database/food-type.model';
-import { PlaceTypeModel } from './modules/profile-mapping/infra/database/place-type.model';
-import { ProfileMappingModel } from './modules/profile-mapping/infra/database/profile-mapping-model';
-import { ProfileMappingPlaceTypeModel } from './modules/profile-mapping/infra/database/profile-mapping-place-type.model';
-import { ProfileMappingFoodTypeModel } from './modules/profile-mapping/infra/database/profile-mapping-food-type.model';
 import { IaModule } from './modules/ia/ia.module';
-import { RestaurantsModel } from './modules/ia/infra/database/restaurant.model';
-import { ReviewModel } from './modules/ia/infra/database/review.model';
+import { DatabaseModule } from './lib/infra/database/database.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
     AuthModule,
     ProfileMappingModule,
     IaModule,
-    ConfigModule.forRoot({ isGlobal: true }),
-    SequelizeModule.forRoot({
-      dialect: 'mysql',
-      host: process.env.HOST!,
-      port: parseInt(process.env.PORT!),
-      username: process.env.USER!,
-      password: process.env.PASSWORD!,
-      database: process.env.DATABASE!,
-      autoLoadModels: false,
-      synchronize: true,
-      models: [
-        UserModel,
-        FoodTypeModel,
-        PlaceTypeModel,
-        ProfileMappingModel,
-        ProfileMappingPlaceTypeModel,
-        ProfileMappingFoodTypeModel,
-        RestaurantsModel,
-        ReviewModel,
-      ],
-    }),
   ],
 })
 export class AppModule {}
