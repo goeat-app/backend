@@ -10,8 +10,6 @@ async function bootstrap() {
 
   await app.listen(3000);
 
-  const syncTablesModule = await import('./modules/auth/infra/database/sync-tables.js');
-  await syncTablesModule.syncTables();
   app.enableCors();
 }
 
