@@ -17,29 +17,46 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        dialect: 'postgres',
-        url: config.get<string>('DATABASE_URL'),
-        autoLoadModels: false,
-        synchronize: false,
-        logging: false,
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        },
-        models: [
-          UserModel,
-          FoodTypeModel,
-          PlaceTypeModel,
-          ProfileMappingModel,
-          ProfileMappingPlaceTypeModel,
-          ProfileMappingFoodTypeModel,
-          RestaurantsModel,
-          ReviewModel,
-        ],
-      }),
+      useFactory: (config: ConfigService) => {
+        const databaseUrl = config.get<string>('DATABASE_URL');
+        
+        if (!databaseUrl) {
+          throw new Error('DATABASE_URL is not defined in environment variables');
+        }
+        
+        const url = new URL(databaseUrl);
+        
+        return {
+          dialect: 'postgres',
+          host: url.hostname,
+          port: parseInt(url.port),
+          username: url.username,
+          password: url.password,
+          database: url.pathname.slice(1), // Remove leading '/'
+          autoLoadModels: false,
+          synchronize: false,
+          logging: false,
+          dialectOptions: 
+            config.get<string>('NODE_ENV') === 'production'
+              ? {
+                  ssl: {
+                    require: true,
+                    rejectUnauthorized: false,
+                  },
+                }
+              : {},
+          models: [
+            UserModel,
+            FoodTypeModel,
+            PlaceTypeModel,
+            ProfileMappingModel,
+            ProfileMappingPlaceTypeModel,
+            ProfileMappingFoodTypeModel,
+            RestaurantsModel,
+            ReviewModel,
+          ],
+        };
+      },
     }),
   ],
   exports: [SequelizeModule],
