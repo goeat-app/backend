@@ -6,17 +6,31 @@ module.exports = {
     await queryInterface.createTable('food_types', {
       id: {
         type: Sequelize.UUID,
-        allowNull: false,
-        primaryKey: true,
         defaultValue: Sequelize.literal('gen_random_uuid()'),
+        primaryKey: true,
       },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      tag_image: {
+      slug: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
+      },
+      icon_key: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('NOW()'),
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('NOW()'),
       },
     });
   },

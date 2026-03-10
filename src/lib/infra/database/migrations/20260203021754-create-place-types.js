@@ -6,19 +6,23 @@ module.exports = {
     await queryInterface.createTable('place_types', {
       id: {
         type: Sequelize.UUID,
-        allowNull: false,
-        primaryKey: true,
         defaultValue: Sequelize.literal('gen_random_uuid()'),
+        primaryKey: true,
       },
-      name: {
-        type: Sequelize.STRING,
+      name: { type: Sequelize.STRING, allowNull: false },
+      slug: { type: Sequelize.STRING, allowNull: false, unique: true },
+      icon_key: { type: Sequelize.STRING },
+      created_at: {
+        type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal('NOW()'),
       },
-      tag_image: {
-        type: Sequelize.STRING,
+      updated_at: {
+        type: Sequelize.DATE,
         allowNull: false,
+        defaultValue: Sequelize.literal('NOW()'),
       },
-    });
+    })
   },
 
   async down (queryInterface, Sequelize) {
