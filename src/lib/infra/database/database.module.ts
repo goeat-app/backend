@@ -19,13 +19,13 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const databaseUrl = config.get<string>('DATABASE_URL');
-        
+
         if (!databaseUrl) {
           throw new Error('DATABASE_URL is not defined in environment variables');
         }
-        
+
         const url = new URL(databaseUrl);
-        
+
         return {
           dialect: 'postgres',
           host: url.hostname,
@@ -36,15 +36,18 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
           autoLoadModels: false,
           synchronize: false,
           logging: false,
-          dialectOptions: 
+          dialectOptions:
             config.get<string>('NODE_ENV') === 'production'
               ? {
-                  ssl: {
-                    require: true,
-                    rejectUnauthorized: false,
-                  },
-                }
-              : {},
+                ssl: {
+                  require: true,
+                  rejectUnauthorized: false,
+                },
+                family: 4,
+              }
+              : {
+                family: 4,
+              },
           models: [
             UserModel,
             FoodTypeModel,
@@ -61,4 +64,4 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
   ],
   exports: [SequelizeModule],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }
