@@ -13,7 +13,7 @@ import { PlaceTypeModel } from './place-type.model';
 import { ProfileMappingFoodTypeModel } from './profile-mapping-food-type.model';
 import { ProfileMappingPlaceTypeModel } from './profile-mapping-place-type.model';
 
-@Table({ tableName: 'profile_mapping' })
+@Table({ tableName: 'profile_mapping', underscored: true })
 export class ProfileMappingModel extends Model {
   @Default(DataType.UUIDV4)
   @PrimaryKey
@@ -21,7 +21,7 @@ export class ProfileMappingModel extends Model {
   declare id: string;
 
   @ForeignKey(() => UserModel)
-  @Column({ type: DataType.UUID, allowNull: false })
+  @Column({ type: DataType.UUID, allowNull: false, field: 'user_id' })
   declare userId: string;
 
   @BelongsTo(() => UserModel)
@@ -30,12 +30,14 @@ export class ProfileMappingModel extends Model {
   @Column({
     type: DataType.DECIMAL,
     allowNull: false,
+    field: 'max_price',
   })
   declare maxPrice: number;
 
   @Column({
     type: DataType.DECIMAL,
     allowNull: false,
+    field: 'min_price',
   })
   declare minPrice: number;
 

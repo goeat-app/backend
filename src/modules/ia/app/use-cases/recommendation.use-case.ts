@@ -16,7 +16,7 @@ export class RecommendationUseCase {
     private readonly restaurantRepository: RestaurantRepository,
     private readonly reviewRepository: ReviewRepository,
     private readonly userPreferenceRepository: UserPreferenceRepository,
-  ) {}
+  ) { }
 
   async getRecommendationBasedOnboarding(userId: string): Promise<RecommendationBasedOnboardingDto> {
     try {
@@ -55,14 +55,14 @@ export class RecommendationUseCase {
       if (!response || !response.restaurants || response.restaurants.length === 0) {
         const fallbackIds = restaurants.slice(0, 5).map(r => r.id);
         const recommendedRestaurants = await this.restaurantRepository.findByIds(fallbackIds);
-        
+
         const data = recommendedRestaurants.map((restaurant) => {
           const plain: PlainRestaurant = restaurant.get({ plain: true });
           return {
             id: plain.id,
             name: plain.name,
             placeType: plain.placeType?.name || 'Unknown',
-            tagImage: plain.placeType?.tag_image || '',
+            slug: plain.placeType?.slug || '',
             foodType: plain.foodType?.name || 'Unknown',
             priceLevel: getPriceLevel(Number(plain.average_price)),
             avgRating: Number(plain.average_rating),
@@ -71,7 +71,7 @@ export class RecommendationUseCase {
             state: plain.state,
           };
         });
-        
+
         return data;
       }
 
@@ -89,7 +89,7 @@ export class RecommendationUseCase {
           id: plainRestaurant.id,
           name: plainRestaurant.name,
           placeType: plainRestaurant.placeType?.name || 'Unknown',
-          tagImage: plainRestaurant.placeType?.tag_image || '',
+          slug: plainRestaurant.placeType?.slug || '',
           foodType: plainRestaurant.foodType?.name || 'Unknown',
           priceLevel: getPriceLevel(Number(plainRestaurant.average_price)),
           avgRating: Number(plainRestaurant.average_rating),

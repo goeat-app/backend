@@ -5,14 +5,14 @@ const PlaceTypeSchema = z.array(
   z.object({
     id: z.string(),
     name: z.string(),
-    tagImage: z.string(),
+    slug: z.string(),
   }),
 );
 
 const PlaceTypeByNameSchema = z.object({
   id: z.string(),
   name: z.string(),
-  tagImage: z.string(),
+  slug: z.string(),
 });
 
 export class PlaceTypeByNameDto extends createZodDto(PlaceTypeByNameSchema) {}
