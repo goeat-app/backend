@@ -19,7 +19,7 @@ export class PlaceTypeUseCase {
     const data = response.map((item) => ({
       id: item.id,
       name: item.name,
-      tagImage: item.tag_image,
+      slug: item.slug,
     }));
 
     return data;
@@ -34,7 +34,7 @@ export class PlaceTypeUseCase {
 
     const data = {
       ...response,
-      tagImage: response.tag_image,
+      slug: response.slug,
     };
 
     return data;

@@ -12,7 +12,7 @@ import {
 import { ProfileMappingModel } from './profile-mapping-model';
 import { PlaceTypeModel } from './place-type.model';
 
-@Table({ tableName: 'profile_mapping_place_type' })
+@Table({ tableName: 'profile_mapping_place_type', underscored: true })
 export class ProfileMappingPlaceTypeModel extends Model {
 
   @PrimaryKey
@@ -21,14 +21,14 @@ export class ProfileMappingPlaceTypeModel extends Model {
   declare id: string;
 
   @ForeignKey(() => ProfileMappingModel)
-  @Column(DataType.UUID)
+  @Column({ type: DataType.UUID, field: 'profile_mapping_id' })
   profileMappingId: string;
 
   @BelongsTo(() => ProfileMappingModel)
   profileMapping: ProfileMappingModel;
 
   @ForeignKey(() => PlaceTypeModel)
-  @Column(DataType.UUID)
+  @Column({ type: DataType.UUID, field: 'place_type_id' })
   placeTypeId: string;
 
   @BelongsTo(() => PlaceTypeModel)

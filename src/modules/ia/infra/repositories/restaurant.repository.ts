@@ -13,15 +13,15 @@ export class RestaurantRepository {
 
   async findAllActiveRestaurants() {
     return await this.restaurantModel.findAll({
-      where: { is_active: 1 },
+      where: { is_active: true },
       include: [
         {
           model: PlaceTypeModel,
-          attributes: ['id', 'name', 'tag_image'],
+          attributes: ['id', 'name', 'slug'],
         },
         {
           model: FoodTypeModel,
-          attributes: ['id', 'name', 'tag_image'],
+          attributes: ['id', 'name', 'slug'],
         },
       ],
       raw: false,
@@ -34,11 +34,11 @@ export class RestaurantRepository {
       include: [
         {
           model: PlaceTypeModel,
-          attributes: ['id', 'name', 'tag_image'],
+          attributes: ['id', 'name', 'slug'],
         },
         {
           model: FoodTypeModel,
-          attributes: ['id', 'name', 'tag_image'],
+          attributes: ['id', 'name', 'slug'],
         },
       ],
       raw: false,

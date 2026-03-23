@@ -97,10 +97,10 @@ export class RestaurantsModel extends Model {
   declare longitude: number;
   
   @Column({
-    type: DataType.TINYINT,
+    type: DataType.BOOLEAN,
     allowNull: false,
   })
-  declare is_active: number;
+  declare is_active: boolean;
 
   
 

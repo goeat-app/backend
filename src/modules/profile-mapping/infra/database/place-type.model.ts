@@ -26,5 +26,5 @@ export class PlaceTypeModel extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  declare tag_image: string;
+  declare slug: string;
 }

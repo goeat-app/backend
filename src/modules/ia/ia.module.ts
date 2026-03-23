@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { IAExternal } from './infra/external/ia.external';
 import { RecommendationUseCase } from './app/use-cases/recommendation.use-case';
@@ -17,6 +18,7 @@ import { IIAService } from './domain/interfaces/ia.service.interface';
 
 @Module({
   imports: [
+    ConfigModule,
     SequelizeModule.forFeature([
       RestaurantsModel,
       ReviewModel,

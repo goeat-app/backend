@@ -11,7 +11,7 @@ import {
 import { ProfileMappingModel } from './profile-mapping-model';
 import { FoodTypeModel } from './food-type.model';
 
-@Table({ tableName: 'profile_mapping_food_type' })
+@Table({ tableName: 'profile_mapping_food_type', underscored: true })
 export class ProfileMappingFoodTypeModel extends Model {
   @PrimaryKey
   @Default(DataType.UUIDV4)
@@ -19,14 +19,14 @@ export class ProfileMappingFoodTypeModel extends Model {
   declare id: string;
 
   @ForeignKey(() => ProfileMappingModel)
-  @Column(DataType.UUID)
+  @Column({ type: DataType.UUID, field: 'profile_mapping_id' })
   profileMappingId: string;
 
   @BelongsTo(() => ProfileMappingModel)
   profileMapping: ProfileMappingModel;
 
   @ForeignKey(() => FoodTypeModel)
-  @Column(DataType.UUID)
+  @Column({ type: DataType.UUID, field: 'food_type_id' })
   foodTypeId: string;
 
   @BelongsTo(() => FoodTypeModel)

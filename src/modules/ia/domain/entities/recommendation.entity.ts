@@ -16,12 +16,12 @@ export interface PlainRestaurant {
   placeType?: {
     id: string;
     name: string;
-    tag_image: string;
+    slug: string;
   };
   foodType?: {
     id: string;
     name: string;
-    tag_image: string;
+    slug: string;
   };
 }
 

@@ -5,14 +5,14 @@ const FoodTypeSchema = z.array(
   z.object({
     id: z.string(),
     name: z.string(),
-    tagImage: z.string(),
+    slug: z.string(),
   }),
 );
 
 const FoodTypeByNameSchema = z.object({
   id: z.string(),
   name: z.string(),
-  tagImage: z.string(),
+  slug: z.string(),
 });
 
 export class FoodTypeDto extends createZodDto(FoodTypeSchema) {}
