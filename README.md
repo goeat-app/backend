@@ -1,98 +1,97 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🍽️ GoEat - Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de recomendação de restaurantes. Este projeto foi desenvolvido utilizando **NestJS** e utiliza o **Supabase (PostgreSQL)** como banco de dados principal, com o **Sequelize** como ORM.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🚀 Tecnologias Utilizadas
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **[NestJS](https://nestjs.com/)** - Framework Node.js progressivo para aplicações escaláveis.
+- **[Sequelize](https://sequelize.org/)** - ORM para Node.js (PostgreSQL).
+- **[Supabase](https://supabase.com/)** - Backend as a Service (PostgreSQL).
+- **[Zod](https://zod.dev/)** - Validação de esquemas e tipos.
+- **[JWT](https://jwt.io/)** - Autenticação segura via JSON Web Tokens.
+- **TypeScript** - Superconjunto de JavaScript com tipagem estática.
 
-## Project setup
+---
 
+## 📋 Pré-requisitos
+
+Antes de começar, você precisará ter instalado em sua máquina:
+- **Node.js** (versão 18 ou superior recomendada)
+- **Yarn**
+- Uma conta no **Supabase** (ou um banco de dados PostgreSQL compatível)
+
+---
+
+## 🛠️ Instalação e Configuração
+
+Siga os passos abaixo para configurar o ambiente de desenvolvimento local:
+
+### 1. Clonar o Repositório
 ```bash
-$ npm install
+git clone https://github.com/goeat-app/backend.git
+cd backend
 ```
 
-## Compile and run the project
-
+### 2. Instalar Dependências
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+yarn install
 ```
 
-## Run tests
+### 3. Configurar Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto e peça as variáveis de ambiente para o time.
 
+### 4. Executar Migrations do Banco de Dados
+Para criar as tabelas necessárias no seu banco de dados:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+yarn db:migrate
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🏃 Executando o Projeto
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### Modo de Desenvolvimento (com Hot-Reload)
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+yarn start
+```
+O servidor iniciará em [http://localhost:3000](http://localhost:3000).
+
+### Modo de Produção
+```bash
+yarn build
+yarn start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🗃️ Gerenciamento do Banco de Dados
 
-Check out a few resources that may come in handy when working with NestJS:
+Este projeto utiliza o Sequelize CLI para gerenciar migrations. Aqui estão os comandos principais:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- **Executar Migrations**: `yarn db:migrate`
+- **Reverter Última Migration**: `yarn db:migrate:undo`
+- **Criar Nova Migration**: `yarn db:migration:create nome-da-migration`
 
-## Support
+Para detalhes completos sobre a estrutura das tabelas, consulte o [MIGRATIONS.md](MIGRATIONS.md).
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## 📁 Estrutura do Projeto
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```text
+src/
+├── lib/               # Infraestrutura, banco de dados (migrations, config)
+├── modules/           # Módulos de negócio (auth, ia, profile-mapping)
+│   ├── auth/          # Autenticação e Autorização
+│   ├── ia/            # Integração com Inteligência Artificial
+│   └── profile-mapping/ # Mapeamento de perfis e preferências
+├── types/             # Definições de tipos TypeScript
+├── main.ts            # Ponto de entrada da aplicação
+└── app.module.ts      # Módulo raiz
+```
 
-## License
+## 👥 Contato
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Em caso de dúvidas ou sugestões, sinta-se à vontade para entrar em contato com a equipe de desenvolvimento.
