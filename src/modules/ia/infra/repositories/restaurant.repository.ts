@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { RestaurantsModel } from '../database/restaurant.model';
 import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
 import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
@@ -29,8 +30,11 @@ export class RestaurantRepository {
   }
 
   async findByIds(ids: string[]) {
+    if (ids.length === 0) {
+      return [];
+    }
     return await this.restaurantModel.findAll({
-      where: { id: ids },
+      where: { id: { [Op.in]: ids } },
       include: [
         {
           model: PlaceTypeModel,

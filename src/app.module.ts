@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ProfileMappingModule } from './modules/profile-mapping/profile-mapping.module';
 import { IaModule } from './modules/ia/ia.module';
 import { DatabaseModule } from './lib/infra/database/database.module';
+import { FavoriteSavingsModule } from './modules/favorite-savings/favorite-savings.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DatabaseModule } from './lib/infra/database/database.module';
     AuthModule,
     ProfileMappingModule,
     IaModule,
+    FavoriteSavingsModule,
   ],
 })
 export class AppModule {}
