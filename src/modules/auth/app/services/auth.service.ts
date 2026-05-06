@@ -1,4 +1,6 @@
 import {
+  ConflictException,
+  HttpException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -15,6 +17,7 @@ import {
   PayloadRefreshToken,
   RefreshTokenResponse,
 } from '../../domain/entities/refresh-token.entity';
+import { UpdateUserDto } from '../../dtos/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -79,6 +82,41 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  async updateUserById(userId: string, data: UpdateUserDto) {
+    const user = await this.userModel.findByPk(userId);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const emailAlreadyInUse = await this.userModel.findOne({
+      where: { email: data.email.toLowerCase() },
+    });
+
+    if (emailAlreadyInUse && emailAlreadyInUse.id !== userId) {
+      throw new ConflictException('E-mail already in use');
+    }
+
+    if (data.cpf && user.cpf && user.cpf !== data.cpf) {
+      throw new HttpException('CPF cannot be changed once defined', 400);
+    }
+
+    const cpf = user.cpf ?? data.cpf ?? null;
+
+    await this.userModel.update(
+      {
+        name: data.name,
+        email: data.email.toLowerCase(),
+        phone: data.phone,
+        birthDate: data.birthDate,
+        cpf,
+      },
+      { where: { id: userId } },
+    );
+
+    return this.getUserById(userId);
   }
 
   private async generateToken(

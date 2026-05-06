@@ -41,4 +41,23 @@ export class UserModel extends Model {
     allowNull: true,
   })
   declare phone: string;
+
+  @Column({
+    type: DataType.DATEONLY,
+    allowNull: true,
+  })
+  declare birthDate: string | null;
+
+  @Column({
+    type: DataType.STRING(11),
+    allowNull: true,
+    unique: true,
+  })
+  declare cpf: string | null;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  declare refreshToken: string | null;
 }

@@ -7,6 +7,7 @@ import {
   Req,
   UnauthorizedException,
   Get,
+  Patch,
 } from '@nestjs/common';
 import { CreateUserUseCase } from '../../app/use-cases/register.use-case';
 import { RegisterUserDto } from '../../dtos/register-user.dto';
@@ -20,6 +21,7 @@ import {
 } from '../../domain/entities/logout.entity';
 import { RefreshTokenDto } from '../../dtos/refresh-token.dto';
 import { RefreshTokenResponse } from '../../domain/entities/refresh-token.entity';
+import { UpdateUserDto } from '../../dtos/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -75,5 +77,19 @@ export class AuthController {
     await this.authService.logout(req.user.id);
 
     return { message: 'Logged out successfully' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  @HttpCode(200)
+  async updateMe(
+    @Req() req: Request & LogoutParam,
+    @Body() body: UpdateUserDto,
+  ) {
+    if (!req.user?.id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+
+    return this.authService.updateUserById(req.user.id, body);
   }
 }
