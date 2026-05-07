@@ -40,6 +40,6 @@ import { IIAService } from './domain/interfaces/ia.service.interface';
     ReviewRepository,
     UserPreferenceRepository,
   ],
-  exports: [RecommendationUseCase],
+  exports: [RecommendationUseCase, RestaurantRepository],
 })
 export class IaModule {}

@@ -9,6 +9,7 @@ import { ProfileMappingPlaceTypeModel } from '@/modules/profile-mapping/infra/da
 import { ProfileMappingFoodTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-food-type.model';
 import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
 import { ReviewModel } from '@/modules/ia/infra/database/review.model';
+import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/favorite-savings.model';
 
 
 @Module({
@@ -57,6 +58,7 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
             ProfileMappingFoodTypeModel,
             RestaurantsModel,
             ReviewModel,
+            FavoriteSavingsModel,
           ],
         };
       },
