@@ -11,6 +11,7 @@ import { RestaurantRole } from '../../domain/enums/restaurant-role.enum';
 import {
   IRestaurantUserRoleRepository,
   RestaurantUserRoleRecord,
+  RestaurantWithRoleRecord,
 } from '../../domain/interfaces/restaurant-user-role.repository.interface';
 
 @Injectable()
@@ -58,6 +59,16 @@ export class RestaurantAccessService {
     return this.restaurantUserRoleRepository.listByRestaurant(
       params.restaurantId,
     );
+  }
+
+  async listRestaurantsByUser(params: {
+    userId: string;
+  }): Promise<RestaurantWithRoleRecord[]> {
+    const memberships = await this.restaurantUserRoleRepository.listByUser(
+      params.userId,
+    );
+
+    return memberships;
   }
 
   async assignOrUpdateRole(params: {

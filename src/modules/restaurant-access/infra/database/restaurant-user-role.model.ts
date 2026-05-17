@@ -11,6 +11,7 @@ import {
   AllowNull,
   CreatedAt,
   UpdatedAt,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { RestaurantRole } from '../../domain/enums/restaurant-role.enum';
 
@@ -30,10 +31,16 @@ export class RestaurantUserRoleModel extends Model {
   @Column(DataType.UUID)
   declare restaurant_id: string;
 
+  @BelongsTo(() => RestaurantsModel, 'restaurant_id')
+  restaurant!: RestaurantsModel;
+
   @ForeignKey(() => UserModel)
   @AllowNull(false)
   @Column(DataType.UUID)
   declare user_id: string;
+
+  @BelongsTo(() => UserModel, 'user_id')
+  user!: UserModel;
 
   @AllowNull(false)
   @Column(DataType.STRING)

@@ -7,6 +7,7 @@ import { IRestaurantUserRoleRepository } from './domain/interfaces/restaurant-us
 import { RestaurantRolesGuard } from './infra/auth/restaurant-roles.guard';
 import { RestaurantUserRoleModel } from './infra/database/restaurant-user-role.model';
 import { RestaurantAccessController } from './infra/controllers/restaurant-access.controller';
+import { MyRestaurantsController } from './infra/controllers/my-restaurants.controller';
 import { SequelizeRestaurantUserRoleRepository } from './infra/repositories/restaurant-user-role.repository';
 
 @Module({
@@ -14,7 +15,7 @@ import { SequelizeRestaurantUserRoleRepository } from './infra/repositories/rest
     AuthModule,
     SequelizeModule.forFeature([RestaurantUserRoleModel, RestaurantsModel]),
   ],
-  controllers: [RestaurantAccessController],
+  controllers: [RestaurantAccessController, MyRestaurantsController],
   providers: [
     RestaurantAccessService,
     RestaurantRolesGuard,
