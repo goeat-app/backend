@@ -8,7 +8,7 @@ import { FoodTypeByNameDto, FoodTypeDto } from '../../dtos/food-type.dto';
 
 @Injectable()
 export class FoodTypeUseCase {
-  constructor(private readonly foodTypeRepository: IFoodTypeRepository) { }
+  constructor(private readonly foodTypeRepository: IFoodTypeRepository) {}
 
   async getCategories(): Promise<FoodTypeDto> {
     const response = await this.foodTypeRepository.findAll();

@@ -14,7 +14,6 @@ import { PlaceTypeModel } from './place-type.model';
 
 @Table({ tableName: 'profile_mapping_place_type', underscored: true })
 export class ProfileMappingPlaceTypeModel extends Model {
-
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)
@@ -22,15 +21,15 @@ export class ProfileMappingPlaceTypeModel extends Model {
 
   @ForeignKey(() => ProfileMappingModel)
   @Column({ type: DataType.UUID, field: 'profile_mapping_id' })
-  profileMappingId: string;
+  profileMappingId!: string;
 
   @BelongsTo(() => ProfileMappingModel)
-  profileMapping: ProfileMappingModel;
+  profileMapping!: ProfileMappingModel;
 
   @ForeignKey(() => PlaceTypeModel)
   @Column({ type: DataType.UUID, field: 'place_type_id' })
-  placeTypeId: string;
+  placeTypeId!: string;
 
   @BelongsTo(() => PlaceTypeModel)
-  placeType: PlaceTypeModel;
+  placeType!: PlaceTypeModel;
 }

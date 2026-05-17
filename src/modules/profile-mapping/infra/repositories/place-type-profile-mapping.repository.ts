@@ -4,9 +4,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ProfileMappingPlaceTypeModel } from '../database/profile-mapping-place-type.model';
 
 @Injectable()
-export class SequelizePlaceTypeProfileMappingRepository
-  implements IProfileMappingPlaceTypeRepository
-{
+export class SequelizePlaceTypeProfileMappingRepository implements IProfileMappingPlaceTypeRepository {
   constructor(
     @InjectModel(ProfileMappingPlaceTypeModel)
     private readonly profileMappingPlaceTypeModel: typeof ProfileMappingPlaceTypeModel,
@@ -20,7 +18,7 @@ export class SequelizePlaceTypeProfileMappingRepository
         where: { profileMappingId },
       });
       return placesTypes;
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Place types not found.');
     }
   }

@@ -25,7 +25,7 @@ export class ProfileMappingModel extends Model {
   declare userId: string;
 
   @BelongsTo(() => UserModel)
-  user: UserModel;
+  user!: UserModel;
 
   @Column({
     type: DataType.DECIMAL,

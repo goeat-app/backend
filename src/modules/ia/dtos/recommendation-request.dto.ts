@@ -20,7 +20,9 @@ const RecommendationRequestPayloadSchema = z.object({
   Review: z.array(ReviewPayloadSchema),
 });
 
-export class RestaurantPayloadDto extends createZodDto(RestaurantPayloadSchema) {}
+export class RestaurantPayloadDto extends createZodDto(
+  RestaurantPayloadSchema,
+) {}
 
 export class ReviewPayloadDto extends createZodDto(ReviewPayloadSchema) {}
 

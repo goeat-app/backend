@@ -6,7 +6,8 @@ const PlaceTypeResponseSchema = z.object({
   id: z.uuid(),
 });
 
-export class PlaceTypeResponseDto extends createZodDto(PlaceTypeResponseSchema) {}
+export class PlaceTypeResponseDto extends createZodDto(
+  PlaceTypeResponseSchema,
+) {}
 
 export type PlaceTypeResponseType = z.infer<typeof PlaceTypeResponseSchema>;
-

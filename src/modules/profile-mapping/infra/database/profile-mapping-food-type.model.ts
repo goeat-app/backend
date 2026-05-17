@@ -20,15 +20,15 @@ export class ProfileMappingFoodTypeModel extends Model {
 
   @ForeignKey(() => ProfileMappingModel)
   @Column({ type: DataType.UUID, field: 'profile_mapping_id' })
-  profileMappingId: string;
+  profileMappingId!: string;
 
   @BelongsTo(() => ProfileMappingModel)
-  profileMapping: ProfileMappingModel;
+  profileMapping!: ProfileMappingModel;
 
   @ForeignKey(() => FoodTypeModel)
   @Column({ type: DataType.UUID, field: 'food_type_id' })
-  foodTypeId: string;
+  foodTypeId!: string;
 
   @BelongsTo(() => FoodTypeModel)
-  foodType: FoodTypeModel;
+  foodType!: FoodTypeModel;
 }
