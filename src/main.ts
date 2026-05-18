@@ -1,13 +1,8 @@
 import 'tsconfig-paths/register';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ZodValidationPipe } from 'nestjs-zod';
+import { createNestApplication } from './nest-application.factory';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.useGlobalPipes(new ZodValidationPipe());
-  app.enableCors();
+  const app = await createNestApplication();
 
   const port = Number(process.env.PORT) || 3000;
   await app.listen(port);
