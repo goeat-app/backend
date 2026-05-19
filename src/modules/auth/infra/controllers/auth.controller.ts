@@ -67,6 +67,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
+  @HttpCode(200)
   async logout(@Req() req: Request & LogoutParam): Promise<LogoutResponse> {
     if (!req.user?.id) {
       throw new UnauthorizedException('User not authenticated');

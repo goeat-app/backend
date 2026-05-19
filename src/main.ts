@@ -1,15 +1,12 @@
 import 'tsconfig-paths/register';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ZodValidationPipe } from 'nestjs-zod';
+import { createNestApplication } from './nest-application.factory';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await createNestApplication();
 
-  app.useGlobalPipes(new ZodValidationPipe());
-  app.enableCors();
-
-  await app.listen(3000);
+  const port = Number(process.env.PORT) || 3000;
+  await app.listen(port);
+  console.log(`Server is running on port ${port}`);
 }
 
 bootstrap().catch((error) => {

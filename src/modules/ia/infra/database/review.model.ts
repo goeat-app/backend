@@ -44,5 +44,4 @@ export class ReviewModel extends Model {
     allowNull: false,
   })
   declare visit_date: string;
-
 }

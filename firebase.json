@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "source": ".",
+    "ignore": [
+      ".firebase",
+      ".git",
+      ".github",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "node_modules"
+    ],
+    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+  }
+}

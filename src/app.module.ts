@@ -5,6 +5,8 @@ import { ProfileMappingModule } from './modules/profile-mapping/profile-mapping.
 import { IaModule } from './modules/ia/ia.module';
 import { DatabaseModule } from './lib/infra/database/database.module';
 import { FavoriteSavingsModule } from './modules/favorite-savings/favorite-savings.module';
+import { RestaurantImagesModule } from './modules/restaurant-images/restaurant-images.module';
+import { RestaurantAccessModule } from './modules/restaurant-access/restaurant-access.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { FavoriteSavingsModule } from './modules/favorite-savings/favorite-savin
     ProfileMappingModule,
     IaModule,
     FavoriteSavingsModule,
+    RestaurantImagesModule,
+    RestaurantAccessModule,
   ],
 })
 export class AppModule {}

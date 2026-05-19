@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { FavoriteSavingsUseCase } from '../../app/use-cases/favorite-savings.use-case';
 import { SaveFavoriteSavingsDto } from '../../dtos/save-favorite-savings.dto';
 import { FavoriteSavingsResponseDto } from '../../dtos/favorite-savings-response.dto';

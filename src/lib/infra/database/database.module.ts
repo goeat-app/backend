@@ -10,7 +10,8 @@ import { ProfileMappingFoodTypeModel } from '@/modules/profile-mapping/infra/dat
 import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
 import { ReviewModel } from '@/modules/ia/infra/database/review.model';
 import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/favorite-savings.model';
-
+import { RestaurantImageModel } from '@/modules/restaurant-images/infra/database/restaurant-image.model';
+import { RestaurantUserRoleModel } from '@/modules/restaurant-access/infra/database/restaurant-user-role.model';
 
 @Module({
   imports: [
@@ -22,7 +23,9 @@ import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/
         const databaseUrl = config.get<string>('DATABASE_URL');
 
         if (!databaseUrl) {
-          throw new Error('DATABASE_URL is not defined in environment variables');
+          throw new Error(
+            'DATABASE_URL is not defined in environment variables',
+          );
         }
 
         const url = new URL(databaseUrl);
@@ -40,15 +43,15 @@ import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/
           dialectOptions:
             config.get<string>('NODE_ENV') === 'production'
               ? {
-                ssl: {
-                  require: true,
-                  rejectUnauthorized: false,
-                },
-                family: 4,
-              }
+                  ssl: {
+                    require: true,
+                    rejectUnauthorized: false,
+                  },
+                  family: 4,
+                }
               : {
-                family: 4,
-              },
+                  family: 4,
+                },
           models: [
             UserModel,
             FoodTypeModel,
@@ -59,6 +62,8 @@ import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/
             RestaurantsModel,
             ReviewModel,
             FavoriteSavingsModel,
+            RestaurantImageModel,
+            RestaurantUserRoleModel,
           ],
         };
       },
@@ -66,4 +71,4 @@ import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/
   ],
   exports: [SequelizeModule],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
