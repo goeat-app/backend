@@ -31,25 +31,25 @@ export const api = onRequest(
   async (req, res) => {
     // Allow CORS preflight requests to reach the NestJS CORS middleware
     // so the correct Access-Control-Allow-* headers are returned.
-    if (req.method === 'OPTIONS') {
-      const server = await getServer();
-      server(req, res);
-      return;
-    }
+    // if (req.method === 'OPTIONS') {
+    //   const server = await getServer();
+    //   server(req, res);
+    //   return;
+    // }
 
-    const appCheckToken = req.header('X-Firebase-AppCheck');
+    // const appCheckToken = req.header('X-Firebase-AppCheck');
 
-    if (!appCheckToken) {
-      res.status(401).json({ message: 'Missing App Check token' });
-      return;
-    }
+    // if (!appCheckToken) {
+    //   res.status(401).json({ message: 'Missing App Check token' });
+    //   return;
+    // }
 
-    try {
-      await getAppCheck().verifyToken(appCheckToken);
-    } catch {
-      res.status(401).json({ message: 'Invalid App Check token' });
-      return;
-    }
+    // try {
+    //   await getAppCheck().verifyToken(appCheckToken);
+    // } catch {
+    //   res.status(401).json({ message: 'Invalid App Check token' });
+    //   return;
+    // }
 
     const server = await getServer();
     server(req, res);
