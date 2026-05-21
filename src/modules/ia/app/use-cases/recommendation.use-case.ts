@@ -14,6 +14,7 @@ import {
   PlainRestaurant,
   PlainReview,
 } from '../../domain/entities/recommendation.entity';
+import { RecommendationFilters } from '../../infra/controllers/ia.controller';
 
 @Injectable()
 export class RecommendationUseCase {
@@ -25,7 +26,7 @@ export class RecommendationUseCase {
   ) {}
 
   async getRecommendationBasedOnboarding(
-    userId: string,
+    userId: string, filters?: RecommendationFilters,
   ): Promise<RecommendationBasedOnboardingDto> {
     try {
       const userPreferences =
@@ -38,7 +39,7 @@ export class RecommendationUseCase {
         : 200;
 
       const restaurants =
-        await this.restaurantRepository.findAllActiveRestaurants();
+        await this.restaurantRepository.findAllActiveRestaurants(filters);
 
       const reviews = await this.reviewRepository.findAllReviews();
 
