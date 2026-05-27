@@ -18,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     SequelizeModule.forFeature([UserModel]),
     PassportModule,
     JwtModule.registerAsync({

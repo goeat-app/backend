@@ -1,10 +1,15 @@
 import {
+  InternalServerErrorException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { randomBytes } from 'crypto';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/sequelize';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { IHashService } from '../../domain/interfaces/hash.service.interface';
 import { LoginResponse } from '../../domain/entities/login.entity';
 import { LoginUserDto } from '../../dtos/login-user.dto';
 import { UserModel } from '../../infra/database/user.model';
@@ -18,8 +23,12 @@ import {
 
 @Injectable()
 export class AuthService {
+  private supabaseClient: SupabaseClient | null = null;
+
   constructor(
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly hashService: IHashService,
     private readonly loginUseCase: LoginUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
 
@@ -32,6 +41,36 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return this.generateToken({
+      username: user.email,
+      sub: user.id,
+    });
+  }
+
+  async loginWithSupabaseAccessToken(
+    accessToken: string,
+  ): Promise<LoginResponse> {
+    const client = this.getSupabaseClient();
+    const { data, error } = await client.auth.getUser(accessToken);
+
+    if (error || !data.user) {
+      throw new UnauthorizedException('Invalid Supabase access token');
+    }
+
+    const email = data.user.email?.trim().toLowerCase();
+
+    if (!email) {
+      throw new UnauthorizedException('Supabase account has no email');
+    }
+
+    let user = await this.userModel.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      user = await this.provisionSupabaseUser(email, data.user);
     }
 
     return this.generateToken({
@@ -107,5 +146,84 @@ export class AuthService {
       { refreshToken: null },
       { where: { id: userId } },
     );
+  }
+
+  private getSupabaseClient(): SupabaseClient {
+    if (this.supabaseClient) {
+      return this.supabaseClient;
+    }
+
+    const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
+    const supabaseAnonKey = this.configService.get<string>('SUPABASE_ANON_KEY');
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new UnauthorizedException(
+        'SUPABASE_URL and SUPABASE_ANON_KEY must be configured',
+      );
+    }
+
+    this.supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: false,
+      },
+    });
+
+    return this.supabaseClient;
+  }
+
+  private async provisionSupabaseUser(
+    email: string,
+    supabaseUser: { user_metadata?: unknown; phone?: string | null },
+  ): Promise<UserModel> {
+    const password = randomBytes(32).toString('hex');
+    const hashedPassword = await this.hashService.hash(password);
+
+    try {
+      return await this.userModel.create({
+        name: this.resolveSupabaseDisplayName(
+          email,
+          supabaseUser.user_metadata,
+        ),
+        email,
+        phone:
+          typeof supabaseUser.phone === 'string'
+            ? supabaseUser.phone.trim()
+            : '',
+        password: hashedPassword,
+      });
+    } catch {
+      console.error(
+        `Failed to create user for email ${email} from Supabase login. Checking for existing user...`,
+      );
+      // Handles concurrent first-login requests for the same email.
+      const existingUser = await this.userModel.findOne({
+        where: { email },
+      });
+
+      if (existingUser) {
+        return existingUser;
+      }
+
+      throw new InternalServerErrorException(
+        'Unable to provision user for Google login',
+      );
+    }
+  }
+
+  private resolveSupabaseDisplayName(email: string, metadata: unknown): string {
+    console.log('Resolving display name from Supabase metadata:', metadata);
+    if (metadata && typeof metadata === 'object') {
+      const record = metadata as Record<string, unknown>;
+      const values = [record.full_name, record.name, record.preferred_username];
+
+      for (const value of values) {
+        if (typeof value === 'string' && value.trim()) {
+          return value.trim();
+        }
+      }
+    }
+
+    const emailLocalPart = email.split('@')[0]?.trim();
+    return emailLocalPart || 'GoEat User';
   }
 }

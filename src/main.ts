@@ -1,7 +1,20 @@
 import 'tsconfig-paths/register';
 import { createNestApplication } from './nest-application.factory';
 
+function registerUnhandledErrorLogging() {
+  process.on('unhandledRejection', (reason) => {
+    console.error('[UnhandledRejection]', reason);
+  });
+
+  process.on('uncaughtException', (error) => {
+    console.error('[UncaughtException]', error);
+    process.exit(1);
+  });
+}
+
 async function bootstrap() {
+  registerUnhandledErrorLogging();
+
   const app = await createNestApplication();
 
   const port = Number(process.env.PORT) || 3000;

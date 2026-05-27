@@ -20,6 +20,7 @@ import {
 } from '../../domain/entities/logout.entity';
 import { RefreshTokenDto } from '../../dtos/refresh-token.dto';
 import { RefreshTokenResponse } from '../../domain/entities/refresh-token.entity';
+import { SupabaseLoginDto } from '../../dtos/supabase-login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -45,6 +46,14 @@ export class AuthController {
     const token = await this.authService.login(loginData);
 
     return token;
+  }
+
+  @Post('login/supabase')
+  @HttpCode(200)
+  async loginWithSupabase(
+    @Body() loginData: SupabaseLoginDto,
+  ): Promise<LoginResponse> {
+    return this.authService.loginWithSupabaseAccessToken(loginData.accessToken);
   }
 
   @Post('refresh')

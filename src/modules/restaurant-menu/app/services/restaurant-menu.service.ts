@@ -1,11 +1,14 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { randomUUID } from 'crypto';
 import { Op, UniqueConstraintError } from 'sequelize';
+import { IStorageService } from '@/lib/infra/external/storage.service.interface';
 import { CreateMenuCategoryType } from '../../dtos/create-menu-category.dto';
 import { CreateMenuItemType } from '../../dtos/create-menu-item.dto';
 import { ListMenuCategoriesQueryType } from '../../dtos/list-menu-categories-query.dto';
@@ -17,6 +20,8 @@ import { UpdateMenuCategoryType } from '../../dtos/update-menu-category.dto';
 import { UpdateMenuItemType } from '../../dtos/update-menu-item.dto';
 import { UpdateMenuItemAvailabilityType } from '../../dtos/update-menu-item-availability.dto';
 
+const BUCKET = 'restaurant_pictures';
+
 @Injectable()
 export class RestaurantMenuService {
   constructor(
@@ -24,6 +29,8 @@ export class RestaurantMenuService {
     private readonly menuCategoryModel: typeof MenuCategoryModel,
     @InjectModel(MenuItemModel)
     private readonly menuItemModel: typeof MenuItemModel,
+    @Inject(IStorageService)
+    private readonly storageService: IStorageService,
   ) {}
 
   async getOverview(params: {
@@ -491,6 +498,66 @@ export class RestaurantMenuService {
     }
 
     item.is_available = params.body.is_available;
+    await item.save();
+
+    return item;
+  }
+
+  async uploadItemImage(params: {
+    restaurantId: string;
+    itemId: string;
+    buffer: Buffer;
+    mimetype: string;
+  }): Promise<MenuItemModel> {
+    const item = await this.requireItem(params.restaurantId, params.itemId);
+    const previousImageKey = item.image_key;
+    const fileId = randomUUID();
+    const storagePath = `${params.restaurantId}/menu_items/${params.itemId}/${fileId}`;
+
+    await this.storageService.uploadFile(
+      BUCKET,
+      storagePath,
+      params.buffer,
+      params.mimetype,
+    );
+
+    item.image_key = storagePath;
+
+    try {
+      await item.save();
+    } catch (error: unknown) {
+      await this.storageService.deleteFile(BUCKET, storagePath).catch(() => {
+        return undefined;
+      });
+      throw error;
+    }
+
+    if (previousImageKey && previousImageKey !== storagePath) {
+      await this.storageService
+        .deleteFile(BUCKET, previousImageKey)
+        .catch(() => {
+          return undefined;
+        });
+    }
+
+    return item;
+  }
+
+  async deleteItemImage(params: {
+    restaurantId: string;
+    itemId: string;
+  }): Promise<MenuItemModel> {
+    const item = await this.requireItem(params.restaurantId, params.itemId);
+
+    if (!item.image_key) {
+      return item;
+    }
+
+    const previousImageKey = item.image_key;
+
+    await this.storageService.deleteFile(BUCKET, previousImageKey);
+
+    item.image_key = null;
     await item.save();
 
     return item;
