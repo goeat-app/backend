@@ -318,4 +318,216 @@ describe('Restaurant menu editing endpoints', () => {
     expect(itemRows).toHaveLength(1);
     expect(itemRows[0].is_available).toBe(false);
   });
+
+  it('GET /restaurants/:restaurantId/menu returns categories and items overview', async () => {
+    const ownerCtx = await registerAndLogin();
+    const seeded = await seedRestaurantWithOwner(ownerCtx.userId);
+    seededRestaurants.push(seeded);
+
+    const categoryId = await insertCategory(
+      client,
+      seeded.restaurantId,
+      'Mains',
+    );
+    await insertItem(client, seeded.restaurantId, categoryId, 'Feijoada');
+
+    const res = await api
+      .get(`/restaurants/${seeded.restaurantId}/menu`)
+      .set(bearerHeader(ownerCtx.accessToken))
+      .expect(200);
+
+    expect(Array.isArray(res.body.categories)).toBe(true);
+    expect(Array.isArray(res.body.items)).toBe(true);
+    expect(res.body.categories).toHaveLength(1);
+    expect(res.body.items).toHaveLength(1);
+  });
+
+  it('POST /restaurants/:restaurantId/menu/categories creates a category', async () => {
+    const ownerCtx = await registerAndLogin();
+    const seeded = await seedRestaurantWithOwner(ownerCtx.userId);
+    seededRestaurants.push(seeded);
+
+    const res = await api
+      .post(`/restaurants/${seeded.restaurantId}/menu/categories`)
+      .set(bearerHeader(ownerCtx.accessToken))
+      .send({
+        name: 'Drinks',
+      })
+      .expect(201);
+
+    expect(res.body.name).toBe('Drinks');
+    expect(typeof res.body.slug).toBe('string');
+
+    const { rows } = await client.query(
+      'SELECT name FROM menu_categories WHERE id = $1',
+      [res.body.id],
+    );
+
+    expect(rows).toHaveLength(1);
+  });
+
+  it('PATCH /restaurants/:restaurantId/menu/categories/reorder updates sort order', async () => {
+    const ownerCtx = await registerAndLogin();
+    const seeded = await seedRestaurantWithOwner(ownerCtx.userId);
+    seededRestaurants.push(seeded);
+
+    const firstId = await insertCategory(client, seeded.restaurantId, 'First');
+    const secondId = await insertCategory(
+      client,
+      seeded.restaurantId,
+      'Second',
+    );
+
+    const res = await api
+      .patch(`/restaurants/${seeded.restaurantId}/menu/categories/reorder`)
+      .set(bearerHeader(ownerCtx.accessToken))
+      .send({
+        ordered_ids: [secondId, firstId],
+      })
+      .expect(200);
+
+    expect(Array.isArray(res.body)).toBe(true);
+
+    const { rows } = await client.query(
+      'SELECT id, sort_order FROM menu_categories WHERE id = ANY($1::uuid[]) ORDER BY sort_order ASC',
+      [[secondId, firstId]],
+    );
+
+    const orderedRows = rows as Array<{ id: string; sort_order: number }>;
+    expect(orderedRows[0].id).toBe(secondId);
+    expect(orderedRows[0].sort_order).toBe(0);
+    expect(orderedRows[1].id).toBe(firstId);
+    expect(orderedRows[1].sort_order).toBe(1);
+  });
+
+  it('DELETE /restaurants/:restaurantId/menu/categories/:categoryId soft-deletes category and its items', async () => {
+    const ownerCtx = await registerAndLogin();
+    const seeded = await seedRestaurantWithOwner(ownerCtx.userId);
+    seededRestaurants.push(seeded);
+
+    const categoryId = await insertCategory(
+      client,
+      seeded.restaurantId,
+      'Seasonal',
+    );
+    const itemId = await insertItem(
+      client,
+      seeded.restaurantId,
+      categoryId,
+      'Pumpkin Soup',
+    );
+
+    await api
+      .delete(
+        `/restaurants/${seeded.restaurantId}/menu/categories/${categoryId}`,
+      )
+      .set(bearerHeader(ownerCtx.accessToken))
+      .expect(200);
+
+    const categoryRows = await client.query(
+      'SELECT deleted_at, is_active FROM menu_categories WHERE id = $1',
+      [categoryId],
+    );
+    const itemRows = await client.query(
+      'SELECT deleted_at, is_available FROM menu_items WHERE id = $1',
+      [itemId],
+    );
+
+    expect(categoryRows.rows[0].deleted_at).not.toBeNull();
+    expect(categoryRows.rows[0].is_active).toBe(false);
+    expect(itemRows.rows[0].deleted_at).not.toBeNull();
+    expect(itemRows.rows[0].is_available).toBe(false);
+  });
+
+  it('POST /restaurants/:restaurantId/menu/items creates an item and GET /items lists it', async () => {
+    const ownerCtx = await registerAndLogin();
+    const seeded = await seedRestaurantWithOwner(ownerCtx.userId);
+    seededRestaurants.push(seeded);
+
+    const categoryId = await insertCategory(
+      client,
+      seeded.restaurantId,
+      'Burgers',
+    );
+
+    const createRes = await api
+      .post(`/restaurants/${seeded.restaurantId}/menu/items`)
+      .set(bearerHeader(ownerCtx.accessToken))
+      .send({
+        category_id: categoryId,
+        name: 'House Burger',
+        description: 'Double cheese',
+        base_price: 39.9,
+        has_sizes: false,
+        is_available: true,
+      })
+      .expect(201);
+
+    expect(createRes.body.name).toBe('House Burger');
+
+    const listRes = await api
+      .get(`/restaurants/${seeded.restaurantId}/menu/items`)
+      .set(bearerHeader(ownerCtx.accessToken))
+      .expect(200);
+
+    expect(
+      (listRes.body as Array<{ id: string }>).some(
+        (entry) => entry.id === createRes.body.id,
+      ),
+    ).toBe(true);
+  });
+
+  it('PATCH /restaurants/:restaurantId/menu/items/reorder updates item sort order and DELETE /items/:itemId soft-deletes item', async () => {
+    const ownerCtx = await registerAndLogin();
+    const seeded = await seedRestaurantWithOwner(ownerCtx.userId);
+    seededRestaurants.push(seeded);
+
+    const categoryId = await insertCategory(
+      client,
+      seeded.restaurantId,
+      'Pizzas',
+    );
+    const firstId = await insertItem(
+      client,
+      seeded.restaurantId,
+      categoryId,
+      'Margherita',
+    );
+    const secondId = await insertItem(
+      client,
+      seeded.restaurantId,
+      categoryId,
+      'Pepperoni',
+    );
+
+    await api
+      .patch(`/restaurants/${seeded.restaurantId}/menu/items/reorder`)
+      .set(bearerHeader(ownerCtx.accessToken))
+      .send({
+        ordered_ids: [secondId, firstId],
+        category_id: categoryId,
+      })
+      .expect(200);
+
+    const reordered = await client.query(
+      'SELECT id, sort_order FROM menu_items WHERE id = ANY($1::uuid[]) ORDER BY sort_order ASC',
+      [[secondId, firstId]],
+    );
+
+    expect(reordered.rows[0].id).toBe(secondId);
+    expect(reordered.rows[0].sort_order).toBe(0);
+
+    await api
+      .delete(`/restaurants/${seeded.restaurantId}/menu/items/${firstId}`)
+      .set(bearerHeader(ownerCtx.accessToken))
+      .expect(200);
+
+    const deletedItem = await client.query(
+      'SELECT deleted_at, is_available FROM menu_items WHERE id = $1',
+      [firstId],
+    );
+
+    expect(deletedItem.rows[0].deleted_at).not.toBeNull();
+    expect(deletedItem.rows[0].is_available).toBe(false);
+  });
 });
