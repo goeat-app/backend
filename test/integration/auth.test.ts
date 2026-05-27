@@ -9,11 +9,16 @@ describe('Auth endpoints', () => {
 
       const res = await api.post('/auth/register').send(identity);
 
+      const bodyResponse = res.body as {
+        accessToken: string;
+        refreshToken: string;
+      };
+
       expect(res.status).toBe(201);
-      expect(typeof res.body.accessToken).toBe('string');
-      expect(res.body.accessToken.length).toBeGreaterThan(0);
-      expect(typeof res.body.refreshToken).toBe('string');
-      expect(res.body.refreshToken.length).toBeGreaterThan(0);
+      expect(typeof bodyResponse.accessToken).toBe('string');
+      expect(bodyResponse.accessToken.length).toBeGreaterThan(0);
+      expect(typeof bodyResponse.refreshToken).toBe('string');
+      expect(bodyResponse.refreshToken.length).toBeGreaterThan(0);
     });
 
     it('returns 409 when registering with an already-used email', async () => {
@@ -35,9 +40,14 @@ describe('Auth endpoints', () => {
         .post('/auth/login')
         .send({ email: identity.email, password: identity.password });
 
+      const bodyResponse = res.body as {
+        accessToken: string;
+        refreshToken: string;
+      };
+
       expect(res.status).toBe(200);
-      expect(typeof res.body.accessToken).toBe('string');
-      expect(typeof res.body.refreshToken).toBe('string');
+      expect(typeof bodyResponse.accessToken).toBe('string');
+      expect(typeof bodyResponse.refreshToken).toBe('string');
     });
 
     it('returns 401 for wrong password', async () => {
@@ -79,9 +89,14 @@ describe('Auth endpoints', () => {
         .set(bearerHeader(accessToken))
         .expect(200);
 
-      expect(res.body.id).toBe(userId);
-      expect(res.body.email).toBe(email.toLowerCase());
-      expect(res.body).not.toHaveProperty('password');
+      const bodyResponse = res.body as {
+        id: string;
+        email: string;
+      };
+
+      expect(bodyResponse.id).toBe(userId);
+      expect(bodyResponse.email).toBe(email.toLowerCase());
+      expect(bodyResponse).not.toHaveProperty('password');
     });
 
     it('returns 401 without a token', async () => {
@@ -104,9 +119,14 @@ describe('Auth endpoints', () => {
         .post('/auth/refresh')
         .send({ refreshToken: ctx.refreshToken });
 
+      const bodyResponse = res.body as {
+        accessToken: string;
+        refreshToken: string;
+      };
+
       expect(res.status).toBe(200);
-      expect(typeof res.body.accessToken).toBe('string');
-      expect(typeof res.body.refreshToken).toBe('string');
+      expect(typeof bodyResponse.accessToken).toBe('string');
+      expect(typeof bodyResponse.refreshToken).toBe('string');
     });
 
     it('returns 401 for an invalid refresh token', async () => {
@@ -127,7 +147,11 @@ describe('Auth endpoints', () => {
         .set(bearerHeader(ctx.accessToken))
         .expect(200);
 
-      expect(res.body.message).toBe('Logged out successfully');
+      const bodyResponse = res.body as {
+        message: string;
+      };
+
+      expect(bodyResponse.message).toBe('Logged out successfully');
     });
 
     it('returns 401 without a token', async () => {

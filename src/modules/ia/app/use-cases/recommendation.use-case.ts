@@ -26,7 +26,8 @@ export class RecommendationUseCase {
   ) {}
 
   async getRecommendationBasedOnboarding(
-    userId: string, filters?: RecommendationFilters,
+    userId: string,
+    filters?: RecommendationFilters,
   ): Promise<RecommendationBasedOnboardingDto> {
     try {
       const userPreferences =

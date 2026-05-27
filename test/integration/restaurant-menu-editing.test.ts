@@ -336,10 +336,29 @@ describe('Restaurant menu editing endpoints', () => {
       .set(bearerHeader(ownerCtx.accessToken))
       .expect(200);
 
-    expect(Array.isArray(res.body.categories)).toBe(true);
-    expect(Array.isArray(res.body.items)).toBe(true);
-    expect(res.body.categories).toHaveLength(1);
-    expect(res.body.items).toHaveLength(1);
+    const bodyResponse = res.body as {
+      categories: Array<{
+        id: string;
+        name: string;
+        slug: string;
+        sort_order: number;
+      }>;
+      items: Array<{
+        id: string;
+        category_id: string;
+        name: string;
+        description: string;
+        base_price: number;
+        has_sizes: boolean;
+        is_available: boolean;
+        sort_order: number;
+      }>;
+    };
+
+    expect(Array.isArray(bodyResponse.categories)).toBe(true);
+    expect(Array.isArray(bodyResponse.items)).toBe(true);
+    expect(bodyResponse.categories).toHaveLength(1);
+    expect(bodyResponse.items).toHaveLength(1);
   });
 
   it('POST /restaurants/:restaurantId/menu/categories creates a category', async () => {
@@ -355,12 +374,18 @@ describe('Restaurant menu editing endpoints', () => {
       })
       .expect(201);
 
-    expect(res.body.name).toBe('Drinks');
-    expect(typeof res.body.slug).toBe('string');
+    const bodyResponse = res.body as {
+      id: string;
+      name: string;
+      slug: string;
+    };
+
+    expect(bodyResponse.name).toBe('Drinks');
+    expect(typeof bodyResponse.slug).toBe('string');
 
     const { rows } = await client.query(
       'SELECT name FROM menu_categories WHERE id = $1',
-      [res.body.id],
+      [bodyResponse.id],
     );
 
     expect(rows).toHaveLength(1);
@@ -463,7 +488,13 @@ describe('Restaurant menu editing endpoints', () => {
       })
       .expect(201);
 
-    expect(createRes.body.name).toBe('House Burger');
+    const createBody = createRes.body as {
+      id: string;
+      name: string;
+      slug: string;
+    };
+
+    expect(createBody.name).toBe('House Burger');
 
     const listRes = await api
       .get(`/restaurants/${seeded.restaurantId}/menu/items`)
@@ -472,7 +503,7 @@ describe('Restaurant menu editing endpoints', () => {
 
     expect(
       (listRes.body as Array<{ id: string }>).some(
-        (entry) => entry.id === createRes.body.id,
+        (entry) => entry.id === createBody.id,
       ),
     ).toBe(true);
   });
