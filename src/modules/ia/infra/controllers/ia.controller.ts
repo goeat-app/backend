@@ -30,13 +30,16 @@ export class IaController {
     const filters: RecommendationFilters = {
       minRating: minRating ? Number(minRating) : undefined,
       foodTypes: foodTypes ? foodTypes.split(',').filter(Boolean) : undefined,
-      restaurantStyles: restaurantStyles ? restaurantStyles.split(',').filter(Boolean) : undefined,
+      restaurantStyles: restaurantStyles
+        ? restaurantStyles.split(',').filter(Boolean)
+        : undefined,
       minPrice: minPrice ? Number(minPrice) : undefined,
       maxPrice: maxPrice ? Number(maxPrice) : undefined,
     };
 
     return await this.recommendationUseCase.getRecommendationBasedOnboarding(
-      userId, filters,
+      userId,
+      filters,
     );
   }
 }

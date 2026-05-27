@@ -13,21 +13,18 @@ export default [
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+      },
+    },
+  },
 
   {
     files: ['src/**/*.ts'],
 
-    ignores: ['src/**/*.spec.ts', 'src/**/*.test.ts'],
-    languageOptions: {
-      sourceType: 'module',
-      globals: {
-        ...globals.node,
-      },
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
+    // ignores: ['src/**/*.spec.ts', 'src/**/*.test.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',

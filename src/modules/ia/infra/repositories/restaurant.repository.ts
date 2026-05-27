@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { Op, type IncludeOptions } from 'sequelize';
 import { RestaurantsModel } from '../database/restaurant.model';
 import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
 import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
@@ -21,14 +21,16 @@ export class RestaurantRepository {
     }
 
     if (filters?.minPrice !== undefined && filters?.maxPrice !== undefined) {
-      where.average_price = { [Op.between]: [filters.minPrice, filters.maxPrice] };
+      where.average_price = {
+        [Op.between]: [filters.minPrice, filters.maxPrice],
+      };
     } else if (filters?.minPrice !== undefined) {
       where.average_price = { [Op.gte]: filters.minPrice };
     } else if (filters?.maxPrice !== undefined) {
       where.average_price = { [Op.lte]: filters.maxPrice };
     }
 
-    const placeTypeInclude: any = {
+    const placeTypeInclude: IncludeOptions = {
       model: PlaceTypeModel,
       attributes: ['id', 'name', 'slug'],
     };
@@ -37,7 +39,7 @@ export class RestaurantRepository {
       placeTypeInclude.required = true;
     }
 
-    const foodTypeInclude: any = {
+    const foodTypeInclude: IncludeOptions = {
       model: FoodTypeModel,
       attributes: ['id', 'name', 'slug'],
     };

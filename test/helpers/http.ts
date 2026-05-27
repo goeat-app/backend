@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-const BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:8000';
+const BASE_URL = process.env.API_BASE_URL ?? 'http://localhost:3000';
 
 /**
  * Supertest agent bound to the live API base URL.
