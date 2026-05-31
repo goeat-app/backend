@@ -5,7 +5,6 @@ import { AuthController } from './infra/controllers/auth.controller';
 import { IUserRepository } from './domain/interfaces/user.repository.interface';
 import { SequelizeUserRepository } from './infra/repositories/user.repository';
 import { IHashService } from './domain/interfaces/hash.service.interface';
-import { BcryptHashService } from './infra/providers/bycript-hash.service';
 import { AuthService } from './app/services/auth.service';
 import { CreateUserUseCase } from './app/use-cases/register.use-case';
 import { ConfigModule } from '@nestjs/config';
@@ -20,10 +19,6 @@ import { FirebaseAuthGuard } from './infra/firebase/firebase-auth.guard';
     {
       provide: IUserRepository,
       useClass: SequelizeUserRepository,
-    },
-    {
-      provide: IHashService,
-      useClass: BcryptHashService,
     },
   ],
   controllers: [AuthController],

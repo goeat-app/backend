@@ -33,7 +33,9 @@
     "check:circular": "madge --extensions ts --ts-config tsconfig.json --circular src",
     "check": "npm run typecheck && npm run check:circular",
     "firebase:serve": "firebase emulators:start --only functions",
-    "firebase:deploy": "firebase deploy --only functions"
+    "firebase:deploy": "firebase deploy --only functions",
+    "emulators:auth": "firebase emulators:start --only auth",
+    "start:emulator": "FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 nest start --watch"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

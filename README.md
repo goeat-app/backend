@@ -115,6 +115,7 @@ yarn firebase:serve
 ## 📚 Documentação
 
 - Guia de deploy no Firebase: [docs/firebase-deploy.md](docs/firebase-deploy.md)
+- Migração para Firebase Auth: [docs/firebase-auth-migration.md](docs/firebase-auth-migration.md)
 
 ---
 
