@@ -1,5 +1,4 @@
 import 'tsconfig-paths/register';
-import { getAppCheck } from 'firebase-admin/app-check';
 import { getApps, initializeApp } from 'firebase-admin/app';
 import { onRequest } from 'firebase-functions/v2/https';
 import { createNestApplication } from './nest-application.factory';

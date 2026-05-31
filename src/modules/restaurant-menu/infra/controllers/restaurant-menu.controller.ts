@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from '@/modules/auth/infra/jwt/jwt-auth.guard';
+import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.guard';
 import { RestaurantRole } from '@/modules/restaurant-access/domain/enums/restaurant-role.enum';
 import { RestaurantRoles } from '@/modules/restaurant-access/infra/auth/restaurant-roles.decorator';
 import { RestaurantRolesGuard } from '@/modules/restaurant-access/infra/auth/restaurant-roles.guard';
@@ -38,7 +38,7 @@ const ALLOWED_MIMETYPES = [
   'image/gif',
 ];
 
-@UseGuards(JwtAuthGuard, RestaurantRolesGuard)
+@UseGuards(FirebaseAuthGuard, RestaurantRolesGuard)
 @Controller('restaurants/:restaurantId/menu')
 export class RestaurantMenuController {
   constructor(private readonly restaurantMenuService: RestaurantMenuService) {}

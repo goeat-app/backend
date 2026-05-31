@@ -1,6 +1,6 @@
 # 🍽️ GoEat - Backend
 
-Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de recomendação de restaurantes. Este projeto foi desenvolvido utilizando **NestJS** e utiliza o **Supabase (PostgreSQL)** como banco de dados principal, com o **Sequelize** como ORM.
+Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de recomendação de restaurantes. Este projeto foi desenvolvido utilizando **NestJS** e utiliza **PostgreSQL** como banco de dados principal, com o **Sequelize** como ORM.
 
 ---
 
@@ -8,9 +8,8 @@ Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de rec
 
 - **[NestJS](https://nestjs.com/)** - Framework Node.js progressivo para aplicações escaláveis.
 - **[Sequelize](https://sequelize.org/)** - ORM para Node.js (PostgreSQL).
-- **[Supabase](https://supabase.com/)** - Backend as a Service (PostgreSQL).
+- **[Firebase Auth](https://firebase.google.com/docs/auth)** - Verificação de ID token para autenticação de rotas protegidas.
 - **[Zod](https://zod.dev/)** - Validação de esquemas e tipos.
-- **[JWT](https://jwt.io/)** - Autenticação segura via JSON Web Tokens.
 - **TypeScript** - Superconjunto de JavaScript com tipagem estática.
 
 ---
@@ -21,7 +20,14 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 - **Node.js** (versão 18 ou superior recomendada)
 - **Yarn**
-- Uma conta no **Supabase** (ou um banco de dados PostgreSQL compatível)
+- Um banco de dados PostgreSQL compatível
+
+## 🔐 Fluxo de Autenticação
+
+- As rotas protegidas aceitam apenas `Authorization: Bearer <firebase-id-token>`.
+- O backend valida o token direto com Firebase Admin SDK.
+- Em primeiro acesso autenticado, o backend provisiona/vincula o usuário interno usando `firebase_uid`.
+- O endpoint de sessão ativa é `GET /auth/me`.
 
 ---
 

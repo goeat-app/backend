@@ -4,5 +4,6 @@ export interface RegisterUser {
   email: string;
   phone: string;
   password: string;
+  firebaseUid?: string | null;
   createdAt?: string;
 }
