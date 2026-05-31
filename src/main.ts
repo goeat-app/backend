@@ -1,5 +1,6 @@
 import 'tsconfig-paths/register';
 import { createNestApplication } from './nest-application.factory';
+import { ensureFirebaseAdminInitialized } from './lib/infra/firebase/firebase-admin.bootstrap';
 
 function registerUnhandledErrorLogging() {
   process.on('unhandledRejection', (reason) => {
@@ -14,6 +15,7 @@ function registerUnhandledErrorLogging() {
 
 async function bootstrap() {
   registerUnhandledErrorLogging();
+  ensureFirebaseAdminInitialized();
 
   const app = await createNestApplication();
 
