@@ -8,13 +8,11 @@ import { randomBytes } from 'crypto';
 import { InjectModel } from '@nestjs/sequelize';
 import { DecodedIdToken } from 'firebase-admin/auth';
 import { UniqueConstraintError } from 'sequelize';
-import { IHashService } from '../../domain/interfaces/hash.service.interface';
 import { UserModel } from '../../infra/database/user.model';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly hashService: IHashService,
     @InjectModel(UserModel)
     private readonly userModel: typeof UserModel,
   ) {}
@@ -86,8 +84,6 @@ export class AuthService {
     normalizedEmail: string,
     emailAlreadyExists: boolean,
   ): Promise<UserModel> {
-    const password = randomBytes(32).toString('hex');
-    const hashedPassword = await this.hashService.hash(password);
     const emailToPersist = emailAlreadyExists
       ? this.buildDerivedEmail(normalizedEmail, decodedToken.uid)
       : normalizedEmail;
@@ -100,7 +96,7 @@ export class AuthService {
           typeof decodedToken.phone_number === 'string'
             ? decodedToken.phone_number.trim()
             : '',
-        password: hashedPassword,
+        password: randomBytes(32).toString('hex'),
         firebaseUid: decodedToken.uid,
       });
     } catch (error) {
