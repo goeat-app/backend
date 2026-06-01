@@ -34,7 +34,7 @@
     "check": "npm run typecheck && npm run check:circular",
     "firebase:serve": "firebase emulators:start --only functions",
     "firebase:deploy": "firebase deploy --only functions",
-    "emulators:auth": "firebase emulators:start --only auth",
+    "emulators:auth": "firebase emulators:start --only auth --project=demo-goeat",
     "start:emulator": "FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 nest start --watch"
   },
   "dependencies": {
