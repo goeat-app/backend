@@ -10,7 +10,6 @@ import { LoginUseCase } from './app/use-cases/login.use-case';
 import { IHashService } from './domain/interfaces/hash.service.interface';
 import { BcryptHashService } from './infra/providers/bycript-hash.service';
 import { AuthService } from './app/services/auth.service';
-import { jwtConstants } from './infra/jwt/constants';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './infra/jwt/jwt-auth.guard';
 import { RefreshTokenUseCase } from './app/use-cases/refresh-token.use-case';

@@ -4,9 +4,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ProfileMappingFoodTypeModel } from '../database/profile-mapping-food-type.model';
 
 @Injectable()
-export class SequelizeFoodTypeProfileMappingRepository
-  implements IProfileMappingFoodTypeRepository
-{
+export class SequelizeFoodTypeProfileMappingRepository implements IProfileMappingFoodTypeRepository {
   constructor(
     @InjectModel(ProfileMappingFoodTypeModel)
     private readonly profileMappingFoodTypeModel: typeof ProfileMappingFoodTypeModel,
@@ -20,7 +18,7 @@ export class SequelizeFoodTypeProfileMappingRepository
         where: { profileMappingId },
       });
       return foodTypesMapping;
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Mapping food types not found.');
     }
   }

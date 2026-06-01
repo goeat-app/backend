@@ -13,4 +13,6 @@ export class RecommendationApiResponseDto extends createZodDto(
   RecommendationApiResponseSchema,
 ) {}
 
-export type RecommendationApiResponse = z.infer<typeof RecommendationApiResponseSchema>;
+export type RecommendationApiResponse = z.infer<
+  typeof RecommendationApiResponseSchema
+>;

@@ -1,10 +1,14 @@
 {
   "name": "go-eat",
   "version": "0.0.1",
+  "main": "dist/firebase.js",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "22"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -18,10 +22,18 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:integration": "jest --config ./test/jest-integration.json --runInBand",
     "db:migrate": "sequelize-cli db:migrate",
     "db:migrate:undo": "sequelize-cli db:migrate:undo",
     "db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
-    "db:migration:create": "sequelize-cli migration:generate --name"
+    "db:migration:create": "sequelize-cli migration:generate --name",
+    "db:seed": "sequelize-cli db:seed:all",
+    "db:seed:undo": "sequelize-cli db:seed:undo:all",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "check:circular": "madge --extensions ts --ts-config tsconfig.json --circular src",
+    "check": "npm run typecheck && npm run check:circular",
+    "firebase:serve": "firebase emulators:start --only functions",
+    "firebase:deploy": "firebase deploy --only functions"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -31,11 +43,15 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/sequelize": "^11.0.0",
+    "@supabase/supabase-js": "^2.105.4",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv": "^17.2.3",
+    "firebase-admin": "^13.10.0",
+    "firebase-functions": "^7.2.5",
+    "madge": "^8.0.0",
     "mysql2": "^3.16.2",
     "nestjs-zod": "^5.0.1",
     "passport": "^0.7.0",
@@ -56,6 +72,7 @@
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
+    "@types/multer": "^2.1.0",
     "@types/node": "^22.18.8",
     "@types/sequelize": "^4.28.20",
     "@types/supertest": "^6.0.2",

@@ -1,4 +1,3 @@
-
 import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
 import {
@@ -21,26 +20,25 @@ export class RestaurantsModel extends Model {
   @Column({ type: DataType.UUID })
   declare id: string;
 
-    @Column({
+  @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare name: string;
-
 
   @ForeignKey(() => PlaceTypeModel)
   @Column(DataType.UUID)
   declare place_type_id: string;
 
   @BelongsTo(() => PlaceTypeModel, 'place_type_id')
-  placeType: PlaceTypeModel;
+  placeType!: PlaceTypeModel;
 
   @ForeignKey(() => FoodTypeModel)
   @Column(DataType.UUID)
   declare food_type_id: string;
 
   @BelongsTo(() => FoodTypeModel, 'food_type_id')
-  foodType: FoodTypeModel;
+  foodType!: FoodTypeModel;
 
   @Column({
     type: DataType.DECIMAL,
@@ -65,7 +63,7 @@ export class RestaurantsModel extends Model {
     allowNull: false,
   })
   declare address: string;
- 
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -78,7 +76,7 @@ export class RestaurantsModel extends Model {
   })
   declare state: string;
 
-@Column({
+  @Column({
     type: DataType.STRING,
     allowNull: false,
   })
@@ -95,13 +93,10 @@ export class RestaurantsModel extends Model {
     allowNull: false,
   })
   declare longitude: number;
-  
+
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
   })
   declare is_active: boolean;
-
-  
-
 }

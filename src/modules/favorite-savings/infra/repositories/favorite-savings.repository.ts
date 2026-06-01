@@ -5,9 +5,7 @@ import { FavoriteSavingsEntity } from '../../domain/entities/favorite-savings.en
 import { FavoriteSavingsModel } from '../database/favorite-savings.model';
 
 @Injectable()
-export class SequelizeFavoriteSavingsRepository
-  implements IFavoriteSavingsRepository
-{
+export class SequelizeFavoriteSavingsRepository implements IFavoriteSavingsRepository {
   constructor(
     @InjectModel(FavoriteSavingsModel)
     private readonly favoriteSavingsModel: typeof FavoriteSavingsModel,
@@ -62,7 +60,9 @@ export class SequelizeFavoriteSavingsRepository
     }
 
     favoriteSavings.favorite_restaurant_ids =
-      favoriteSavings.favorite_restaurant_ids.filter((id) => id !== restaurantId);
+      favoriteSavings.favorite_restaurant_ids.filter(
+        (id) => id !== restaurantId,
+      );
     await favoriteSavings.save();
 
     return {
