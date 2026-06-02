@@ -1,4 +1,4 @@
 export class FavoriteSavingsEntity {
-  userId: string;
-  restaurantIds: string[];
+  userId!: string;
+  restaurantIds!: string[];
 }

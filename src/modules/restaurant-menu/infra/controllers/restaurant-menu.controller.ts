@@ -1,15 +1,20 @@
 import {
   Body,
+  BadRequestException,
   Controller,
   Delete,
+  HttpCode,
   Get,
   Param,
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '@/modules/auth/infra/jwt/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.guard';
 import { RestaurantRole } from '@/modules/restaurant-access/domain/enums/restaurant-role.enum';
 import { RestaurantRoles } from '@/modules/restaurant-access/infra/auth/restaurant-roles.decorator';
 import { RestaurantRolesGuard } from '@/modules/restaurant-access/infra/auth/restaurant-roles.guard';
@@ -25,7 +30,15 @@ import { UpdateMenuCategoryDto } from '../../dtos/update-menu-category.dto';
 import { UpdateMenuItemDto } from '../../dtos/update-menu-item.dto';
 import { UpdateMenuItemAvailabilityDto } from '../../dtos/update-menu-item-availability.dto';
 
-@UseGuards(JwtAuthGuard, RestaurantRolesGuard)
+const MAX_FILE_SIZE = 30 * 1024 * 1024;
+const ALLOWED_MIMETYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+];
+
+@UseGuards(FirebaseAuthGuard, RestaurantRolesGuard)
 @Controller('restaurants/:restaurantId/menu')
 export class RestaurantMenuController {
   constructor(private readonly restaurantMenuService: RestaurantMenuService) {}
@@ -206,6 +219,52 @@ export class RestaurantMenuController {
       restaurantId,
       itemId,
       body,
+    });
+  }
+
+  @Post('items/:itemId/image')
+  @HttpCode(201)
+  @RestaurantRoles(RestaurantRole.OWNER, RestaurantRole.MANAGER)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadItemImage(
+    @Param('restaurantId') restaurantId: string,
+    @Param('itemId') itemId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('File is required');
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new BadRequestException(
+        'File size exceeds maximum allowed size of 30MB',
+      );
+    }
+
+    if (!ALLOWED_MIMETYPES.includes(file.mimetype)) {
+      throw new BadRequestException(
+        `Invalid file type. Allowed types: ${ALLOWED_MIMETYPES.join(', ')}`,
+      );
+    }
+
+    return this.restaurantMenuService.uploadItemImage({
+      restaurantId,
+      itemId,
+      buffer: file.buffer,
+      mimetype: file.mimetype,
+    });
+  }
+
+  @Delete('items/:itemId/image')
+  @HttpCode(204)
+  @RestaurantRoles(RestaurantRole.OWNER, RestaurantRole.MANAGER)
+  async deleteItemImage(
+    @Param('restaurantId') restaurantId: string,
+    @Param('itemId') itemId: string,
+  ) {
+    await this.restaurantMenuService.deleteItemImage({
+      restaurantId,
+      itemId,
     });
   }
 }

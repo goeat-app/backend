@@ -48,6 +48,7 @@ export class SupabaseStorageService extends IStorageService {
     });
 
     if (error) {
+      console.error('Error uploading file to Supabase Storage:', error);
       throw new InternalServerErrorException(
         `Failed to upload file to storage: ${error.message}`,
       );

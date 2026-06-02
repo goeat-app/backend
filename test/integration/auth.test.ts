@@ -1,76 +1,43 @@
 import { api } from '../helpers/http';
 import { createTestIdentity } from '../helpers/identity';
-import { registerAndLogin, bearerHeader } from '../helpers/auth';
+import {
+  bearerHeader,
+  createFirebaseToken,
+  registerAndLogin,
+} from '../helpers/auth';
+import { Client } from 'pg';
+
+function createClient(): Client {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error('DATABASE_URL is required for auth integration tests.');
+  }
+
+  return new Client({ connectionString, ssl: false });
+}
+
+async function createLegacyUser(email: string): Promise<{ id: string }> {
+  const client = createClient();
+  await client.connect();
+
+  try {
+    const result = await client.query(
+      `
+      INSERT INTO "user" (name, email, password, phone, "createdAt", "updatedAt")
+      VALUES ($1, $2, $3, $4, now(), now())
+      RETURNING id
+      `,
+      ['Legacy User', email, 'hashed-password', ''],
+    );
+
+    return { id: String((result.rows[0] as { id: unknown }).id) };
+  } finally {
+    await client.end();
+  }
+}
 
 describe('Auth endpoints', () => {
-  describe('POST /auth/register', () => {
-    it('creates a new user and returns access + refresh tokens', async () => {
-      const identity = createTestIdentity();
-
-      const res = await api.post('/auth/register').send(identity);
-
-      const bodyResponse = res.body as {
-        accessToken: string;
-        refreshToken: string;
-      };
-
-      expect(res.status).toBe(201);
-      expect(typeof bodyResponse.accessToken).toBe('string');
-      expect(bodyResponse.accessToken.length).toBeGreaterThan(0);
-      expect(typeof bodyResponse.refreshToken).toBe('string');
-      expect(bodyResponse.refreshToken.length).toBeGreaterThan(0);
-    });
-
-    it('returns 409 when registering with an already-used email', async () => {
-      const identity = createTestIdentity();
-
-      await api.post('/auth/register').send(identity).expect(201);
-
-      const res = await api.post('/auth/register').send(identity);
-      expect(res.status).toBe(409);
-    });
-  });
-
-  describe('POST /auth/login', () => {
-    it('returns tokens for valid credentials', async () => {
-      const identity = createTestIdentity();
-      await api.post('/auth/register').send(identity).expect(201);
-
-      const res = await api
-        .post('/auth/login')
-        .send({ email: identity.email, password: identity.password });
-
-      const bodyResponse = res.body as {
-        accessToken: string;
-        refreshToken: string;
-      };
-
-      expect(res.status).toBe(200);
-      expect(typeof bodyResponse.accessToken).toBe('string');
-      expect(typeof bodyResponse.refreshToken).toBe('string');
-    });
-
-    it('returns 401 for wrong password', async () => {
-      const identity = createTestIdentity();
-      await api.post('/auth/register').send(identity).expect(201);
-
-      const res = await api
-        .post('/auth/login')
-        .send({ email: identity.email, password: 'wrong-password' });
-
-      expect(res.status).toBe(401);
-    });
-
-    it('returns 401 for unknown email', async () => {
-      const res = await api.post('/auth/login').send({
-        email: `nonexistent.${Date.now()}@integration.test`,
-        password: 'whatever',
-      });
-
-      expect(res.status).toBe(401);
-    });
-  });
-
   describe('GET /auth/me', () => {
     let accessToken: string;
     let userId: string;
@@ -109,53 +76,88 @@ describe('Auth endpoints', () => {
         .set('Authorization', 'Bearer invalid.token.here')
         .expect(401);
     });
-  });
 
-  describe('POST /auth/refresh', () => {
-    it('returns new access + refresh tokens given a valid refresh token', async () => {
-      const ctx = await registerAndLogin();
-
+    it('returns 401 with Token expired for expired Firebase token', async () => {
       const res = await api
-        .post('/auth/refresh')
-        .send({ refreshToken: ctx.refreshToken });
-
-      const bodyResponse = res.body as {
-        accessToken: string;
-        refreshToken: string;
-      };
-
-      expect(res.status).toBe(200);
-      expect(typeof bodyResponse.accessToken).toBe('string');
-      expect(typeof bodyResponse.refreshToken).toBe('string');
-    });
-
-    it('returns 401 for an invalid refresh token', async () => {
-      const res = await api
-        .post('/auth/refresh')
-        .send({ refreshToken: 'not.a.valid.jwt' });
+        .get('/auth/me')
+        .set('Authorization', 'Bearer expired.token');
 
       expect(res.status).toBe(401);
+      expect(res.body).toEqual({ message: 'Token expired' });
+    });
+
+    it('returns 503 when Firebase verification is unavailable', async () => {
+      const res = await api
+        .get('/auth/me')
+        .set('Authorization', 'Bearer service.unavailable');
+
+      expect(res.status).toBe(503);
+      expect(res.body).toEqual({ message: 'Auth service unavailable' });
     });
   });
 
-  describe('POST /auth/logout', () => {
-    it('returns success message and clears the session', async () => {
-      const ctx = await registerAndLogin();
+  describe('first sign-in provisioning and linking', () => {
+    it('returns 403 when Firebase token has no email claim', async () => {
+      const accessToken = createFirebaseToken({
+        uid: `firebase-no-email-${Date.now()}`,
+      });
 
-      const res = await api
-        .post('/auth/logout')
-        .set(bearerHeader(ctx.accessToken))
-        .expect(200);
+      const res = await api.get('/auth/me').set(bearerHeader(accessToken));
 
-      const bodyResponse = res.body as {
-        message: string;
-      };
-
-      expect(bodyResponse.message).toBe('Logged out successfully');
+      expect(res.status).toBe(403);
+      expect((res.body as { message: string }).message).toBe(
+        'Email-based identity required.',
+      );
     });
 
-    it('returns 401 without a token', async () => {
-      await api.post('/auth/logout').expect(401);
+    it('creates a user on first login and reuses the same user on repeat login', async () => {
+      const identity = createTestIdentity();
+      const uid = `firebase-provision-${Date.now()}`;
+      const accessToken = createFirebaseToken({
+        uid,
+        email: identity.email,
+        email_verified: true,
+        name: identity.name,
+      });
+
+      const firstRes = await api
+        .get('/auth/me')
+        .set(bearerHeader(accessToken))
+        .expect(200);
+
+      const secondRes = await api
+        .get('/auth/me')
+        .set(bearerHeader(accessToken))
+        .expect(200);
+
+      const responseBody = firstRes.body as { id: string; email: string };
+
+      expect(responseBody.id).toBe((secondRes.body as { id: string }).id);
+      expect(responseBody.email).toBe(identity.email.toLowerCase());
+    });
+
+    it('links existing user by email when email is verified', async () => {
+      const identity = createTestIdentity();
+      const existing = await createLegacyUser(identity.email.toLowerCase());
+      const accessToken = createFirebaseToken({
+        uid: `firebase-link-${Date.now()}`,
+        email: identity.email,
+        email_verified: true,
+      });
+
+      const res = await api
+        .get('/auth/me')
+        .set(bearerHeader(accessToken))
+        .expect(200);
+
+      expect((res.body as { id: string }).id).toBe(existing.id);
+
+      const repeated = await api
+        .get('/auth/me')
+        .set(bearerHeader(accessToken))
+        .expect(200);
+
+      expect((repeated.body as { id: string }).id).toBe(existing.id);
     });
   });
 });

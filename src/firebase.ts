@@ -1,16 +1,13 @@
 import 'tsconfig-paths/register';
-import { getAppCheck } from 'firebase-admin/app-check';
-import { getApps, initializeApp } from 'firebase-admin/app';
 import { onRequest } from 'firebase-functions/v2/https';
 import { createNestApplication } from './nest-application.factory';
+import { ensureFirebaseAdminInitialized } from './lib/infra/firebase/firebase-admin.bootstrap';
 
 type ExpressHandler = (req: unknown, res: unknown) => void;
 
 let cachedServer: ExpressHandler | null = null;
 
-if (!getApps().length) {
-  initializeApp();
-}
+ensureFirebaseAdminInitialized();
 
 async function getServer(): Promise<ExpressHandler> {
   if (cachedServer) {

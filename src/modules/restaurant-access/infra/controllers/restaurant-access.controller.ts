@@ -9,7 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '@/modules/auth/infra/jwt/jwt-auth.guard';
+import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.guard';
 import { RestaurantAccessService } from '../../app/services/restaurant-access.service';
 import { RestaurantRole } from '../../domain/enums/restaurant-role.enum';
 import { RestaurantRoles } from '../auth/restaurant-roles.decorator';
@@ -23,7 +23,7 @@ type RequestWithUser = Request & {
   };
 };
 
-@UseGuards(JwtAuthGuard, RestaurantRolesGuard)
+@UseGuards(FirebaseAuthGuard, RestaurantRolesGuard)
 @Controller('restaurants/:restaurantId/access')
 export class RestaurantAccessController {
   constructor(

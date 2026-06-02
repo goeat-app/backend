@@ -5,29 +5,35 @@ export interface AuthContext {
   userId: string;
   email: string;
   accessToken: string;
-  refreshToken: string;
   identity: TestIdentity;
 }
 
+type FirebaseTokenClaims = {
+  uid: string;
+  email?: string;
+  email_verified?: boolean;
+  name?: string;
+  phone_number?: string;
+};
+
+export function createFirebaseToken(claims: FirebaseTokenClaims): string {
+  const payload = Buffer.from(JSON.stringify(claims)).toString('base64url');
+  return `test-firebase.${payload}`;
+}
+
 /**
- * Registers a unique user via the API, then fetches their profile to
- * resolve the user ID. Returns the full auth context for downstream tests.
+ * Uses a Firebase-like token and calls /auth/me once so the backend
+ * resolves/provisions the internal user row before downstream tests.
  */
 export async function registerAndLogin(): Promise<AuthContext> {
   const identity = createTestIdentity();
-
-  const registerRes = await api.post('/auth/register').send(identity);
-
-  if (registerRes.status !== 201) {
-    throw new Error(
-      `Registration failed (${registerRes.status}): ${JSON.stringify(registerRes.body)}`,
-    );
-  }
-
-  const { accessToken, refreshToken } = registerRes.body as {
-    accessToken: string;
-    refreshToken: string;
-  };
+  const accessToken = createFirebaseToken({
+    uid: `firebase-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    email: identity.email,
+    email_verified: true,
+    name: identity.name,
+    phone_number: identity.phone,
+  });
 
   const meRes = await api
     .get('/auth/me')
@@ -43,7 +49,6 @@ export async function registerAndLogin(): Promise<AuthContext> {
     userId: (meRes.body as { id: string }).id,
     email: identity.email,
     accessToken,
-    refreshToken,
     identity,
   };
 }

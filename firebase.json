@@ -10,5 +10,15 @@
       "node_modules"
     ],
     "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    },
+    "singleProjectMode": true
   }
 }

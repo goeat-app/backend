@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '@/modules/auth/infra/jwt/jwt-auth.guard';
+import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.guard';
 import { getPriceLevel } from '@/lib/helpers/get-price-level.helper';
 import { RestaurantAccessService } from '../../app/services/restaurant-access.service';
 import { RestaurantWithRoleResponseDto } from '../../dtos/restaurant-with-role-response.dto';
@@ -16,7 +16,7 @@ type RequestWithUser = Request & {
   };
 };
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(FirebaseAuthGuard)
 @Controller('restaurants')
 export class MyRestaurantsController {
   constructor(
