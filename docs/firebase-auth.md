@@ -55,6 +55,7 @@ redireciona todas as chamadas de Auth para o emulador.
 | ----------------------------- | --------------------- | -------------------------------------------- |
 | `FIREBASE_AUTH_EMULATOR_HOST` | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
 | `FIREBASE_PROJECT_ID`         | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
+| `FIREBASE_WEB_API_KEY`        | qualquer valor        | Usada por `/auth/login` e `/auth/refresh`    |
 
 Você também pode exportá-las no shell ou adicioná-las a um arquivo `.env.local`
 (não versionado) em vez de usar o script `start:emulator`.
@@ -84,6 +85,8 @@ firebase emulators:start --only auth \
   vice-versa. Nunca misture tokens do emulador com os de produção.
 - O project ID `demo-goeat` é um placeholder local. Ele não precisa corresponder
   a nenhum projeto Firebase real ao usar o emulador.
+- Os endpoints backend `POST /auth/login` e `POST /auth/refresh` usam a API REST
+  do Firebase Auth e exigem `FIREBASE_WEB_API_KEY` (em emulador, qualquer string).
 
 ---
 

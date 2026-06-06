@@ -1,21 +1,27 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { FirebaseAuthClientService } from '../services/firebase-auth-client.service';
 import { RegisterUserDto } from '../../dtos/register-user.dto';
 import { IUserRepository } from '../../domain/interfaces/user.repository.interface';
 import { getAuth } from 'firebase-admin/auth';
 
 export interface RegisterResult {
-  customToken: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 @Injectable()
 export class CreateUserUseCase {
   private readonly logger = new Logger(CreateUserUseCase.name);
 
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly firebaseAuthClientService: FirebaseAuthClientService,
+  ) {}
 
   async execute(data: RegisterUserDto): Promise<RegisterResult> {
     const { name, email, phone, password } = data;
     const normalizedEmail = email.toLowerCase().trim();
+    const phoneNumber = this.addCountryCodeToPhone(phone);
 
     const existingUser = await this.userRepository.findByEmail(normalizedEmail);
     if (existingUser) {
@@ -30,14 +36,14 @@ export class CreateUserUseCase {
         email: normalizedEmail,
         password,
         displayName: name,
-        phoneNumber: phone,
+        phoneNumber: phoneNumber,
       });
 
       try {
         await this.userRepository.create({
           name,
           email: normalizedEmail,
-          phone,
+          phone: phoneNumber,
           // The password is not stored in our database since Firebase handles authentication.
           password: '',
           firebaseUid: firebaseUser.uid,
@@ -58,8 +64,10 @@ export class CreateUserUseCase {
         );
       }
 
-      const customToken = await getAuth().createCustomToken(firebaseUser.uid);
-      return { customToken };
+      return this.firebaseAuthClientService.signInWithPassword(
+        normalizedEmail,
+        password,
+      );
     } catch (firebaseError) {
       this.logger.error(
         `Firebase user creation failed for ${normalizedEmail}`,
@@ -71,5 +79,12 @@ export class CreateUserUseCase {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  private addCountryCodeToPhone(phone: string): string {
+    if (phone.startsWith('+')) {
+      return phone; // Already has country code
+    }
+    return `+55${phone}`; // Default to Brazil country code
   }
 }

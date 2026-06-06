@@ -21,7 +21,6 @@ export class AuthController {
     private readonly createUserUseCase: CreateUserUseCase,
   ) {}
 
-  @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() body: RegisterUserDto) {
     return this.createUserUseCase.execute(body);
