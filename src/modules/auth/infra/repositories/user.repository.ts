@@ -6,6 +6,7 @@ import {
   CreateUserData,
 } from '../../domain/interfaces/user.repository.interface';
 import { RegisterUser } from '../../domain/entities/register-user.entity';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class SequelizeUserRepository implements IUserRepository {
@@ -26,7 +27,12 @@ export class SequelizeUserRepository implements IUserRepository {
 
   async findByEmail(email: string): Promise<RegisterUser | null> {
     const user = await this.userModel.findOne({
-      where: { email },
+      where: {
+        email: {
+          // case insensitive search for email
+          [Op.iLike]: email,
+        },
+      },
     });
 
     return user ?? null;
