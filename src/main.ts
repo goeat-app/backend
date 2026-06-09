@@ -1,16 +1,32 @@
 import 'tsconfig-paths/register';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { createNestApplication } from './nest-application.factory';
+import { ensureFirebaseAdminInitialized } from './lib/infra/firebase/firebase-admin.bootstrap';
 import { ZodValidationPipe } from 'nestjs-zod';
 
+function registerUnhandledErrorLogging() {
+  process.on('unhandledRejection', (reason) => {
+    console.error('[UnhandledRejection]', reason);
+  });
+
+  process.on('uncaughtException', (error) => {
+    console.error('[UncaughtException]', error);
+    process.exit(1);
+  });
+}
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  registerUnhandledErrorLogging();
+  ensureFirebaseAdminInitialized();
+
+  const app = await createNestApplication();
 
   app.enableCors();
   app.useGlobalPipes(new ZodValidationPipe());
   app.enableShutdownHooks();
 
-  await app.listen(3000);
+  const port = Number(process.env.PORT) || 3000;
+  await app.listen(port);
+  console.log(`Server is running on port ${port}`);
 }
 
 bootstrap().catch((error) => {

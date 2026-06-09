@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "prod": "goeat-c0750",
+    "default": "demo-goeat"
+  },
+  "targets": {},
+  "etags": {}
+}

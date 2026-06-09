@@ -5,9 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ProfileMappingModel } from '../database/profile-mapping-model';
 
 @Injectable()
-export class SequelizeProfileMappingRepository
-  implements IProfileMappingRepository
-{
+export class SequelizeProfileMappingRepository implements IProfileMappingRepository {
   constructor(
     @InjectModel(ProfileMappingModel)
     private readonly profileMappingModel: typeof ProfileMappingModel,
@@ -31,7 +29,7 @@ export class SequelizeProfileMappingRepository
           data.placeTypes.map((id) => id),
         ),
       ]);
-    } catch (error) {
+    } catch (_error) {
       throw new BadRequestException('Failed to create profile mapping');
     }
   }

@@ -5,10 +5,6 @@ import { FoodTypeController } from './infra/controllers/food-type.controller';
 import { FoodTypeUseCase } from './app/use-cases/food-type.use-case';
 import { IFoodTypeRepository } from './domain/interfaces/food-type.interface';
 import { SequelizeFoodTypeRepository } from './infra/repositories/food-type.repository';
-import { JwtAuthGuard } from '../auth/infra/jwt/jwt-auth.guard';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/infra/jwt/constants';
-import { PassportModule } from '@nestjs/passport';
 import { PlaceTypeModel } from './infra/database/place-type.model';
 import { PlaceTypeController } from './infra/controllers/place-type.controller';
 import { PlaceTypeUseCase } from './app/use-cases/place-type.use-case';
@@ -31,11 +27,6 @@ import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-fo
       ProfileMappingPlaceTypeModel,
       ProfileMappingFoodTypeModel,
     ]),
-    PassportModule,
-    JwtModule.register({
-      secret: jwtConstants.secret || 'default-secret-key',
-      signOptions: { expiresIn: '3600s' },
-    }),
   ],
   controllers: [
     FoodTypeController,
@@ -46,7 +37,6 @@ import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-fo
     FoodTypeUseCase,
     PlaceTypeUseCase,
     ProfileMappingUseCase,
-    JwtAuthGuard,
     {
       provide: IFoodTypeRepository,
       useClass: SequelizeFoodTypeRepository,
@@ -64,7 +54,6 @@ import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-fo
     SequelizeModule,
     IFoodTypeRepository,
     FoodTypeUseCase,
-    JwtAuthGuard,
     IPlaceTypeRepository,
     PlaceTypeUseCase,
     IProfileMappingRepository,

@@ -2,6 +2,7 @@
 /dist
 /node_modules
 /build
+/uploads
 
 # Logs
 logs
@@ -37,10 +38,14 @@ lerna-debug.log*
 
 # dotenv environment variable files
 .env
+.env.prod
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+
+# Local Firebase Admin credentials
+firebase-service-account.json
 
 # temp directory
 .temp

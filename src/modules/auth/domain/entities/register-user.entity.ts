@@ -6,5 +6,6 @@ export interface RegisterUser {
   password: string;
   latitude: number;
   longitude: number;
+  firebaseUid?: string | null;
   createdAt?: string;
 }

@@ -1,6 +1,6 @@
 # 🍽️ GoEat - Backend
 
-Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de recomendação de restaurantes. Este projeto foi desenvolvido utilizando **NestJS** e utiliza o **Supabase (PostgreSQL)** como banco de dados principal, com o **Sequelize** como ORM.
+Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de recomendação de restaurantes. Este projeto foi desenvolvido utilizando **NestJS** e utiliza **PostgreSQL** como banco de dados principal, com o **Sequelize** como ORM.
 
 ---
 
@@ -8,9 +8,8 @@ Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de rec
 
 - **[NestJS](https://nestjs.com/)** - Framework Node.js progressivo para aplicações escaláveis.
 - **[Sequelize](https://sequelize.org/)** - ORM para Node.js (PostgreSQL).
-- **[Supabase](https://supabase.com/)** - Backend as a Service (PostgreSQL).
+- **[Firebase Auth](https://firebase.google.com/docs/auth)** - Verificação de ID token para autenticação de rotas protegidas.
 - **[Zod](https://zod.dev/)** - Validação de esquemas e tipos.
-- **[JWT](https://jwt.io/)** - Autenticação segura via JSON Web Tokens.
 - **TypeScript** - Superconjunto de JavaScript com tipagem estática.
 
 ---
@@ -18,9 +17,17 @@ Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de rec
 ## 📋 Pré-requisitos
 
 Antes de começar, você precisará ter instalado em sua máquina:
+
 - **Node.js** (versão 18 ou superior recomendada)
 - **Yarn**
-- Uma conta no **Supabase** (ou um banco de dados PostgreSQL compatível)
+- Um banco de dados PostgreSQL compatível
+
+## 🔐 Fluxo de Autenticação
+
+- As rotas protegidas aceitam apenas `Authorization: Bearer <firebase-id-token>`.
+- O backend valida o token direto com Firebase Admin SDK.
+- Em primeiro acesso autenticado, o backend provisiona/vincula o usuário interno usando `firebase_uid`.
+- O endpoint de sessão ativa é `GET /auth/me`.
 
 ---
 
@@ -29,21 +36,26 @@ Antes de começar, você precisará ter instalado em sua máquina:
 Siga os passos abaixo para configurar o ambiente de desenvolvimento local:
 
 ### 1. Clonar o Repositório
+
 ```bash
 git clone https://github.com/goeat-app/backend.git
 cd backend
 ```
 
 ### 2. Instalar Dependências
+
 ```bash
 yarn install
 ```
 
 ### 3. Configurar Variáveis de Ambiente
+
 Crie um arquivo `.env` na raiz do projeto e peça as variáveis de ambiente para o time.
 
 ### 4. Executar Migrations do Banco de Dados
+
 Para criar as tabelas necessárias no seu banco de dados:
+
 ```bash
 yarn db:migrate
 ```
@@ -53,16 +65,57 @@ yarn db:migrate
 ## 🏃 Executando o Projeto
 
 ### Modo de Desenvolvimento (com Hot-Reload)
+
 ```bash
 yarn start
 ```
+
 O servidor iniciará em [http://localhost:3000](http://localhost:3000).
 
 ### Modo de Produção
+
 ```bash
 yarn build
 yarn start:prod
 ```
+
+## 🔥 Deploy para Firebase Functions
+
+Este repositório já está preparado para deploy como Cloud Functions (2nd gen) com uma função HTTP chamada `api`.
+
+Documentação detalhada: [docs/firebase-deploy.md](docs/firebase-deploy.md)
+
+### 1. Instalar Firebase CLI
+
+```bash
+npm install -g firebase-tools
+```
+
+### 2. Fazer login e conectar o projeto Firebase
+
+```bash
+firebase login
+firebase use --add
+```
+
+### 3. Build e deploy
+
+```bash
+yarn firebase:deploy
+```
+
+### 4. Rodar localmente com Emulator
+
+```bash
+yarn firebase:serve
+```
+
+---
+
+## 📚 Documentação
+
+- Guia de deploy no Firebase: [docs/firebase-deploy.md](docs/firebase-deploy.md)
+- Migração para Firebase Auth: [docs/firebase-auth-migration.md](docs/firebase-auth-migration.md)
 
 ---
 
@@ -81,6 +134,9 @@ Para detalhes completos sobre a estrutura das tabelas, consulte o [MIGRATIONS.md
 ## 📁 Estrutura do Projeto
 
 ```text
+docs/
+└── firebase-deploy.md # Guia completo de deploy para Firebase
+
 src/
 ├── lib/               # Infraestrutura, banco de dados (migrations, config)
 ├── modules/           # Módulos de negócio (auth, ia, profile-mapping)

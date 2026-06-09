@@ -9,6 +9,12 @@ import { ProfileMappingPlaceTypeModel } from '@/modules/profile-mapping/infra/da
 import { ProfileMappingFoodTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-food-type.model';
 import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { ReviewModel } from '@/modules/recommendation/infra/database/review.model';
+import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/favorite-savings.model';
+import { RestaurantImageModel } from '@/modules/restaurant-images/infra/database/restaurant-image.model';
+import { RestaurantUserRoleModel } from '@/modules/restaurant-access/infra/database/restaurant-user-role.model';
+import { MenuCategoryModel } from '@/modules/restaurant-menu/infra/database/menu-category.model';
+import { MenuItemModel } from '@/modules/restaurant-menu/infra/database/menu-item.model';
+import { MenuItemSizeModel } from '@/modules/restaurant-menu/infra/database/menu-item-size.model';
 
 @Module({
   imports: [
@@ -58,6 +64,12 @@ import { ReviewModel } from '@/modules/recommendation/infra/database/review.mode
             ProfileMappingFoodTypeModel,
             RestaurantsModel,
             ReviewModel,
+            FavoriteSavingsModel,
+            RestaurantImageModel,
+            RestaurantUserRoleModel,
+            MenuCategoryModel,
+            MenuItemModel,
+            MenuItemSizeModel,
           ],
         };
       },

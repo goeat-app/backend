@@ -53,4 +53,12 @@ export class UserModel extends Model {
     allowNull: true,
   })
   declare longitude: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    unique: true,
+    field: 'firebase_uid',
+  })
+  declare firebaseUid: string | null;
 }

@@ -1,79 +1,40 @@
 import {
-  Controller,
-  Post,
   Body,
+  Controller,
+  Get,
   HttpCode,
-  UseGuards,
+  HttpStatus,
+  Post,
   Req,
   UnauthorizedException,
-  Get,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthService } from '../../app/services/auth.service';
 import { CreateUserUseCase } from '../../app/use-cases/register.use-case';
 import { RegisterUserDto } from '../../dtos/register-user.dto';
-import { LoginUserDto } from '../../dtos/login-user.dto';
-import { AuthService } from '../../app/services/auth.service';
-import { LoginResponse } from '../../domain/entities/login.entity';
-import { JwtAuthGuard } from '../jwt/jwt-auth.guard';
-import {
-  LogoutParam,
-  LogoutResponse,
-} from '../../domain/entities/logout.entity';
-import { RefreshTokenDto } from '../../dtos/refresh-token.dto';
-import { RefreshTokenResponse } from '../../domain/entities/refresh-token.entity';
+import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly createUserUseCase: CreateUserUseCase,
     private readonly authService: AuthService,
+    private readonly createUserUseCase: CreateUserUseCase,
   ) {}
 
   @Post('register')
-  @HttpCode(201)
-  async create(@Body() registerData: RegisterUserDto): Promise<LoginResponse> {
-    await this.createUserUseCase.execute(registerData);
-
-    return this.authService.login({
-      email: registerData.email,
-      password: registerData.password,
-    });
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() body: RegisterUserDto) {
+    return this.createUserUseCase.execute(body);
   }
 
-  @Post('login')
-  @HttpCode(200)
-  async login(@Body() loginData: LoginUserDto): Promise<LoginResponse> {
-    const token = await this.authService.login(loginData);
-
-    return token;
-  }
-
-  @Post('refresh')
-  @HttpCode(200)
-  async refresh(@Body() body: RefreshTokenDto): Promise<RefreshTokenResponse> {
-    const tokens = await this.authService.refresh(body);
-    return tokens;
-  }
-
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(FirebaseAuthGuard)
   @Get('me')
-  async getMe(@Req() req: Request & LogoutParam) {
+  async getMe(@Req() req: Request & { user?: { id?: string } }) {
     if (!req.user?.id) {
       throw new UnauthorizedException('User not authenticated');
     }
 
     const user = await this.authService.getUserById(req.user.id);
     return user;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  async logout(@Req() req: Request & LogoutParam): Promise<LogoutResponse> {
-    if (!req.user?.id) {
-      throw new UnauthorizedException('User not authenticated');
-    }
-
-    await this.authService.logout(req.user.id);
-
-    return { message: 'Logged out successfully' };
   }
 }
