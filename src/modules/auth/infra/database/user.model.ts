@@ -41,4 +41,16 @@ export class UserModel extends Model {
     allowNull: true,
   })
   declare phone: string;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: true,
+  })
+  declare latitude: number;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: true,
+  })
+  declare longitude: number;
 }

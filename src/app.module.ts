@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProfileMappingModule } from './modules/profile-mapping/profile-mapping.module';
-import { IaModule } from './modules/ia/ia.module';
 import { DatabaseModule } from './lib/infra/database/database.module';
+import { RecommendationModule } from './modules/recommendation/recommendation.module';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { DatabaseModule } from './lib/infra/database/database.module';
     DatabaseModule,
     AuthModule,
     ProfileMappingModule,
-    IaModule,
+    RecommendationModule,
   ],
 })
 export class AppModule {}

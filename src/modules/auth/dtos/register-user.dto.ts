@@ -6,6 +6,8 @@ const RegisterUserSchema = z.object({
   email: z.string(),
   password: z.string(),
   phone: z.string(),
+  latitude: z.number(),
+  longitude: z.number(),
 });
 
 export class RegisterUserDto extends createZodDto(RegisterUserSchema) {}

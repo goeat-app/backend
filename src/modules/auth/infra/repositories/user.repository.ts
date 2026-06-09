@@ -17,6 +17,8 @@ export class SequelizeUserRepository implements IUserRepository {
       email: data?.email,
       password: data?.password,
       phone: data?.phone,
+      latitude: data?.latitude,
+      longitude: data?.longitude,
     });
   }
 

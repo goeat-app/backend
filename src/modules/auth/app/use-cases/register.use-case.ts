@@ -27,6 +27,8 @@ export class CreateUserUseCase {
       email: email.toLowerCase(),
       phone,
       password: hashedPassword,
+      latitude: data.latitude,
+      longitude: data.longitude,
     });
   }
 }

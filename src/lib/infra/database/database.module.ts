@@ -7,9 +7,8 @@ import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-t
 import { ProfileMappingModel } from '@/modules/profile-mapping/infra/database/profile-mapping-model';
 import { ProfileMappingPlaceTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-place-type.model';
 import { ProfileMappingFoodTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-food-type.model';
-import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
-import { ReviewModel } from '@/modules/ia/infra/database/review.model';
-
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
+import { ReviewModel } from '@/modules/recommendation/infra/database/review.model';
 
 @Module({
   imports: [
@@ -21,7 +20,9 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
         const databaseUrl = config.get<string>('DATABASE_URL');
 
         if (!databaseUrl) {
-          throw new Error('DATABASE_URL is not defined in environment variables');
+          throw new Error(
+            'DATABASE_URL is not defined in environment variables',
+          );
         }
 
         const url = new URL(databaseUrl);
@@ -32,22 +33,22 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
           port: parseInt(url.port),
           username: url.username,
           password: url.password,
-          database: url.pathname.slice(1), // Remove leading '/'
+          database: url.pathname.slice(1),
           autoLoadModels: false,
           synchronize: false,
           logging: false,
           dialectOptions:
             config.get<string>('NODE_ENV') === 'production'
               ? {
-                ssl: {
-                  require: true,
-                  rejectUnauthorized: false,
-                },
-                family: 4,
-              }
+                  ssl: {
+                    require: true,
+                    rejectUnauthorized: false,
+                  },
+                  family: 4,
+                }
               : {
-                family: 4,
-              },
+                  family: 4,
+                },
           models: [
             UserModel,
             FoodTypeModel,
@@ -64,4 +65,4 @@ import { ReviewModel } from '@/modules/ia/infra/database/review.model';
   ],
   exports: [SequelizeModule],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
