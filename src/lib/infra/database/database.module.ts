@@ -7,8 +7,8 @@ import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-t
 import { ProfileMappingModel } from '@/modules/profile-mapping/infra/database/profile-mapping-model';
 import { ProfileMappingPlaceTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-place-type.model';
 import { ProfileMappingFoodTypeModel } from '@/modules/profile-mapping/infra/database/profile-mapping-food-type.model';
-import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
-import { ReviewModel } from '@/modules/ia/infra/database/review.model';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
+import { ReviewModel } from '@/modules/recommendation/infra/database/review.model';
 import { FavoriteSavingsModel } from '@/modules/favorite-savings/infra/database/favorite-savings.model';
 import { RestaurantImageModel } from '@/modules/restaurant-images/infra/database/restaurant-image.model';
 import { RestaurantUserRoleModel } from '@/modules/restaurant-access/infra/database/restaurant-user-role.model';
@@ -39,7 +39,7 @@ import { MenuItemSizeModel } from '@/modules/restaurant-menu/infra/database/menu
           port: parseInt(url.port),
           username: url.username,
           password: url.password,
-          database: url.pathname.slice(1), // Remove leading '/'
+          database: url.pathname.slice(1),
           autoLoadModels: false,
           synchronize: false,
           logging: false,

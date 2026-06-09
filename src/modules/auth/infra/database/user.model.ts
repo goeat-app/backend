@@ -43,6 +43,18 @@ export class UserModel extends Model {
   declare phone: string;
 
   @Column({
+    type: DataType.DECIMAL,
+    allowNull: true,
+  })
+  declare latitude: number;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: true,
+  })
+  declare longitude: number;
+
+  @Column({
     type: DataType.STRING,
     allowNull: true,
     unique: true,
