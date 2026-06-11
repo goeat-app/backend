@@ -68,6 +68,8 @@ export class CreateUserUseCase {
           password: '',
           firebaseUid: firebaseUid,
           phone: null,
+          latitude: null,
+          longitude: null,
         });
       } catch (dbError) {
         this.logger.error(

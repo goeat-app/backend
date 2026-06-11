@@ -6,6 +6,8 @@ export type CreateUserData = {
   password: string;
   phone: string | null;
   firebaseUid?: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export abstract class IUserRepository {

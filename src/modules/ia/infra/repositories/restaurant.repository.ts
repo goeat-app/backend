@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op, type IncludeOptions } from 'sequelize';
-import { RestaurantsModel } from '../database/restaurant.model';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
 import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import { RecommendationFilters } from '../controllers/ia.controller';

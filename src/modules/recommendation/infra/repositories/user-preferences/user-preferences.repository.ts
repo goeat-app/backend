@@ -27,13 +27,12 @@ export class UserPreferenceRepository implements IUserPreferenceRepository {
 
     if (!result) return null;
 
-    const plain = result.get({ plain: true });
-
     return new UserPreferenceEntity(
-      plain?.userId,
-      Number(plain.maxPrice),
-      Number(plain.minPrice),
-      plain.placeTypes?.map((type: { name: string }) => type.name) ?? [],
+      result?.userId,
+      Number(result.maxPrice),
+      Number(result.minPrice),
+      result.placeTypes?.map((type) => (type.get() as { name: string }).name) ??
+        [],
       null,
       null,
     );

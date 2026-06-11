@@ -1,4 +1,4 @@
-import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { UserModel } from '@/modules/auth/infra/database/user.model';
 import {
   Table,
