@@ -11,6 +11,7 @@ import {
 import { UpdateUserDto } from '../../dtos/update-user.dto';
 import { UserProfileService } from '../../app/services/user-profile.service';
 import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
+import { UserModel } from '../database/user.model';
 
 @Controller('profile')
 export class ProfileController {
@@ -21,11 +22,11 @@ export class ProfileController {
   @Put()
   async updateProfile(
     @Body() body: UpdateUserDto,
-    @Req() req: Request & { user: { id: string } },
+    @Req() req: Request & { user: UserModel },
   ) {
     try {
       await this.userProfileService.updateUser({
-        firebaseUid: req.user.id,
+        user: req.user,
         name: body.name,
         phone: body.phone,
       });

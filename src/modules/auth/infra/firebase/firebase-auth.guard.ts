@@ -8,16 +8,13 @@ import {
 } from '@nestjs/common';
 import { DecodedIdToken, getAuth } from 'firebase-admin/auth';
 import { AuthService } from '../../app/services/auth.service';
+import { UserModel } from '../database/user.model';
 
 type RequestWithUser = Request & {
   headers: {
     authorization?: string;
   };
-  user?: {
-    id: string;
-    email: string;
-    firebaseUid: string;
-  };
+  user: UserModel | null;
 };
 
 @Injectable()
@@ -37,17 +34,20 @@ export class FirebaseAuthGuard implements CanActivate {
       );
     }
 
-    const decodedToken = await this.verifyToken(token);
-    const user =
-      await this.authService.resolveUserFromFirebaseToken(decodedToken);
+    try {
+      const decodedToken = await this.verifyToken(token);
 
-    request.user = {
-      id: user.id,
-      email: user.email,
-      firebaseUid: user.firebaseUid ?? decodedToken.uid,
-    };
+      const user =
+        await this.authService.resolveUserFromFirebaseToken(decodedToken);
 
-    return true;
+      request.user = user;
+
+      return true;
+    } catch (error) {
+      this.logger.error('FirebaseAuthGuard: Token verification failed', error);
+
+      return false;
+    }
   }
 
   private extractBearerToken(authHeader?: string): string | null {
