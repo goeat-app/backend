@@ -58,7 +58,7 @@ redireciona todas as chamadas de Auth para o emulador.
 | Variável              | Valor                 | Observação                                   |
 | --------------------- | --------------------- | -------------------------------------------- |
 | `EMULATOR_HOST`       | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
-| `FIREBASE_PROJECT_ID` | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
+| `EMULATOR_PROJECT_ID` | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
 
 Você também pode exportá-las no shell ou adicioná-las a um arquivo `.env.local`
 (não versionado) em vez de usar o script `start:emulator`.
@@ -135,7 +135,7 @@ variável de ambiente adicional é necessária.
 ## Como o bootstrap decide qual modo usar
 
 ```
-FIREBASE_AUTH_EMULATOR_HOST definida?
+EMULATOR_HOST definida?
   └─ sim → initializeApp({ projectId }) — sem credenciais, aponta para o emulador
   └─ não → firebase-service-account.json existe na raiz?
               └─ sim → initializeApp com as credenciais do arquivo

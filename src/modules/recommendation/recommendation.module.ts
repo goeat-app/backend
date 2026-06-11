@@ -59,6 +59,11 @@ import { IReviewRepository } from './domain/interfaces/repositories/review-repos
     },
     GetOnboardingRecommendationUseCase,
   ],
-  exports: [GetOnboardingRecommendationUseCase],
+  exports: [
+    GetOnboardingRecommendationUseCase,
+    IRestaurantRepository,
+    IReviewRepository,
+    IUserPreferenceRepository,
+  ],
 })
 export class RecommendationModule {}
