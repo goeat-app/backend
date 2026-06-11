@@ -18,9 +18,10 @@ Bem-vindo ao repositório do backend do **GoEat**, um sistema inteligente de rec
 
 Antes de começar, você precisará ter instalado em sua máquina:
 
-- **Node.js** (versão 18 ou superior recomendada)
-- **Yarn**
-- Um banco de dados PostgreSQL compatível
+- **Node.js 22+** (confira com `node --version`)
+- **Yarn** (confira com `yarn --version`)
+- **Docker** e **Docker Compose** para rodar PostgreSQL localmente
+- **Firebase CLI** (para trabalhar com Firebase): `npm install -g firebase-tools`
 
 ## 🔐 Fluxo de Autenticação
 
@@ -50,11 +51,25 @@ yarn install
 
 ### 3. Configurar Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do projeto e peça as variáveis de ambiente para o time.
+Copie o arquivo de exemplo e configure para seu ambiente:
 
-### 4. Executar Migrations do Banco de Dados
+```bash
+cp .env.example .env
+```
 
-Para criar as tabelas necessárias no seu banco de dados:
+Para desenvolvimento local, use as configurações padrão. Para produção, peça as variáveis de ambiente para o time.
+
+### 4. Subir o Banco de Dados com Docker
+
+```bash
+docker compose up -d
+```
+
+Isso inicia um container PostgreSQL 16 com as credenciais padrão de desenvolvimento.
+
+### 5. Executar Migrations do Banco de Dados
+
+Para criar as tabelas necessárias:
 
 ```bash
 yarn db:migrate
@@ -64,70 +79,80 @@ yarn db:migrate
 
 ## 🏃 Executando o Projeto
 
-### Modo de Desenvolvimento (com Hot-Reload)
+### Modo de Desenvolvimento com Firebase Emulator (recomendado)
+
+**Terminal 1** — inicia o emulador local do Firebase Auth:
 
 ```bash
-yarn start
+yarn firebase:emulator
 ```
 
-O servidor iniciará em [http://localhost:3000](http://localhost:3000).
+**Terminal 2** — inicia o backend em hot-reload:
+
+```bash
+yarn start:emulator
+```
+
+O servidor iniciará em [http://localhost:3000](http://localhost:3000) e a UI do emulador em [http://localhost:4000](http://localhost:4000).
+
+### Modo de Desenvolvimento Simples (sem Firebase Emulator)
+
+```bash
+yarn start:dev
+```
 
 ### Modo de Produção
 
 ```bash
 yarn build
-yarn start:prod
+yarn start
 ```
 
 ## 🔥 Deploy para Firebase Functions
 
 Este repositório já está preparado para deploy como Cloud Functions (2nd gen) com uma função HTTP chamada `api`.
 
-Documentação detalhada: [docs/firebase-deploy.md](docs/firebase-deploy.md)
+**Documentação completa:** [docs/firebase-deploy.md](docs/firebase-deploy.md)
 
-### 1. Instalar Firebase CLI
-
-```bash
-npm install -g firebase-tools
-```
-
-### 2. Fazer login e conectar o projeto Firebase
+### Quick start
 
 ```bash
+# 1. Fazer login e conectar o projeto Firebase
 firebase login
 firebase use --add
-```
 
-### 3. Build e deploy
+# 2. Build da aplicação
+yarn build
 
-```bash
+# 3. Deploy das Functions
 yarn firebase:deploy
-```
-
-### 4. Rodar localmente com Emulator
-
-```bash
-yarn firebase:serve
 ```
 
 ---
 
 ## 📚 Documentação
 
-- Guia de deploy no Firebase: [docs/firebase-deploy.md](docs/firebase-deploy.md)
-- Migração para Firebase Auth: [docs/firebase-auth-migration.md](docs/firebase-auth-migration.md)
+Documentação detalhada na pasta [docs/](docs/):
+
+- **[local-development.md](docs/local-development.md)** — Setup completo para desenvolvimento local com Docker, PostgreSQL e Firebase Emulator
+- **[firebase-auth.md](docs/firebase-auth.md)** — Guia detalhado de autenticação com Firebase (emulador e produção)
+- **[firebase-auth-migration.md](docs/firebase-auth-migration.md)** — Contexto histórico da migração para Firebase Auth
+- **[firebase-deploy.md](docs/firebase-deploy.md)** — Guia completo para fazer deploy no Firebase Cloud Functions
 
 ---
 
 ## 🗃️ Gerenciamento do Banco de Dados
 
-Este projeto utiliza o Sequelize CLI para gerenciar migrations. Aqui estão os comandos principais:
+Este projeto utiliza o Sequelize CLI para gerenciar migrations. Comandos principais:
 
-- **Executar Migrations**: `yarn db:migrate`
-- **Reverter Última Migration**: `yarn db:migrate:undo`
-- **Criar Nova Migration**: `yarn db:migration:create nome-da-migration`
+```bash
+npm run db:migrate              # Executar todas as migrations pendentes
+npm run db:migrate:undo         # Reverter a última migration
+npm run db:migration:create NAME # Criar uma nova migration
+npm run db:seed                 # Executar seeds (se houver)
+```
 
-Para detalhes completos sobre a estrutura das tabelas, consulte o [MIGRATIONS.md](MIGRATIONS.md).
+Para detalhes completos, consulte [MIGRATIONS.md](MIGRATIONS.md).
 
 ---
 
@@ -135,19 +160,62 @@ Para detalhes completos sobre a estrutura das tabelas, consulte o [MIGRATIONS.md
 
 ```text
 docs/
-└── firebase-deploy.md # Guia completo de deploy para Firebase
+├── local-development.md        # Setup local com Docker + Firebase Emulator
+├── firebase-auth.md            # Autenticação com Firebase
+├── firebase-auth-migration.md  # Contexto da migração para Firebase Auth
+└── firebase-deploy.md          # Deploy para Firebase Cloud Functions
 
 src/
-├── lib/               # Infraestrutura, banco de dados (migrations, config)
-├── modules/           # Módulos de negócio (auth, ia, profile-mapping)
-│   ├── auth/          # Autenticação e Autorização
-│   ├── ia/            # Integração com Inteligência Artificial
-│   └── profile-mapping/ # Mapeamento de perfis e preferências
-├── types/             # Definições de tipos TypeScript
-├── main.ts            # Ponto de entrada da aplicação
-└── app.module.ts      # Módulo raiz
+├── lib/                 # Infraestrutura, banco de dados (migrations, config)
+│   ├── infra/
+│   │   ├── database/    # Migrations, models Sequelize
+│   │   └── firebase/    # Bootstrap Firebase Admin
+│   └── ...
+├── modules/             # Módulos de negócio (auth, menu, restaurants, etc)
+│   ├── auth/            # Autenticação e guarda de rotas
+│   ├── menu/            # Gerenciamento de menus
+│   └── ...
+├── types/               # Definições de tipos TypeScript
+├── main.ts              # Ponto de entrada NestJS
+├── firebase.ts          # Entrypoint Firebase Cloud Functions
+└── app.module.ts        # Módulo raiz
 ```
 
-## 👥 Contato
+## 🧪 Testes
 
-Em caso de dúvidas ou sugestões, sinta-se à vontade para entrar em contato com a equipe de desenvolvimento.
+```bash
+# Testes unit\u00e1rios
+yarn test
+
+# Testes com coverage
+yarn test:cov
+
+# Testes de integração (requer banco rodando)
+yarn test:integration
+
+# Testes e2e
+yarn test:e2e
+```
+
+## 🔍 Qualidade de C\u00f3digo
+
+```bash
+# Linter com auto-fix
+yarn lint
+
+# Type checking
+yarn typecheck
+
+# Detectar ciclos de dependência
+yarn check:circular
+
+# Executar todas as verificações
+yarn check
+```
+
+## 📖 Outros Recursos
+
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [Sequelize Documentation](https://sequelize.org/)
+- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)
+- [Docker Documentation](https://docs.docker.com/)

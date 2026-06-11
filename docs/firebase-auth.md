@@ -23,6 +23,10 @@ necessária.
   ```bash
   npm install -g firebase-tools
   ```
+- Yarn instalado:
+  ```bash
+  npm install -g yarn
+  ```
 - Autenticado no Firebase:
   ```bash
   firebase login
@@ -33,7 +37,7 @@ necessária.
 **Terminal 1** — inicia o emulador de Auth:
 
 ```bash
-npm run emulators:auth
+yarn firebase:emulator
 ```
 
 Isso sobe o emulador em `localhost:9099` e a Emulator UI em `localhost:4000`.
@@ -42,20 +46,19 @@ A UI permite visualizar e gerenciar os usuários emulados.
 **Terminal 2** — sobe o backend apontado para o emulador:
 
 ```bash
-npm run start:emulator
+yarn start:emulator
 ```
 
-Esse script define `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` e inicia o
+Esse script define `EMULATOR_HOST=localhost:9099` e inicia o
 NestJS em modo watch. O `firebase-admin` lê essa variável automaticamente e
 redireciona todas as chamadas de Auth para o emulador.
 
 ### Variáveis de ambiente do emulador
 
-| Variável                      | Valor                 | Observação                                   |
-| ----------------------------- | --------------------- | -------------------------------------------- |
-| `FIREBASE_AUTH_EMULATOR_HOST` | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
-| `FIREBASE_PROJECT_ID`         | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
-| `FIREBASE_WEB_API_KEY`        | qualquer valor        | Usada por `/auth/login` e `/auth/refresh`    |
+| Variável              | Valor                 | Observação                                   |
+| --------------------- | --------------------- | -------------------------------------------- |
+| `EMULATOR_HOST`       | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
+| `FIREBASE_PROJECT_ID` | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
 
 Você também pode exportá-las no shell ou adicioná-las a um arquivo `.env.local`
 (não versionado) em vez de usar o script `start:emulator`.
@@ -98,10 +101,15 @@ necessário um arquivo de service account com permissões de Admin.
 
 ### Obtendo o arquivo de credenciais
 
-> **TODO:** adicionar aqui o link para download do `firebase-service-account.json`
-> quando for disponibilizado.
+1. Vá para [Firebase Console](https://console.firebase.google.com/)
+2. Selecione seu projeto
+3. **Project Settings** (engrenagem) → **Service Accounts**
+4. **Generate new private key**
+5. Salve o arquivo em `firebase-service-account.json` na raiz do backend (NÃO faça commit!)
 
-Após obter o arquivo, coloque-o na raiz do projeto com o nome exato:
+### Configurar variáveis de ambiente
+
+No seu `.env` (para desenvolvimento) ou no Firebase Runtime Environment (para produção):
 
 ```
 firebase-service-account.json
@@ -115,7 +123,7 @@ firebase-service-account.json
 Com o arquivo de credenciais no lugar, inicie normalmente:
 
 ```bash
-npm run start:dev
+yarn start:dev
 ```
 
 O bootstrap (`src/lib/infra/firebase/firebase-admin.bootstrap.ts`) detecta
