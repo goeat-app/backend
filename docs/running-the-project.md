@@ -46,6 +46,14 @@ yarn db:migrate
    http://127.0.0.1:4000/logs
    ```
 
+# Usando banco de dados de produção e Firebase de produção
+
+Copie o arquivo disponível na documentação do confluence, esse arquivo é confidencial:
+
+[Obtendo o arquivo de credenciais](https://projetorestaurantes.atlassian.net/wiki/spaces/APP/pages/108953601/Autentica+o#Obtendo-o-arquivo-de-credenciais)
+
+Remova as variáveis de ambiente referente ao emulador: `EMULATOR_HOST` e atualize `DATABASE_URL` para o banco de dados desejado.
+
 # EXPLICAÇÃO DETALHADA (Explicação completa)
 
 # Guia de Configuração do Firebase Emulator
