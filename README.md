@@ -59,6 +59,8 @@ cp .env.example .env
 
 Para desenvolvimento local, use as configurações padrão. Para produção, peça as variáveis de ambiente para o time.
 
+Para mais detalhes consulte [Running The Project](docs/running-the-project.md)
+
 ### 4. Subir o Banco de Dados com Docker
 
 ```bash
@@ -99,13 +101,6 @@ O servidor iniciará em [http://localhost:3000](http://localhost:3000) e a UI do
 
 ```bash
 yarn start:dev
-```
-
-### Modo de Produção
-
-```bash
-yarn build
-yarn start
 ```
 
 ## 🔥 Deploy para Firebase Functions
