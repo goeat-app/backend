@@ -60,26 +60,6 @@ export class CreateUserUseCase {
     const userName = firebaseUser.displayName ?? normalizedEmail.split('@')[0];
 
     try {
-<<<<<<< HEAD
-=======
-      const firebaseUser = await getAuth().createUser({
-        email: normalizedEmail,
-        password,
-        displayName: name,
-        phoneNumber: phone,
-      });
-
-<<<<<<< HEAD
-    await this.userRepository.create({
-      name,
-      email: email.toLowerCase(),
-      phone,
-      password: hashedPassword,
-      latitude: data.latitude,
-      longitude: data.longitude,
-    });
-=======
->>>>>>> c4e5af00e129ce6c456d00f1277622b45ea7e8e5
       try {
         await this.userRepository.create({
           name: userName,
@@ -115,6 +95,5 @@ export class CreateUserUseCase {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
->>>>>>> 12f5bbbe2e4ee1757f4871ca905e376d63feed9d
   }
 }

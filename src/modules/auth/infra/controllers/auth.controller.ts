@@ -11,10 +11,7 @@ import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly createUserUseCase: CreateUserUseCase,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @UseGuards(FirebaseAuthGuard)
   @Get('me')
