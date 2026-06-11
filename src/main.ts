@@ -1,6 +1,7 @@
 import 'tsconfig-paths/register';
 import { createNestApplication } from './nest-application.factory';
 import { ensureFirebaseAdminInitialized } from './lib/infra/firebase/firebase-admin.bootstrap';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 function registerUnhandledErrorLogging() {
   process.on('unhandledRejection', (reason) => {
@@ -18,6 +19,10 @@ async function bootstrap() {
   ensureFirebaseAdminInitialized();
 
   const app = await createNestApplication();
+
+  app.enableCors();
+  app.useGlobalPipes(new ZodValidationPipe());
+  app.enableShutdownHooks();
 
   const port = Number(process.env.PORT) || 3000;
   await app.listen(port);

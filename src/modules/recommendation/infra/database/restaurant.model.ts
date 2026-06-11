@@ -26,7 +26,15 @@ export class RestaurantsModel extends Model {
   })
   declare name: string;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique: true,
+  })
+  declare slug: string;
+
   @ForeignKey(() => PlaceTypeModel)
+  @AllowNull(true)
   @Column(DataType.UUID)
   declare place_type_id: string;
 
@@ -34,6 +42,7 @@ export class RestaurantsModel extends Model {
   placeType!: PlaceTypeModel;
 
   @ForeignKey(() => FoodTypeModel)
+  @AllowNull(true)
   @Column(DataType.UUID)
   declare food_type_id: string;
 
