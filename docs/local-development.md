@@ -52,7 +52,7 @@ PORT=3000
 DATABASE_URL=postgresql://admin:goeat-admin@localhost:5432/goeat_db
 
 # Firebase Auth Emulator (ver seção 4)
-EMULATOR_HOST=localhost:9099
+FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
 EMULATOR_PROJECT_ID=demo-goeat
 
 # Uploads locais

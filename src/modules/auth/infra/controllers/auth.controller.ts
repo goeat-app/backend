@@ -6,8 +6,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../../app/services/auth.service';
-import { CreateUserUseCase } from '../../app/use-cases/register.use-case';
 import { FirebaseAuthGuard } from '../firebase/firebase-auth.guard';
+import { UserModel } from '../database/user.model';
 
 @Controller('auth')
 export class AuthController {
@@ -15,8 +15,8 @@ export class AuthController {
 
   @UseGuards(FirebaseAuthGuard)
   @Get('me')
-  async getMe(@Req() req: Request & { user?: { id?: string } }) {
-    if (!req.user?.id) {
+  async getMe(@Req() req: Request & { user: UserModel }) {
+    if (!req.user.id) {
       throw new UnauthorizedException('User not authenticated');
     }
 

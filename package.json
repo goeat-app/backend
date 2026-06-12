@@ -10,6 +10,7 @@
     "node": "22"
   },
   "scripts": {
+    "build": "nest build",
     "start": "nest start  --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -31,7 +32,7 @@
     "check": "npm run typecheck && npm run check:circular",
     "firebase:deploy": "firebase deploy --only functions",
     "firebase:emulator": "firebase emulators:start --only auth,functions --project=demo-goeat",
-    "start:emulator": "EMULATOR_HOST=localhost:9099 nest start --watch",
+    "start:emulator": "FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 nest start --watch",
     "start:local:firebase": "npm run firebase:emulator & npm run start:emulator",
     "prepare": "husky"
   },

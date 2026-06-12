@@ -88,6 +88,15 @@ export class AuthService {
       ? this.buildDerivedEmail(normalizedEmail, decodedToken.uid)
       : normalizedEmail;
 
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const userById = await this.userModel.findOne({
+      where: { firebaseUid: decodedToken.uid },
+    });
+
+    if (userById) {
+      return userById;
+    }
+
     try {
       return await this.userModel.create({
         name: this.resolveDisplayName(decodedToken.name, normalizedEmail),
@@ -100,6 +109,7 @@ export class AuthService {
         firebaseUid: decodedToken.uid,
       });
     } catch (error) {
+      console.error('Error provisioning Firebase user:', error);
       if (this.isFirebaseUidUniqueViolation(error)) {
         const existingUser = await this.userModel.findOne({
           where: { firebaseUid: decodedToken.uid },

@@ -9,11 +9,10 @@ import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.g
 import { getPriceLevel } from '@/lib/helpers/get-price-level.helper';
 import { RestaurantAccessService } from '../../app/services/restaurant-access.service';
 import { RestaurantWithRoleResponseDto } from '../../dtos/restaurant-with-role-response.dto';
+import { UserModel } from '@/modules/auth/infra/database/user.model';
 
 type RequestWithUser = Request & {
-  user?: {
-    id?: string;
-  };
+  user: UserModel;
 };
 
 @UseGuards(FirebaseAuthGuard)
@@ -27,7 +26,7 @@ export class MyRestaurantsController {
   async listMyRestaurants(
     @Req() req: RequestWithUser,
   ): Promise<RestaurantWithRoleResponseDto[]> {
-    if (!req.user?.id) {
+    if (!req.user.id) {
       throw new UnauthorizedException('User not authenticated');
     }
 

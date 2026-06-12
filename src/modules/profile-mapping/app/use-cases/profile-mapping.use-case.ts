@@ -12,8 +12,7 @@ export class ProfileMappingUseCase {
     userId: string,
     profileMapping: CreateProfileMappingDto,
   ): Promise<void> {
-    await this.profileMappingRepository.create({
-      userId: userId,
+    await this.profileMappingRepository.create(userId, {
       foodTypes: profileMapping.foodTypes,
       placeTypes: profileMapping.placeTypes,
       priceRange: profileMapping.priceRange,

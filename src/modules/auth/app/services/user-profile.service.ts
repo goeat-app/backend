@@ -31,9 +31,15 @@ export class UserProfileService {
       });
     }
 
-    await this.userModel.update(data, {
-      where: { firebaseUid: data.user.firebaseUid },
-    });
+    await this.userModel.update(
+      {
+        ...(data.name !== undefined ? { name: data.name } : {}),
+        ...(data.phone !== undefined ? { phone: data.phone } : {}),
+      },
+      {
+        where: { firebaseUid: data.user.firebaseUid },
+      },
+    );
 
     const updatedUser = await this.userModel.findByPk(userEntry.id, {
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },

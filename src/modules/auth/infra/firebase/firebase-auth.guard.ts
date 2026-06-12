@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Injectable,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { DecodedIdToken, getAuth } from 'firebase-admin/auth';
 import { AuthService } from '../../app/services/auth.service';
@@ -44,9 +45,15 @@ export class FirebaseAuthGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      this.logger.error('FirebaseAuthGuard: Token verification failed', error);
+      this.logger.error('FirebaseAuthGuard: Authentication failed', error);
 
-      return false;
+      // Re-throw HttpException to preserve the intended status code (401, 503, etc.)
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      // For any other unexpected errors, throw 401 Unauthorized
+      throw new UnauthorizedException('Authentication failed');
     }
   }
 

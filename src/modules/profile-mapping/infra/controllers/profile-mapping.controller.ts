@@ -6,7 +6,6 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-//import { JwtAuthGuard } from '@/modules/auth/infra/jwt/jwt-auth.guard';
 import { ProfileMappingUseCase } from '../../app/use-cases/profile-mapping.use-case';
 import { CreateProfileMappingDto } from '../../dtos/create-profile.dto';
 import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.guard';
@@ -23,6 +22,10 @@ export class ProfileMappingController {
     @Body() userProfile: CreateProfileMappingDto,
     @Req() req: Request & { user: UserModel },
   ): Promise<void> {
+    console.log(
+      'Received profile mapping creation request for user:',
+      req.user.id,
+    );
     return this.profileMappingUseCase.createProfileMapping(
       req.user.id,
       userProfile,

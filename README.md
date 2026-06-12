@@ -105,7 +105,7 @@ yarn start:dev
 
 ## 🔥 Deploy para Firebase Functions
 
-Este repositório já está preparado para deploy como Cloud Functions (2nd gen) com uma função HTTP chamada `api`.
+Este repositório já está preparado para deploy como Cloud Functions (1st gen) com uma função HTTP chamada `api`.
 
 **Documentação completa:** [docs/firebase-deploy.md](docs/firebase-deploy.md)
 

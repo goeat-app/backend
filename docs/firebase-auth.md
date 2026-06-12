@@ -49,16 +49,16 @@ A UI permite visualizar e gerenciar os usuários emulados.
 yarn start:emulator
 ```
 
-Esse script define `EMULATOR_HOST=localhost:9099` e inicia o
+Esse script define `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` e inicia o
 NestJS em modo watch. O `firebase-admin` lê essa variável automaticamente e
 redireciona todas as chamadas de Auth para o emulador.
 
 ### Variáveis de ambiente do emulador
 
-| Variável              | Valor                 | Observação                                   |
-| --------------------- | --------------------- | -------------------------------------------- |
-| `EMULATOR_HOST`       | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
-| `EMULATOR_PROJECT_ID` | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
+| Variável                      | Valor                 | Observação                                   |
+| ----------------------------- | --------------------- | -------------------------------------------- |
+| `FIREBASE_AUTH_EMULATOR_HOST` | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
+| `EMULATOR_PROJECT_ID`         | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
 
 Você também pode exportá-las no shell ou adicioná-las a um arquivo `.env.local`
 (não versionado) em vez de usar o script `start:emulator`.
@@ -88,8 +88,6 @@ firebase emulators:start --only auth \
   vice-versa. Nunca misture tokens do emulador com os de produção.
 - O project ID `demo-goeat` é um placeholder local. Ele não precisa corresponder
   a nenhum projeto Firebase real ao usar o emulador.
-- Os endpoints backend `POST /auth/login` e `POST /auth/refresh` usam a API REST
-  do Firebase Auth e exigem `FIREBASE_WEB_API_KEY` (em emulador, qualquer string).
 
 ---
 
@@ -135,7 +133,7 @@ variável de ambiente adicional é necessária.
 ## Como o bootstrap decide qual modo usar
 
 ```
-EMULATOR_HOST definida?
+FIREBASE_AUTH_EMULATOR_HOST definida?
   └─ sim → initializeApp({ projectId }) — sem credenciais, aponta para o emulador
   └─ não → firebase-service-account.json existe na raiz?
               └─ sim → initializeApp com as credenciais do arquivo

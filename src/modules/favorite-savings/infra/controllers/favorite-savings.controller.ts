@@ -20,16 +20,12 @@ export class FavoriteSavingsController {
     private readonly favoriteSavingsUseCase: FavoriteSavingsUseCase,
   ) {}
 
-  @Get(':userId')
+  @Get()
   @UseGuards(FirebaseAuthGuard)
   async getByUserId(
-    @Param('userId') userId: string,
     @Req() req: Request & { user: UserModel },
   ): Promise<FavoriteSavingsResponseDto> {
     const userIdFromToken = req.user.id;
-    if (userId !== userIdFromToken) {
-      throw new Error('Unauthorized access');
-    }
     return await this.favoriteSavingsUseCase.getByUserId(userIdFromToken);
   }
 

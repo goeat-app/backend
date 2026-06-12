@@ -1,5 +1,5 @@
 import { CreateProfileMappingDto } from '../../dtos/create-profile.dto';
 
 export abstract class IProfileMappingRepository {
-  abstract create(data: CreateProfileMappingDto): Promise<void>;
+  abstract create(userId: string, data: CreateProfileMappingDto): Promise<void>;
 }

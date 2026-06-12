@@ -5,7 +5,6 @@ import {
   HttpStatus,
   Put,
   Req,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { UpdateUserDto } from '../../dtos/update-user.dto';
@@ -24,18 +23,10 @@ export class ProfileController {
     @Body() body: UpdateUserDto,
     @Req() req: Request & { user: UserModel },
   ) {
-    try {
-      await this.userProfileService.updateUser({
-        user: req.user,
-        name: body.name,
-        phone: body.phone,
-      });
-    } catch (error) {
-      console.error('Profile update error:', error);
-
-      throw new UnauthorizedException(
-        error instanceof Error ? error.message : 'Profile update failed',
-      );
-    }
+    await this.userProfileService.updateUser({
+      user: req.user,
+      name: body.name,
+      phone: body.phone,
+    });
   }
 }

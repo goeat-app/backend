@@ -15,7 +15,7 @@ import { ProfileMappingModel } from './infra/database/profile-mapping-model';
 import { ProfileMappingUseCase } from './app/use-cases/profile-mapping.use-case';
 import { IProfileMappingRepository } from './domain/interfaces/profile-mapping.interface';
 import { SequelizeProfileMappingRepository } from './infra/repositories/profile-mapping.repository';
-import { ProfileMappingController } from './infra/controllers/profile-type.controller';
+import { ProfileMappingController } from './infra/controllers/profile-mapping.controller';
 import { ProfileMappingPlaceTypeModel } from './infra/database/profile-mapping-place-type.model';
 import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-food-type.model';
 
