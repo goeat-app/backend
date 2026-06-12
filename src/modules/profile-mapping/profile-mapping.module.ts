@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AuthModule } from '../auth/auth.module';
 import { FoodTypeModel } from './infra/database/food-type.model';
 import { FoodTypeController } from './infra/controllers/food-type.controller';
 import { FoodTypeUseCase } from './app/use-cases/food-type.use-case';
@@ -20,6 +21,7 @@ import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-fo
 
 @Module({
   imports: [
+    AuthModule,
     SequelizeModule.forFeature([
       FoodTypeModel,
       PlaceTypeModel,

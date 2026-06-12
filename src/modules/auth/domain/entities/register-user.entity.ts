@@ -4,8 +4,8 @@ export interface RegisterUser {
   email: string;
   phone: string;
   password: string;
-  latitude: number;
-  longitude: number;
+  // latitude: number;
+  // longitude: number;
   firebaseUid?: string | null;
   createdAt?: string;
 }

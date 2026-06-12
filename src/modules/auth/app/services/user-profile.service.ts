@@ -26,7 +26,8 @@ export class UserProfileService {
     if (userEntry.firebaseUid) {
       await getAuth().updateUser(userEntry.firebaseUid, {
         displayName: data.name,
-        phoneNumber: data.phone,
+        // TODO add country code to phone number
+        // phoneNumber: data.phone,
       });
     }
 

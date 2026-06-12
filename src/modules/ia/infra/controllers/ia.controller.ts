@@ -1,6 +1,6 @@
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
 import { RecommendationBasedOnboardingDto } from '../../dtos/recommendation-based-onboarding.dto';
-import { GetOnboardingRecommendationUseCase } from '../../../recommendation/app/use-cases/get-onboarding-recommendation.use-case';
+import { GetOnboardingRecommendationUseCase } from '@modules/recommendation/app/use-cases/get-onboarding-recommendation.use-case';
 
 export interface RecommendationFilters {
   minRating?: number;

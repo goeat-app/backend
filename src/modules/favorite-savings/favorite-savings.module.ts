@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AuthModule } from '@/modules/auth/auth.module';
 import { RecommendationModule } from '@/modules/recommendation/recommendation.module';
 import { FavoriteSavingsModel } from './infra/database/favorite-savings.model';
 import { FavoriteSavingsController } from './infra/controllers/favorite-savings.controller';
@@ -10,6 +11,7 @@ import { SequelizeFavoriteSavingsRepository } from './infra/repositories/favorit
 @Module({
   imports: [
     SequelizeModule.forFeature([FavoriteSavingsModel]),
+    AuthModule,
     RecommendationModule,
   ],
   controllers: [FavoriteSavingsController],
