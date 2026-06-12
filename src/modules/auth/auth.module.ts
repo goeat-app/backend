@@ -8,6 +8,8 @@ import { AuthService } from './app/services/auth.service';
 import { CreateUserUseCase } from './app/use-cases/register.use-case';
 import { ConfigModule } from '@nestjs/config';
 import { FirebaseAuthGuard } from './infra/firebase/firebase-auth.guard';
+import { ProfileController } from './infra/controllers/profile.controller';
+import { UserProfileService } from './app/services/user-profile.service';
 
 @Module({
   imports: [ConfigModule, SequelizeModule.forFeature([UserModel])],
@@ -15,12 +17,13 @@ import { FirebaseAuthGuard } from './infra/firebase/firebase-auth.guard';
     AuthService,
     CreateUserUseCase,
     FirebaseAuthGuard,
+    UserProfileService,
     {
       provide: IUserRepository,
       useClass: SequelizeUserRepository,
     },
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, ProfileController],
   exports: [IUserRepository, FirebaseAuthGuard, AuthService],
 })
 export class AuthModule {}

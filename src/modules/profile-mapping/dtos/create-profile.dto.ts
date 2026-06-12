@@ -2,7 +2,6 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
 const CreateProfileMappingSchema = z.object({
-  userId: z.uuid(),
   foodTypes: z.array(z.string()).max(3),
   placeTypes: z.array(z.string()).max(3),
   priceRange: z.object({

@@ -7,7 +7,7 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 import { ForeignKey, BelongsToMany, BelongsTo } from 'sequelize-typescript';
-import { UserModel } from '../../../auth/infra/database/user.model';
+import { UserModel } from '@/modules/auth/infra/database/user.model';
 import { FoodTypeModel } from './food-type.model';
 import { PlaceTypeModel } from './place-type.model';
 import { ProfileMappingFoodTypeModel } from './profile-mapping-food-type.model';

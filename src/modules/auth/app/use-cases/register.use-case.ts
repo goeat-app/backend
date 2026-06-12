@@ -4,7 +4,8 @@ import { IUserRepository } from '../../domain/interfaces/user.repository.interfa
 import { getAuth } from 'firebase-admin/auth';
 
 export interface RegisterResult {
-  customToken: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 @Injectable()
@@ -13,52 +14,70 @@ export class CreateUserUseCase {
 
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(data: RegisterUserDto): Promise<RegisterResult> {
-    const { name, email, phone, password } = data;
-    const normalizedEmail = email.toLowerCase().trim();
+  async execute(data: RegisterUserDto): Promise<void> {
+    const { firebaseUid } = data;
+    const firebaseUser = await getAuth()
+      .getUser(firebaseUid)
+      .catch((error: unknown) => {
+        this.logger.error(
+          `Failed to retrieve Firebase user with UID ${firebaseUid}`,
+          error,
+        );
+        throw new HttpException(
+          { message: 'Registration failed. Please try again.' },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      });
 
-    const existingUser = await this.userRepository.findByEmail(normalizedEmail);
-    if (existingUser) {
+    if (!firebaseUser) {
+      this.logger.error(`Firebase user with UID ${firebaseUid} not found`);
+      throw new HttpException(
+        { message: 'Registration failed. Please try again.' },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    if (!firebaseUser.email) {
+      this.logger.error(`Firebase user with UID ${firebaseUid} has no email`);
+      throw new HttpException(
+        { message: 'Registration failed. Please try again.' },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const normalizedEmail = firebaseUser.email?.toLowerCase().trim();
+    const [existingUser, existingUserByFirebaseUid] = await Promise.all([
+      this.userRepository.findByEmail(normalizedEmail),
+      this.userRepository.findByFirebaseUid(firebaseUid),
+    ]);
+
+    if (existingUser || existingUserByFirebaseUid) {
       throw new HttpException(
         { message: 'An account with this email already exists.' },
         HttpStatus.CONFLICT,
       );
     }
+    const userName = firebaseUser.displayName ?? normalizedEmail.split('@')[0];
 
     try {
-      const firebaseUser = await getAuth().createUser({
-        email: normalizedEmail,
-        password,
-        displayName: name,
-        phoneNumber: phone,
-      });
-
-<<<<<<< HEAD
-    await this.userRepository.create({
-      name,
-      email: email.toLowerCase(),
-      phone,
-      password: hashedPassword,
-      latitude: data.latitude,
-      longitude: data.longitude,
-    });
-=======
       try {
         await this.userRepository.create({
-          name,
+          name: userName,
           email: normalizedEmail,
-          phone,
           // The password is not stored in our database since Firebase handles authentication.
           password: '',
-          firebaseUid: firebaseUser.uid,
+          firebaseUid: firebaseUid,
+          phone: null,
+          latitude: null,
+          longitude: null,
         });
       } catch (dbError) {
         this.logger.error(
-          `DB create failed for ${normalizedEmail}; rolling back Firebase user ${firebaseUser.uid}`,
+          `DB create failed for ${normalizedEmail}; rolling back Firebase user ${firebaseUid}`,
           dbError,
         );
         await getAuth()
-          .deleteUser(firebaseUser.uid)
+          .deleteUser(firebaseUid)
           .catch((e: unknown) =>
             this.logger.error('Firebase rollback failed', e),
           );
@@ -67,9 +86,6 @@ export class CreateUserUseCase {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-
-      const customToken = await getAuth().createCustomToken(firebaseUser.uid);
-      return { customToken };
     } catch (firebaseError) {
       this.logger.error(
         `Firebase user creation failed for ${normalizedEmail}`,
@@ -81,6 +97,5 @@ export class CreateUserUseCase {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
->>>>>>> 12f5bbbe2e4ee1757f4871ca905e376d63feed9d
   }
 }

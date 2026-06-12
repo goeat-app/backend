@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { AuthModule } from '@/modules/auth/auth.module';
 
 import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { ReviewModel } from '@/modules/recommendation/infra/database/review.model';
@@ -28,6 +29,7 @@ import { IReviewRepository } from './domain/interfaces/repositories/review-repos
 @Module({
   imports: [
     ConfigModule,
+    AuthModule,
     SequelizeModule.forFeature([
       RestaurantsModel,
       ReviewModel,
@@ -59,6 +61,11 @@ import { IReviewRepository } from './domain/interfaces/repositories/review-repos
     },
     GetOnboardingRecommendationUseCase,
   ],
-  exports: [GetOnboardingRecommendationUseCase],
+  exports: [
+    GetOnboardingRecommendationUseCase,
+    IRestaurantRepository,
+    IReviewRepository,
+    IUserPreferenceRepository,
+  ],
 })
 export class RecommendationModule {}

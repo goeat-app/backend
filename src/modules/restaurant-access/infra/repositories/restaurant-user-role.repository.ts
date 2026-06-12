@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
 import { RestaurantRole } from '../../domain/enums/restaurant-role.enum';

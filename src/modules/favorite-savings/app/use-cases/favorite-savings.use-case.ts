@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { getPriceLevel } from '@/lib/helpers/get-price-level.helper';
 import { PlainRestaurant } from '@/modules/ia/domain/entities/recommendation.entity';
-import { RestaurantRepository } from '@/modules/ia/infra/repositories/restaurant.repository';
-import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { FavoriteSavingsResponseDto } from '../../dtos/favorite-savings-response.dto';
 import { IFavoriteSavingsRepository } from '../../domain/interfaces/favorite-savings.interface';
 import { SaveFavoriteSavingsDto } from '../../dtos/save-favorite-savings.dto';
+import { IRestaurantRepository } from '@modules/recommendation/domain/interfaces/repositories/restaurant-repository.interface';
 
 @Injectable()
 export class FavoriteSavingsUseCase {
   constructor(
     private readonly favoriteSavingsRepository: IFavoriteSavingsRepository,
-    private readonly restaurantRepository: RestaurantRepository,
+    private readonly restaurantRepository: IRestaurantRepository,
   ) {}
 
   async getByUserId(userId: string): Promise<FavoriteSavingsResponseDto> {

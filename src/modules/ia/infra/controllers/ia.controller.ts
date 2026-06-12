@@ -1,6 +1,13 @@
-import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
-import { RecommendationUseCase } from '../../app/use-cases/recommendation.use-case';
+import {
+  Controller,
+  Get,
+  Query,
+  BadRequestException,
+  Req,
+} from '@nestjs/common';
 import { RecommendationBasedOnboardingDto } from '../../dtos/recommendation-based-onboarding.dto';
+import { GetOnboardingRecommendationUseCase } from '@modules/recommendation/app/use-cases/get-onboarding-recommendation.use-case';
+import { UserModel } from '@/modules/auth/infra/database/user.model';
 
 export interface RecommendationFilters {
   minRating?: number;
@@ -12,34 +19,21 @@ export interface RecommendationFilters {
 
 @Controller('recommender')
 export class IaController {
-  constructor(private readonly recommendationUseCase: RecommendationUseCase) {}
+  constructor(
+    private readonly getOnboardingRecommendationUseCase: GetOnboardingRecommendationUseCase,
+  ) {}
 
   @Get('onboarding')
   async getRecommendationBasedOnboarding(
     @Query('userId') userId: string,
-    @Query('minRating') minRating?: string,
-    @Query('foodTypes') foodTypes?: string,
-    @Query('restaurantStyles') restaurantStyles?: string,
-    @Query('minPrice') minPrice?: string,
-    @Query('maxPrice') maxPrice?: string,
+    @Req() req: Request & { user: UserModel },
   ): Promise<RecommendationBasedOnboardingDto> {
     if (!userId) {
       throw new BadRequestException('userId is required');
     }
 
-    const filters: RecommendationFilters = {
-      minRating: minRating ? Number(minRating) : undefined,
-      foodTypes: foodTypes ? foodTypes.split(',').filter(Boolean) : undefined,
-      restaurantStyles: restaurantStyles
-        ? restaurantStyles.split(',').filter(Boolean)
-        : undefined,
-      minPrice: minPrice ? Number(minPrice) : undefined,
-      maxPrice: maxPrice ? Number(maxPrice) : undefined,
-    };
-
-    return await this.recommendationUseCase.getRecommendationBasedOnboarding(
-      userId,
-      filters,
-    );
+    const recommendations =
+      await this.getOnboardingRecommendationUseCase.execute(userId);
+    return recommendations;
   }
 }

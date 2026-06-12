@@ -9,7 +9,7 @@ import {
   ForeignKey,
   CreatedAt,
 } from 'sequelize-typescript';
-import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
+import { RestaurantsModel } from '@modules/recommendation/infra/database/restaurant.model';
 
 @Table({ tableName: 'restaurant_images', timestamps: false })
 export class RestaurantImageModel extends Model {

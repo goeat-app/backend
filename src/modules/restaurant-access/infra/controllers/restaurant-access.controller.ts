@@ -16,11 +16,10 @@ import { RestaurantRoles } from '../auth/restaurant-roles.decorator';
 import { RestaurantRolesGuard } from '../auth/restaurant-roles.guard';
 import { UpsertRestaurantUserRoleDto } from '../../dtos/upsert-restaurant-user-role.dto';
 import { RestaurantUserRoleResponseDto } from '../../dtos/restaurant-user-role-response.dto';
+import { UserModel } from '@/modules/auth/infra/database/user.model';
 
 type RequestWithUser = Request & {
-  user?: {
-    id?: string;
-  };
+  user: UserModel;
 };
 
 @UseGuards(FirebaseAuthGuard, RestaurantRolesGuard)
@@ -42,7 +41,7 @@ export class RestaurantAccessController {
   ): Promise<RestaurantUserRoleResponseDto[]> {
     return this.restaurantAccessService.listRoles({
       restaurantId,
-      requesterUserId: req.user?.id as string,
+      requesterUserId: req.user.id,
     });
   }
 
@@ -58,7 +57,7 @@ export class RestaurantAccessController {
       restaurantId,
       targetUserId: userId,
       role: body.role,
-      requesterUserId: req.user?.id as string,
+      requesterUserId: req.user.id,
     });
   }
 
@@ -73,7 +72,7 @@ export class RestaurantAccessController {
     await this.restaurantAccessService.removeRole({
       restaurantId,
       targetUserId: userId,
-      requesterUserId: req.user?.id as string,
+      requesterUserId: req.user.id,
     });
   }
 }

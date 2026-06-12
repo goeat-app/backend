@@ -3,9 +3,11 @@ import { RegisterUser } from '../entities/register-user.entity';
 export type CreateUserData = {
   name: string;
   email: string;
-  phone: string;
   password: string;
+  phone: string | null;
   firebaseUid?: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export abstract class IUserRepository {

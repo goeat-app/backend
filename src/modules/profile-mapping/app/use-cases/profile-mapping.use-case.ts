@@ -9,10 +9,10 @@ export class ProfileMappingUseCase {
   ) {}
 
   async createProfileMapping(
+    userId: string,
     profileMapping: CreateProfileMappingDto,
   ): Promise<void> {
-    await this.profileMappingRepository.create({
-      userId: profileMapping.userId,
+    await this.profileMappingRepository.create(userId, {
       foodTypes: profileMapping.foodTypes,
       placeTypes: profileMapping.placeTypes,
       priceRange: profileMapping.priceRange,

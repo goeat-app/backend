@@ -11,11 +11,9 @@
   },
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start  --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -32,10 +30,11 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "check:circular": "madge --extensions ts --ts-config tsconfig.json --circular src",
     "check": "npm run typecheck && npm run check:circular",
-    "firebase:serve": "firebase emulators:start --only functions",
     "firebase:deploy": "firebase deploy --only functions",
-    "emulators:auth": "firebase emulators:start --only auth --project=demo-goeat",
-    "start:emulator": "FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 nest start --watch"
+    "firebase:emulator": "firebase emulators:start --only auth,functions --project=demo-goeat",
+    "start:emulator": "FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 nest start --watch",
+    "start:local:firebase": "npm run firebase:emulator & npm run start:emulator",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -82,6 +81,7 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.0",
     "prettier": "^3.4.2",
     "sequelize-cli": "^6.6.5",
