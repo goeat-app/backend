@@ -1,6 +1,6 @@
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
-import { RecommendationUseCase } from '../../app/use-cases/recommendation.use-case';
 import { RecommendationBasedOnboardingDto } from '../../dtos/recommendation-based-onboarding.dto';
+import { GetOnboardingRecommendationUseCase } from '@/modules/recommendation/app/use-cases/get-onboarding-recommendation.use-case';
 
 export interface RecommendationFilters {
   minRating?: number;
@@ -12,7 +12,9 @@ export interface RecommendationFilters {
 
 @Controller('recommender')
 export class IaController {
-  constructor(private readonly recommendationUseCase: RecommendationUseCase) {}
+  constructor(
+    private readonly getOnboardingRecommendationUseCase: GetOnboardingRecommendationUseCase,
+  ) {}
 
   @Get('onboarding')
   async getRecommendationBasedOnboarding(
@@ -37,9 +39,6 @@ export class IaController {
       maxPrice: maxPrice ? Number(maxPrice) : undefined,
     };
 
-    return await this.recommendationUseCase.getRecommendationBasedOnboarding(
-      userId,
-      filters,
-    );
+    return await this.getOnboardingRecommendationUseCase.execute(userId);
   }
 }

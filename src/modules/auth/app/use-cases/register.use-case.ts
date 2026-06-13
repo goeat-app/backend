@@ -33,16 +33,6 @@ export class CreateUserUseCase {
         phoneNumber: phone,
       });
 
-<<<<<<< HEAD
-    await this.userRepository.create({
-      name,
-      email: email.toLowerCase(),
-      phone,
-      password: hashedPassword,
-      latitude: data.latitude,
-      longitude: data.longitude,
-    });
-=======
       try {
         await this.userRepository.create({
           name,
@@ -81,6 +71,5 @@ export class CreateUserUseCase {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
->>>>>>> 12f5bbbe2e4ee1757f4871ca905e376d63feed9d
   }
 }

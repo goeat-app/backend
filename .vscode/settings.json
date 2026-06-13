@@ -1,3 +1,14 @@
 {
-  "js/ts.tsdk.path": "node_modules/typescript/lib"
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.eol": "\n",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

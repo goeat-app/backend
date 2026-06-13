@@ -9,7 +9,7 @@ const RecommendationBasedOnboardingSchema = z.array(
     slug: z.string(),
     foodType: z.string(),
     priceLevel: z.number().int().min(1).max(5),
-    avgRating: z.number(),
+    avgRating: z.number().nullish(),
     address: z.string(),
     city: z.string(),
     state: z.string(),

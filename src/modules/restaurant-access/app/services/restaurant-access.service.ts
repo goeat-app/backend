@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { RestaurantsModel } from '@/modules/ia/infra/database/restaurant.model';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { RestaurantRole } from '../../domain/enums/restaurant-role.enum';
 import {
   IRestaurantUserRoleRepository,
