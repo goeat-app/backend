@@ -1,4 +1,3 @@
-import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import {
   Table,
   Column,
@@ -14,6 +13,7 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { MenuItemModel } from './menu-item.model';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 
 @Table({
   tableName: 'menu_categories',

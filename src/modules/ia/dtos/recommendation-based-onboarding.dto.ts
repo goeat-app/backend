@@ -9,10 +9,14 @@ const RecommendationBasedOnboardingSchema = z.array(
     slug: z.string(),
     foodType: z.string(),
     priceLevel: z.number().int().min(1).max(5),
-    avgRating: z.number().nullish(),
+    averageRating: z.number(),
     address: z.string(),
     city: z.string(),
     state: z.string(),
+    averagePrice: z.number(),
+    isActive: z.boolean(),
+    latitude: z.number(),
+    longitude: z.number(),
   }),
 );
 

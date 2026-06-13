@@ -11,10 +11,10 @@ export class SequelizeProfileMappingRepository implements IProfileMappingReposit
     private readonly profileMappingModel: typeof ProfileMappingModel,
   ) {}
 
-  async create(data: CreateProfileMappingDto): Promise<void> {
+  async create(userId: string, data: CreateProfileMappingDto): Promise<void> {
     try {
       const profileMapping = await this.profileMappingModel.create({
-        userId: data.userId,
+        userId: userId,
         minPrice: data.priceRange.minValue,
         maxPrice: data.priceRange.maxValue,
       });

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { getPriceLevel } from '@/lib/helpers/get-price-level.helper';
-import { IRestaurantRepository } from '@/modules/recommendation/domain/interfaces/repositories/restaurant-repository.interface';
+import { PlainRestaurant } from '@/modules/ia/domain/entities/recommendation.entity';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { FavoriteSavingsResponseDto } from '../../dtos/favorite-savings-response.dto';
 import { IFavoriteSavingsRepository } from '../../domain/interfaces/favorite-savings.interface';
 import { SaveFavoriteSavingsDto } from '../../dtos/save-favorite-savings.dto';
-import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
-import { PlainRestaurant } from '@/modules/ia/domain/entities/recommendation.entity';
+import { IRestaurantRepository } from '@modules/recommendation/domain/interfaces/repositories/restaurant-repository.interface';
 
 @Injectable()
 export class FavoriteSavingsUseCase {
