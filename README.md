@@ -83,19 +83,22 @@ yarn db:migrate
 
 ### Modo de Desenvolvimento com Firebase Emulator (recomendado)
 
-**Terminal 1** — inicia o emulador local do Firebase Auth:
+**Terminal único** — sobe Postgres + emulador (Docker) e o backend:
 
 ```bash
-yarn firebase:emulator
+yarn start:local
 ```
 
-**Terminal 2** — inicia o backend em hot-reload:
+Ou em dois passos:
 
 ```bash
+yarn docker:up
 yarn start:emulator
 ```
 
-O servidor iniciará em [http://localhost:3000](http://localhost:3000) e a UI do emulador em [http://localhost:4000](http://localhost:4000).
+O servidor inicia em [http://localhost:3000](http://localhost:3000) e a UI do emulador em [http://localhost:4000](http://localhost:4000).
+
+> Fallback sem Docker: `yarn firebase:emulator` em um terminal e `yarn start:emulator` em outro (requer Firebase CLI).
 
 ### Modo de Desenvolvimento Simples (sem Firebase Emulator)
 

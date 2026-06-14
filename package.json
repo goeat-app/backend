@@ -32,8 +32,11 @@
     "check": "npm run typecheck && npm run check:circular",
     "firebase:deploy": "firebase deploy --only functions",
     "firebase:emulator": "firebase emulators:start --only auth,functions --project=demo-goeat",
-    "start:emulator": "FIREBASE_AUTH_EMULATOR_HOST=localhost:9099 nest start --watch",
-    "start:local:firebase": "npm run firebase:emulator & npm run start:emulator",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "start:local": "docker compose up -d && nest start --watch",
+    "start:emulator": "nest start --watch",
+    "start:local:firebase": "npm run start:local",
     "prepare": "husky"
   },
   "dependencies": {

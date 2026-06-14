@@ -19,39 +19,38 @@ necessária.
 
 ### Pré-requisitos
 
-- Firebase CLI instalada globalmente:
+- Docker com Docker Compose (recomendado)
+- Ou Firebase CLI instalada globalmente (fallback manual):
   ```bash
   npm install -g firebase-tools
-  ```
-- Yarn instalado:
-  ```bash
-  npm install -g yarn
-  ```
-- Autenticado no Firebase:
-  ```bash
-  firebase login
   ```
 
 ### Executando o emulador
 
-**Terminal 1** — inicia o emulador de Auth:
+**Opção A — Docker (recomendado)**
 
 ```bash
-yarn firebase:emulator
-```
-
-Isso sobe o emulador em `localhost:9099` e a Emulator UI em `localhost:4000`.
-A UI permite visualizar e gerenciar os usuários emulados.
-
-**Terminal 2** — sobe o backend apontado para o emulador:
-
-```bash
+yarn docker:up
 yarn start:emulator
 ```
 
-Esse script define `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` e inicia o
-NestJS em modo watch. O `firebase-admin` lê essa variável automaticamente e
-redireciona todas as chamadas de Auth para o emulador.
+Isso sobe o emulador em `localhost:9099` e a Emulator UI em `localhost:4000`.
+Ou tudo de uma vez:
+
+```bash
+yarn start:local
+```
+
+**Opção B — Firebase CLI no host**
+
+```bash
+yarn firebase:emulator   # terminal 1
+yarn start:emulator      # terminal 2
+```
+
+Configure `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` no `.env`. O
+`firebase-admin` lê essa variável e redireciona as chamadas de Auth para o
+emulador.
 
 ### Variáveis de ambiente do emulador
 
@@ -61,12 +60,14 @@ redireciona todas as chamadas de Auth para o emulador.
 | `EMULATOR_PROJECT_ID`         | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
 
 Você também pode exportá-las no shell ou adicioná-las a um arquivo `.env.local`
-(não versionado) em vez de usar o script `start:emulator`.
+(não versionado).
 
 ### Persistência do emulador
 
-Por padrão o estado do emulador é resetado a cada reinicialização. Para persistir
-usuários entre reinicializações, use as flags `--import` / `--export-on-exit`:
+No Docker, usuários são persistidos automaticamente no volume
+`firebase_emulator_data` (import/export no startup/shutdown do container).
+
+Para persistência manual com Firebase CLI no host:
 
 ```bash
 firebase emulators:start --only auth \

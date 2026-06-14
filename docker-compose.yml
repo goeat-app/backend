@@ -18,5 +18,24 @@ services:
       timeout: 5s
       retries: 5
 
+  firebase-emulator:
+    build:
+      context: ./docker/firebase-emulator
+    container_name: goeat-firebase-emulator
+    environment:
+      EMULATOR_PROJECT_ID: demo-goeat
+    ports:
+      - '9099:9099'
+      - '4000:4000'
+    volumes:
+      - firebase_emulator_data:/data
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:4000']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
 volumes:
   postgres_data:
+  firebase_emulator_data:
