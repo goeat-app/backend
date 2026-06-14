@@ -5,12 +5,12 @@ serviço externo (Supabase, Firebase de produção, etc.).
 
 A stack local usa:
 
-| Serviço        | Tecnologia               | Porta |
-| -------------- | ------------------------ | ----- |
-| Banco de dados | Docker + PostgreSQL 16   | 5432  |
-| Autenticação   | Firebase Auth Emulator   | 9099  |
-| Emulator UI    | Firebase Emulator Suite  | 4000  |
-| Backend NestJS | `npm run start:emulator` | 3000  |
+| Serviço        | Tecnologia                         | Porta |
+| -------------- | ---------------------------------- | ----- |
+| Banco de dados | Docker + PostgreSQL 16             | 5432  |
+| Autenticação   | Docker + Firebase Auth Emulator    | 9099  |
+| Emulator UI    | Docker + Firebase Emulator Suite   | 4000  |
+| Backend NestJS | `yarn start:local` ou `start:emulator` | 3000  |
 
 ---
 
@@ -18,11 +18,10 @@ A stack local usa:
 
 - [Node.js 22](https://nodejs.org/)
 - [Docker](https://www.docker.com/products/docker-desktop) (com Docker Compose)
-- Firebase CLI:
-  ```bash
-  npm install -g firebase-tools
-  firebase login
-  ```
+
+> O Firebase Auth Emulator roda via Docker — **não** é necessário instalar a
+> Firebase CLI para desenvolvimento local. A CLI continua útil apenas para deploy
+> (`yarn firebase:deploy`).
 
 ---
 
@@ -65,18 +64,25 @@ UPLOADS_PATH=./uploads
 
 ---
 
-## 3. Subir o PostgreSQL com Docker
+## 3. Subir a infra local com Docker
 
 ```bash
-docker compose up -d
+yarn docker:up
+# ou: docker compose up -d
 ```
 
-Isso sobe o container `goeat-postgres` com:
+Isso sobe:
+
+| Container | Serviço | Portas |
+| --------- | ------- | ------ |
+| `goeat-postgres` | PostgreSQL 16 | `5432` |
+| `goeat-firebase-emulator` | Firebase Auth Emulator + UI | `9099`, `4000` |
+
+Credenciais do Postgres:
 
 - **Usuário:** `admin`
 - **Senha:** `goeat-admin`
 - **Banco:** `goeat_db`
-- **Porta:** `5432`
 
 Verifique se está saudável:
 
@@ -84,7 +90,7 @@ Verifique se está saudável:
 docker compose ps
 ```
 
-A coluna `Status` deve mostrar `healthy`.
+As colunas `Status` devem mostrar `healthy`.
 
 ### Rodar as migrations
 
@@ -112,23 +118,27 @@ docker compose up -d
 
 ---
 
-## 4. Subir o Firebase Auth Emulator
+## 4. Subir o backend
 
-**Terminal 1** — inicia o emulador de Auth:
+Com Postgres e emulador já rodando via Docker, inicie o NestJS:
 
 ```bash
-yarn firebase:emulator
+yarn start:local
 ```
 
-Esse comando sobe o emulador em `localhost:9099` e a UI em `localhost:4000`.
-
-**Terminal 2** — sobe o backend apontado para o emulador:
+Esse comando sobe a infra Docker (se ainda não estiver no ar) e inicia o backend
+em hot-reload. Alternativa em dois passos:
 
 ```bash
+yarn docker:up
 yarn start:emulator
 ```
 
-O backend estará disponível em `http://localhost:3000`.
+O backend estará em `http://localhost:3000`. A Emulator UI fica em
+`http://localhost:4000/auth`.
+
+> Usuários criados no emulador são persistidos no volume Docker
+> `firebase_emulator_data` entre reinicializações do container.
 
 ---
 
@@ -215,7 +225,8 @@ docker compose restart
 
 ### Emulator UI não abre
 
-- Certifique-se de que rodou `npm run firebase:emulator` (não `npm run start:emulator`)
+- Certifique-se de que o container está saudável: `docker compose ps`
+- Veja os logs: `docker compose logs firebase-emulator`
 - Acesse `http://localhost:4000`
 
 ### "Cannot find module" errors
@@ -238,59 +249,26 @@ yarn typecheck
 3. Explore endpoints em `src/modules/auth/infra/controllers/`
 4. Configure seu cliente para enviar Firebase ID tokens
 
-Em um terminal separado:
-
-```bash
-npm run emulators:auth
-```
-
-Isso inicia o emulador de Auth em `localhost:9099` e a Emulator UI em
-`localhost:4000` (acesse pelo browser para visualizar e gerenciar usuários
-emulados).
-
-> Para mais detalhes sobre o emulador, incluindo persistência de dados entre
-> reinicializações, consulte [firebase-auth.md](./firebase-auth.md).
-
----
-
-## 5. Iniciar o backend
-
-Em outro terminal:
-
-```bash
-npm run start:emulator
-```
-
-Esse script define `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` automaticamente
-e sobe o NestJS em modo watch. Alternativamente, se você já exportou as
-variáveis no `.env`, pode usar:
-
-```bash
-npm run start:dev
-```
-
-O servidor estará disponível em `http://localhost:3000`.
-
 ---
 
 ## Resumo dos terminais
 
-| Terminal | Comando                  | O que faz                     |
-| -------- | ------------------------ | ----------------------------- |
-| 1        | `docker compose up -d`   | Sobe o PostgreSQL             |
-| 2        | `npm run emulators:auth` | Sobe o Firebase Auth Emulator |
-| 3        | `npm run start:emulator` | Sobe o NestJS                 |
+| Terminal | Comando            | O que faz                              |
+| -------- | ------------------ | -------------------------------------- |
+| 1        | `yarn start:local` | Sobe Docker (Postgres + emulator) + NestJS |
+| —        | `yarn docker:up`   | Só infra Docker                        |
+| —        | `yarn start:emulator` | Só NestJS (infra já no ar)          |
 
 ---
 
 ## Parando os serviços
 
 ```bash
-# Para o NestJS: Ctrl+C no terminal 3
-# Para o emulador: Ctrl+C no terminal 2
+# Para o NestJS: Ctrl+C no terminal do backend
 
-# Para o Docker:
-docker compose down
+# Para Docker (Postgres + emulador):
+yarn docker:down
+# ou: docker compose down
 ```
 
 Para remover também o volume de dados do Postgres:
