@@ -61,3 +61,4 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 !docker/firebase-emulator/data/
+docker/firebase-emulator/data/export/

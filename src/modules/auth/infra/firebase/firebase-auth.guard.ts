@@ -175,9 +175,7 @@ export class FirebaseAuthGuard implements CanActivate {
     }
 
     const code = Reflect.get(error, 'code');
-    return (
-      code === 'auth/id-token-expired' || code === 'auth/id-token-revoked' // ← adiciona isso
-    );
+    return code === 'auth/id-token-expired' || code === 'auth/id-token-revoked';
   }
 
   private isServiceUnavailableError(error: unknown): boolean {
