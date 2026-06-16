@@ -1,4 +1,6 @@
 import 'tsconfig-paths/register';
+import * as dotenv from 'dotenv';
+
 import { createNestApplication } from './nest-application.factory';
 import { ensureFirebaseAdminInitialized } from './lib/infra/firebase/firebase-admin.bootstrap';
 import { ZodValidationPipe } from 'nestjs-zod';
@@ -15,6 +17,9 @@ function registerUnhandledErrorLogging() {
 }
 
 async function bootstrap() {
+  dotenv.config({ path: '.env.local' });
+  dotenv.config();
+
   registerUnhandledErrorLogging();
   ensureFirebaseAdminInitialized();
 
