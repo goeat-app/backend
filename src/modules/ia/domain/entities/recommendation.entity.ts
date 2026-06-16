@@ -1,6 +1,7 @@
 export interface PlainRestaurant {
   id: string;
   name: string;
+  slug: string;
   place_type_id: string;
   food_type_id: string;
   average_rating: number;
@@ -13,6 +14,7 @@ export interface PlainRestaurant {
   latitude: string;
   longitude: string;
   is_active: number;
+  image_url?: string | null;
   placeType?: {
     id: string;
     name: string;

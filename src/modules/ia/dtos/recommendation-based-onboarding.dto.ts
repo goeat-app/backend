@@ -7,9 +7,10 @@ const RecommendationBasedOnboardingSchema = z.array(
     name: z.string(),
     placeType: z.string(),
     slug: z.string(),
+    restaurantSlug: z.string(),
     foodType: z.string(),
     priceLevel: z.number().int().min(1).max(5),
-    averageRating: z.number(),
+    avgRating: z.number(),
     address: z.string(),
     city: z.string(),
     state: z.string(),
@@ -17,6 +18,7 @@ const RecommendationBasedOnboardingSchema = z.array(
     isActive: z.boolean(),
     latitude: z.number(),
     longitude: z.number(),
+    imageUrl: z.string().nullable(),
   }),
 );
 

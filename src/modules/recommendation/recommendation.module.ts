@@ -21,6 +21,7 @@ import { UserPreferenceRepository } from './infra/repositories/user-preferences/
 import { RecommendationBasedOnboardingExternal } from './infra/external/recommendation-based-onboarding/recommendation-based-onboarding.external';
 
 import { GetOnboardingRecommendationUseCase } from './app/use-cases/get-onboarding-recommendation.use-case';
+import { GetMapRestaurantsUseCase } from './app/use-cases/get-map-restaurants.use-case';
 
 import { RecommendationController } from './infra/controllers/recommendation.controller';
 import { IRestaurantRepository } from './domain/interfaces/repositories/restaurant-repository.interface';
@@ -60,9 +61,11 @@ import { IReviewRepository } from './domain/interfaces/repositories/review-repos
       useClass: RecommendationBasedOnboardingExternal,
     },
     GetOnboardingRecommendationUseCase,
+    GetMapRestaurantsUseCase,
   ],
   exports: [
     GetOnboardingRecommendationUseCase,
+    GetMapRestaurantsUseCase,
     IRestaurantRepository,
     IReviewRepository,
     IUserPreferenceRepository,

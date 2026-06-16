@@ -11,8 +11,10 @@ export class RestaurantEntity {
     public readonly longitude: number,
     public readonly name: string,
     public readonly placeType: string,
-    public readonly slug: string,
+    public readonly placeTypeSlug: string,
     public readonly state: string,
+    public readonly restaurantSlug: string,
+    public readonly imageUrl: string | null,
   ) {}
 
   /**
