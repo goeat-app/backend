@@ -91,12 +91,16 @@ export class FavoriteSavingsUseCase {
       name: plain.name,
       placeType: plain.placeType?.name ?? 'Unknown',
       slug: plain.placeType?.slug ?? '',
+      restaurantSlug: plain.slug,
       foodType: plain.foodType?.name ?? 'Unknown',
       priceLevel: getPriceLevel(Number(plain.average_price)),
       avgRating: Number(plain.average_rating),
       address: plain.address,
       city: plain.city,
       state: plain.state,
+      latitude: Number(plain.latitude),
+      longitude: Number(plain.longitude),
+      imageUrl: plain.image_url ?? null,
     };
   }
 }

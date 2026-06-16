@@ -108,4 +108,7 @@ export class RestaurantsModel extends Model {
     allowNull: false,
   })
   declare is_active: boolean;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare image_url: string | null;
 }
