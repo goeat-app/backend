@@ -44,7 +44,7 @@ export class GetOnboardingRecommendationUseCase {
     const result = await this.recommendationService.execute(servicePayload);
 
     if (!result.restaurants.length) {
-      return [];
+      return RestaurantOnboardingMapper.toResponseDto(restaurants);
     }
 
     const recommended = await this.restaurantRepository.findByIds(

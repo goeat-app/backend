@@ -48,17 +48,40 @@ export class RestaurantRepository implements IRestaurantRepository {
       model: PlaceTypeModel,
       attributes: ['id', 'name', 'slug'],
     };
-    if (filters?.restaurantStyles?.length) {
-      placeTypeInclude.where = { name: { [Op.in]: filters.restaurantStyles } };
-      placeTypeInclude.required = true;
-    }
-
     const foodTypeInclude: IncludeOptions = {
       model: FoodTypeModel,
       attributes: ['id', 'name', 'slug'],
     };
-    if (filters?.foodTypes?.length) {
-      foodTypeInclude.where = { name: { [Op.in]: filters.foodTypes } };
+
+    const hasFoodFilter = Boolean(filters?.foodTypes?.length);
+    const hasPlaceFilter = Boolean(filters?.restaurantStyles?.length);
+
+    if (hasFoodFilter && hasPlaceFilter) {
+      placeTypeInclude.required = true;
+      foodTypeInclude.required = true;
+
+      return await this.restaurantModel.findAll({
+        where: {
+          ...where,
+          [Op.or]: [
+            { '$foodType.name$': { [Op.in]: filters!.foodTypes } },
+            { '$placeType.name$': { [Op.in]: filters!.restaurantStyles } },
+          ],
+        },
+        include: [placeTypeInclude, foodTypeInclude],
+        raw: false,
+      });
+    }
+
+    if (hasPlaceFilter) {
+      placeTypeInclude.where = {
+        name: { [Op.in]: filters!.restaurantStyles },
+      };
+      placeTypeInclude.required = true;
+    }
+
+    if (hasFoodFilter) {
+      foodTypeInclude.where = { name: { [Op.in]: filters!.foodTypes } };
       foodTypeInclude.required = true;
     }
 

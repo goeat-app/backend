@@ -44,17 +44,11 @@ export function resolveRestaurantFilters(
 
   if (session?.foodTypes?.length) {
     filters.foodTypes = normalizeFoodTypeNames(session.foodTypes);
-  } else if (preferences.preferredFoodTypes.length) {
-    filters.foodTypes = normalizeFoodTypeNames(preferences.preferredFoodTypes);
   }
 
   if (session?.restaurantStyles?.length) {
     filters.restaurantStyles = normalizePlaceTypeNames(
       session.restaurantStyles,
-    );
-  } else if (preferences.preferredPlaceTypes.length) {
-    filters.restaurantStyles = normalizePlaceTypeNames(
-      preferences.preferredPlaceTypes,
     );
   }
 

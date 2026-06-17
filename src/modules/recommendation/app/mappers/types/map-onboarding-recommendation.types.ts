@@ -19,6 +19,7 @@ export type PlainRestaurant = {
   average_price: number;
   average_rating: number;
   city: string;
+  description?: string | null;
   foodType?: FoodType;
   id: string;
   image_url?: string | null;
@@ -26,7 +27,9 @@ export type PlainRestaurant = {
   latitude: number;
   longitude: number;
   name: string;
+  phone?: string | null;
   placeType?: PlaceType;
   slug: string;
   state: string;
+  whatsapp?: string | null;
 };
