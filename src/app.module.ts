@@ -8,6 +8,7 @@ import { RestaurantImagesModule } from './modules/restaurant-images/restaurant-i
 import { RestaurantAccessModule } from './modules/restaurant-access/restaurant-access.module';
 import { RestaurantMenuModule } from './modules/restaurant-menu/restaurant-menu.module';
 import { RecommendationModule } from './modules/recommendation/recommendation.module';
+import { RestaurantModule } from './modules/restaurant/restaurant.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RecommendationModule } from './modules/recommendation/recommendation.mo
     RestaurantImagesModule,
     RestaurantAccessModule,
     RestaurantMenuModule,
+    RestaurantModule,
   ],
 })
 export class AppModule {}

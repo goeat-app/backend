@@ -1,5 +1,4 @@
 import { ReviewEntity } from '@/modules/recommendation/domain/entities/reviews.entity';
-import { RestaurantEntity } from '@/modules/recommendation/domain/entities/restaurant.entity';
 import {
   RecommendationServiceRequestDto,
   Restaurant,
@@ -13,6 +12,7 @@ import {
   PlainRestaurant,
   PlainReview,
 } from '../types/map-onboarding-recommendation.types';
+import { RestaurantEntity } from '@/lib/repositories/restaurant/domain/restaurant.entity';
 
 export class RestaurantOnboardingMapper {
   static toReviewEntity(review: ReviewModel): ReviewEntity {
@@ -117,5 +117,30 @@ export class RestaurantOnboardingMapper {
         state: restaurant.state,
       };
     });
+  }
+
+  static toRestaurantResponseDto(
+    restaurant: RestaurantsModel,
+  ): RestaurantRecommendationResponseDto {
+    const restaurantEntities = this.toRestaurantEntity(restaurant);
+
+    return {
+      address: restaurantEntities.address,
+      averagePrice: restaurantEntities.averagePrice,
+      avgRating: restaurantEntities.averageRating,
+      city: restaurantEntities.city,
+      foodType: restaurantEntities.foodType,
+      id: restaurantEntities.id,
+      imageUrl: restaurantEntities.imageUrl,
+      isActive: restaurantEntities.isActive,
+      latitude: restaurantEntities.latitude,
+      longitude: restaurantEntities.longitude,
+      name: restaurantEntities.name,
+      placeType: restaurantEntities.placeType,
+      priceLevel: restaurantEntities.priceLevel,
+      slug: restaurantEntities.placeTypeSlug,
+      restaurantSlug: restaurantEntities.restaurantSlug,
+      state: restaurantEntities.state,
+    };
   }
 }

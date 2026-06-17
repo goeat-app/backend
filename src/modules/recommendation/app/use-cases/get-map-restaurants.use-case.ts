@@ -5,6 +5,7 @@ import { IUserPreferenceRepository } from '../../domain/interfaces/repositories/
 import { IRestaurantRepository } from '../../domain/interfaces/repositories/restaurant-repository.interface';
 import { UserPreferenceEntity } from '../../domain/entities/user-preference.entity';
 import { RestaurantsModel } from '../../infra/database/restaurant.model';
+import { PlainRestaurant } from '../mappers/types/map-onboarding-recommendation.types';
 
 const DEFAULT_RADIUS_KM = 50;
 const MAX_PRICE_MARGIN = 1.15;
@@ -40,7 +41,7 @@ export class GetMapRestaurantsUseCase {
     const radiusKm = options.radiusKm ?? DEFAULT_RADIUS_KM;
 
     const filtered = restaurants.filter((restaurant) => {
-      const plain = restaurant.get({ plain: true });
+      const plain = restaurant.get({ plain: true }) as PlainRestaurant;
       const placeType = plain['placeType'];
       const foodType = plain['foodType'];
 
