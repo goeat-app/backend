@@ -5,6 +5,8 @@ import { RestaurantOnboardingMapper } from '../mappers/map-onboarding-recommenda
 import { IRecommendationService } from '../../domain/interfaces/services/recommendation-service.interface';
 import { IRestaurantRepository } from '../../domain/interfaces/repositories/restaurant-repository.interface';
 import { IReviewRepository } from '../../domain/interfaces/repositories/review-repository.interface';
+import { RestaurantQueryFilters } from '../../domain/types/restaurant-query-filters.type';
+import { resolveRestaurantFilters } from '../helpers/resolve-restaurant-filters.helper';
 
 @Injectable()
 export class GetOnboardingRecommendationUseCase {
@@ -17,6 +19,7 @@ export class GetOnboardingRecommendationUseCase {
 
   async execute(
     userId: string,
+    sessionFilters?: RestaurantQueryFilters,
   ): Promise<RestaurantRecommendationResponseDto[]> {
     const preferences =
       await this.userPreferenceRepository.findUserPreferencesByUserId(userId);
@@ -25,8 +28,10 @@ export class GetOnboardingRecommendationUseCase {
       throw new NotFoundException('User preferences not found');
     }
 
+    const filters = resolveRestaurantFilters(sessionFilters, preferences);
+
     const restaurants =
-      await this.restaurantRepository.findAllActiveRestaurants();
+      await this.restaurantRepository.findAllActiveRestaurants(filters);
 
     const reviews = await this.reviewRepository.findAllReviews();
 

@@ -7,6 +7,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { RestaurantRecommendationResponseDto } from '../../app/dtos/response/restaurant-recommendation-response.dto';
+import { parseRestaurantQueryFilters } from '../../app/dtos/request/parse-restaurant-query-filters';
 import { GetOnboardingRecommendationUseCase } from '../../app/use-cases/get-onboarding-recommendation.use-case';
 import { GetMapRestaurantsUseCase } from '../../app/use-cases/get-map-restaurants.use-case';
 import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.guard';
@@ -43,13 +44,28 @@ export class RecommendationController {
   @Get('onboarding')
   @UseGuards(FirebaseAuthGuard)
   async getRecommendationBasedOnboarding(
-    @Query('userId') userId: string,
     @Req() req: Request & { user: UserModel },
+    @Query('minRating') minRating?: string,
+    @Query('foodTypes') foodTypes?: string,
+    @Query('restaurantStyles') restaurantStyles?: string,
+    @Query('minPrice') minPrice?: string,
+    @Query('maxPrice') maxPrice?: string,
   ): Promise<RestaurantRecommendationResponseDto[]> {
     if (!req.user) {
       throw new BadRequestException('User not authenticated');
     }
 
-    return await this.getOnboardingRecommendationUseCase.execute(req.user.id);
+    const sessionFilters = parseRestaurantQueryFilters({
+      minRating,
+      foodTypes,
+      restaurantStyles,
+      minPrice,
+      maxPrice,
+    });
+
+    return await this.getOnboardingRecommendationUseCase.execute(
+      req.user.id,
+      sessionFilters,
+    );
   }
 }
