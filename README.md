@@ -23,6 +23,11 @@ Antes de começar, você precisará ter instalado em sua máquina:
 - **Docker** e **Docker Compose** para rodar PostgreSQL localmente
 - **Firebase CLI** (para trabalhar com Firebase): `npm install -g firebase-tools`
 
+> **Python é opcional para desenvolvimento normal.** Você não precisa instalar
+> Python para rodar o backend e o serviço de predição via Docker Compose.
+> Instale Python apenas se for executar scripts de treino, preparação de dataset
+> ou testes do serviço ML diretamente na máquina, fora do Docker.
+
 ## 🔐 Fluxo de Autenticação
 
 - As rotas protegidas aceitam apenas `Authorization: Bearer <firebase-id-token>`.
@@ -136,6 +141,9 @@ Documentação detalhada na pasta [docs/](docs/):
 - **[firebase-auth.md](docs/firebase-auth.md)** — Guia detalhado de autenticação com Firebase (emulador e produção)
 - **[firebase-auth-migration.md](docs/firebase-auth-migration.md)** — Contexto histórico da migração para Firebase Auth
 - **[firebase-deploy.md](docs/firebase-deploy.md)** — Guia completo para fazer deploy no Firebase Cloud Functions
+- **[recommendation-platform.md](docs/recommendation-platform.md)** — APIs, fluxo, dados e fallbacks do sistema de recomendação
+- **[recommendation-ml.md](docs/recommendation-ml.md)** — Integração NestJS + Python ML, treino, predição e recursos externos
+- **[recommendation-operations.md](docs/recommendation-operations.md)** — Configuração, observabilidade, jobs e debug operacional
 
 ---
 
@@ -161,7 +169,10 @@ docs/
 ├── local-development.md        # Setup local com Docker + Firebase Emulator
 ├── firebase-auth.md            # Autenticação com Firebase
 ├── firebase-auth-migration.md  # Contexto da migração para Firebase Auth
-└── firebase-deploy.md          # Deploy para Firebase Cloud Functions
+├── firebase-deploy.md          # Deploy para Firebase Cloud Functions
+├── recommendation-platform.md  # Plataforma de recomendações
+├── recommendation-ml.md        # Integração ML/Python
+└── recommendation-operations.md # Operação, jobs e debug
 
 src/
 ├── lib/                 # Infraestrutura, banco de dados (migrations, config)

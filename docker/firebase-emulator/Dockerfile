@@ -1,13 +1,27 @@
-FROM node:22-alpine
+FROM node:22-bookworm-slim
 
-RUN apk add --no-cache openjdk17-jre-headless wget \
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    python3 \
+    python3-pip \
+    python3-venv \
+    wget \
+  && rm -rf /var/lib/apt/lists/* \
   && npm install -g firebase-tools
 
-WORKDIR /firebase
+WORKDIR /workspace
 
-COPY firebase.json .firebaserc entrypoint.sh ./
-RUN chmod +x entrypoint.sh
+COPY package.json firebase.json .firebaserc tsconfig.json ./
+COPY dist ./dist
+COPY node_modules ./node_modules
+COPY ml/prediction_service ./ml/prediction_service
+COPY docker/firebase-emulator/entrypoint.sh ./entrypoint.sh
+RUN python3.11 -m venv ml/prediction_service/venv \
+  && ml/prediction_service/venv/bin/python -m pip install --upgrade pip \
+  && ml/prediction_service/venv/bin/python -m pip install -r ml/prediction_service/requirements.txt \
+  && chmod +x entrypoint.sh
 
-EXPOSE 9099 4000
+EXPOSE 9099 4000 5001
 
 ENTRYPOINT ["./entrypoint.sh"]

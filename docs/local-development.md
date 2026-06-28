@@ -10,6 +10,7 @@ A stack local usa:
 | Banco de dados | Docker + PostgreSQL 16             | 5432  |
 | Autenticação   | Docker + Firebase Auth Emulator    | 9099  |
 | Emulator UI    | Docker + Firebase Emulator Suite   | 4000  |
+| Predição ML    | Docker + FastAPI Python            | 8000  |
 | Backend NestJS | `yarn start:local` ou `start:emulator` | 3000  |
 
 ---
@@ -22,6 +23,12 @@ A stack local usa:
 > O Firebase Auth Emulator roda via Docker — **não** é necessário instalar a
 > Firebase CLI para desenvolvimento local. A CLI continua útil apenas para deploy
 > (`yarn firebase:deploy`).
+
+> **Python não é obrigatório para rodar localmente com Docker.** O container
+> `prediction-service` já inclui o runtime Python e as dependências do serviço
+> ML. Você só precisa instalar Python na máquina se quiser executar comandos como
+> `python ml/training/train_ranker.py`, preparar datasets externos ou rodar os
+> testes Python fora do container.
 
 ---
 
@@ -56,7 +63,19 @@ EMULATOR_PROJECT_ID=demo-goeat
 
 # Uploads locais
 UPLOADS_PATH=./uploads
+
+# Recomendação / ML local (opcional)
+GOOGLE_PLACES_API_KEY=<google-places-api-key>
+RECOMMENDATION_SCORER=rule_based
+PREDICTION_SERVICE_URL=http://localhost:5001/demo-goeat/us-central1
+PREDICTION_SERVICE_TOKEN=local-prediction-token
+RECOMMENDATION_MODEL_VERSION=restaurant_ranker_v1
 ```
+
+O serviço `firebase-emulator` recebe as variáveis do arquivo `.env` através de
+`env_file` no Docker Compose. As configurações que precisam de endereços
+internos do Docker, como `DATABASE_URL`, são sobrescritas pelo
+`docker-compose.yml`.
 
 > As variáveis de Supabase Storage (`SUPABASE_URL`, `SUPABASE_ANON_KEY`,
 > `SUPABASE_SERVICE_ROLE_KEY`) não são necessárias para rodar localmente se você
@@ -77,6 +96,7 @@ Isso sobe:
 | --------- | ------- | ------ |
 | `goeat-postgres` | PostgreSQL 16 | `5432` |
 | `goeat-firebase-emulator` | Firebase Auth Emulator + UI | `9099`, `4000` |
+| `goeat-prediction-service` | Python ML Prediction Service | `8000` |
 
 Credenciais do Postgres:
 
@@ -99,6 +119,35 @@ Com o banco no ar, aplique as migrations para criar as tabelas:
 ```bash
 yarn db:migrate
 ```
+
+### Prediction service local
+
+O Docker Compose também pode subir o serviço Python de predição:
+
+```bash
+docker compose up -d prediction-service
+```
+
+Para ativar scoring por ML no NestJS:
+
+```env
+RECOMMENDATION_SCORER=tensorflow
+PREDICTION_SERVICE_URL=http://localhost:8000
+PREDICTION_SERVICE_TOKEN=local-prediction-token
+RECOMMENDATION_MODEL_VERSION=restaurant_ranker_v1
+```
+
+O container monta o modelo em:
+
+```text
+ml/artifacts/restaurant_ranker_v1/model
+```
+
+Se esse artefato ainda não existir, o serviço roda em modo heurístico local
+quando `PREDICTION_ALLOW_HEURISTIC=true`. Veja detalhes em
+[recommendation-ml.md](recommendation-ml.md).
+
+Não é necessário instalar Python no host para usar esse container.
 
 ### Containers disponíveis
 
@@ -197,6 +246,7 @@ backend/
 ├── .env.example             # Template de variáveis (versionado)
 ├── .env                     # Seu arquivo local (não versionado)
 ├── docker-compose.yml       # PostgreSQL local
+├── ml/                       # Serviço Python, treino e artefatos ML
 └── firebase.json            # Configuração Firebase
 ```
 

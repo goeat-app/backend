@@ -1,25 +1,43 @@
 {
-  "functions": {
-    "source": ".",
-    "ignore": [
-      ".firebase",
-      ".git",
-      ".github",
-      "firebase-debug.log",
-      "firebase-debug.*.log",
-      "node_modules"
-    ],
-    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
-  },
+  "functions": [
+    {
+      "source": ".",
+      "codebase": "backend",
+      "ignore": [
+        ".firebase",
+        ".git",
+        ".github",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "node_modules"
+      ],
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+    },
+    {
+      "source": "ml/prediction_service",
+      "codebase": "prediction",
+      "runtime": "python311",
+      "ignore": [
+        ".venv",
+        "__pycache__",
+        "*.pyc",
+        "Dockerfile",
+        "test_app.py"
+      ]
+    }
+  ],
   "emulators": {
     "auth": {
+      "host": "0.0.0.0",
       "port": 9099
     },
     "functions": {
+      "host": "0.0.0.0",
       "port": 5001
     },
     "ui": {
       "enabled": true,
+      "host": "0.0.0.0",
       "port": 4000
     },
     "singleProjectMode": true

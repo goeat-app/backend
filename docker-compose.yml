@@ -20,15 +20,32 @@ services:
 
   firebase-emulator:
     build:
-      context: ./docker/firebase-emulator
+      context: .
+      dockerfile: docker/firebase-emulator/Dockerfile
     container_name: goeat-firebase-emulator
+    env_file:
+      - path: .env
+        required: false
     environment:
+      DATABASE_URL: postgresql://admin:goeat-admin@postgres:5432/goeat_db
       EMULATOR_PROJECT_ID: demo-goeat
+      FEATURE_VERSION: restaurant_recommendation_v1
+      FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+      MODEL_PATH: /workspace/ml/artifacts/restaurant_ranker_v1/model
+      MODEL_VERSION: restaurant_ranker_v1
+      PREDICTION_ALLOW_HEURISTIC: ${PREDICTION_ALLOW_HEURISTIC:-true}
+      PREDICTION_SERVICE_URL: http://localhost:5001/demo-goeat/us-central1
+      PREDICTION_SERVICE_TOKEN: ${PREDICTION_SERVICE_TOKEN:-local-prediction-token}
     ports:
       - '9099:9099'
+      - '5001:5001'
       - '4000:4000'
     volumes:
       - firebase_emulator_data:/data
+      - ./ml/artifacts:/workspace/ml/artifacts:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:4000']
       interval: 10s
