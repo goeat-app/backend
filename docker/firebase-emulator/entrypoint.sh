@@ -9,7 +9,7 @@ mkdir -p "$DATA_DIR"
 if [ -f "$DATA_DIR/firebase-export-metadata.json" ]; then
   echo "📂 Importando dados de $DATA_DIR..."
   exec firebase emulators:start \
-    --only auth \
+    --only auth,functions \
     --project "$PROJECT" \
     --import="$DATA_DIR" \
     --export-on-exit="$DATA_DIR"
@@ -17,6 +17,6 @@ fi
 
 echo "🆕 Iniciando sem dados..."
 exec firebase emulators:start \
-  --only auth \
+  --only auth,functions \
   --project "$PROJECT" \
   --export-on-exit="$DATA_DIR"
