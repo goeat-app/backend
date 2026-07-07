@@ -65,7 +65,7 @@ describe('TensorFlowRecommendationScorer', () => {
 
     const result = await scorer.score(input);
 
-    expect(mockedAxios.post).toHaveBeenCalledWith(
+    expect(void mockedAxios.post).toHaveBeenCalledWith(
       'http://localhost:8000/predict',
       expect.objectContaining({
         modelVersion: 'model-v1',

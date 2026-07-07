@@ -97,17 +97,24 @@ export class TrainingDatasetService {
   }
 
   private toLabel(interaction: RecommendationInteractionModel): 0 | 1 | null {
-    if (interaction.interaction_type === RecommendationInteractionType.Like) {
+    if (
+      interaction.interaction_type ===
+      (RecommendationInteractionType.Like as unknown as string)
+    ) {
       return 1;
     }
 
     if (
-      interaction.interaction_type === RecommendationInteractionType.Dislike
+      interaction.interaction_type ===
+      (RecommendationInteractionType.Dislike as unknown as string)
     ) {
       return 0;
     }
 
-    if (interaction.interaction_type !== RecommendationInteractionType.Rating) {
+    if (
+      interaction.interaction_type !==
+      (RecommendationInteractionType.Rating as unknown as string)
+    ) {
       return null;
     }
 
