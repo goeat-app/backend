@@ -22,10 +22,14 @@ import { RecommendationBasedOnboardingExternal } from './infra/external/recommen
 
 import { GetOnboardingRecommendationUseCase } from './app/use-cases/get-onboarding-recommendation.use-case';
 import { GetMapRestaurantsUseCase } from './app/use-cases/get-map-restaurants.use-case';
+import { SyncNearbyRestaurantsUseCase } from './app/use-cases/sync-nearby-restaurants.use-case';
+import { RestaurantDiscoverySyncService } from './app/services/restaurant-discovery-sync.service';
 
 import { RecommendationController } from './infra/controllers/recommendation.controller';
 import { IRestaurantRepository } from './domain/interfaces/repositories/restaurant-repository.interface';
 import { IReviewRepository } from './domain/interfaces/repositories/review-repository.interface';
+import { PlacesProvider } from './domain/interfaces/places-provider.interface';
+import { GooglePlacesProvider } from './infra/external/google-places/google-places.provider';
 
 @Module({
   imports: [
@@ -60,15 +64,24 @@ import { IReviewRepository } from './domain/interfaces/repositories/review-repos
       provide: IRecommendationService,
       useClass: RecommendationBasedOnboardingExternal,
     },
+    {
+      provide: PlacesProvider,
+      useClass: GooglePlacesProvider,
+    },
+    RestaurantDiscoverySyncService,
     GetOnboardingRecommendationUseCase,
     GetMapRestaurantsUseCase,
+    SyncNearbyRestaurantsUseCase,
   ],
   exports: [
     GetOnboardingRecommendationUseCase,
     GetMapRestaurantsUseCase,
+    SyncNearbyRestaurantsUseCase,
+    RestaurantDiscoverySyncService,
     IRestaurantRepository,
     IReviewRepository,
     IUserPreferenceRepository,
+    PlacesProvider,
   ],
 })
 export class RecommendationModule {}

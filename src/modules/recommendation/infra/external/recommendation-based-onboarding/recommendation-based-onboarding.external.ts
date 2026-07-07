@@ -13,22 +13,38 @@ import { ENDPOINTS } from '@/lib/constants/endpoints';
 
 @Injectable()
 export class RecommendationBasedOnboardingExternal implements IRecommendationService {
+  private readonly logger = new Logger(
+    RecommendationBasedOnboardingExternal.name,
+  );
   constructor(private readonly configService: ConfigService) {}
 
   async execute(
     payload: RecommendationServiceRequestDto,
   ): Promise<RecommendationServiceResponseDto> {
     const baseURL = this.configService.get<string>('RECOMMENDER_SYSTEM_URL');
+
+    const endpoint = ENDPOINTS.RECOMMENDATION_ONBOARDING;
     const api = apiInstance(baseURL);
 
     try {
-      const { data } = await api.post<RecommendationServiceResponseDto>(
-        ENDPOINTS.RECOMMENDATION_ONBOARDING,
+      const response = await api.post<RecommendationServiceResponseDto>(
+        endpoint,
         payload,
       );
 
-      return data;
+      return response.data;
     } catch (error) {
+      if (error instanceof AxiosError) {
+        this.logger.error(
+          `Failed to communicate with recommendation service at ${baseURL}${endpoint}: ${
+            error.response?.status ?? error.code ?? 'unknown error'
+          } ${JSON.stringify(error.response?.data ?? error.message)}`,
+        );
+      }
+
+      this.logger.error(
+        `Failed to communicate with recommendation service at ${baseURL}${endpoint}`,
+      );
       throw new InternalServerErrorException(
         'Failed to communicate with recommendation service',
       );

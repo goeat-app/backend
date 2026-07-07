@@ -32,10 +32,10 @@ export class RestaurantOnboardingMapper {
     const plain = restaurant.get({ plain: true }) as PlainRestaurant;
 
     return new RestaurantEntity(
-      plain.address,
+      plain.address ?? '',
       Number(plain.average_price),
       Number(plain.average_rating),
-      plain.city,
+      plain.city ?? '',
       plain.description ?? null,
       plain.foodType?.name ?? '',
       plain.id,
@@ -46,7 +46,7 @@ export class RestaurantOnboardingMapper {
       normalizePhoneNumber(plain.phone ?? null),
       plain.placeType?.name ?? '',
       plain.placeType?.slug ?? '',
-      plain.state,
+      plain.state ?? '',
       plain.slug,
       plain.image_url ?? null,
       normalizePhoneNumber(plain.whatsapp ?? null),

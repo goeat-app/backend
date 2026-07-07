@@ -6,8 +6,11 @@ import { IRestaurantRepository } from '../../domain/interfaces/repositories/rest
 import { UserPreferenceEntity } from '../../domain/entities/user-preference.entity';
 import { RestaurantsModel } from '../../infra/database/restaurant.model';
 import { PlainRestaurant } from '../mappers/types/map-onboarding-recommendation.types';
+import { RestaurantDiscoverySyncService } from '../services/restaurant-discovery-sync.service';
+import { PlacesProviderError } from '../../domain/errors/places-provider.error';
 
 const DEFAULT_RADIUS_KM = 50;
+const DEFAULT_GOOGLE_MAX_RESULT_COUNT = 20;
 const MAX_PRICE_MARGIN = 1.15;
 
 export type GetMapRestaurantsOptions = {
@@ -22,6 +25,7 @@ export class GetMapRestaurantsUseCase {
   constructor(
     private readonly restaurantRepository: IRestaurantRepository,
     private readonly userPreferenceRepository: IUserPreferenceRepository,
+    private readonly discoverySyncService: RestaurantDiscoverySyncService,
   ) {}
 
   async execute(
@@ -34,6 +38,8 @@ export class GetMapRestaurantsUseCase {
     if (!preferences) {
       throw new NotFoundException('User preferences not found');
     }
+
+    await this.syncNearbyIfCoordinatesWereProvided(options);
 
     const restaurants =
       await this.restaurantRepository.findAllActiveRestaurants();
@@ -57,7 +63,7 @@ export class GetMapRestaurantsUseCase {
       if (!this.matchesPrice(restaurant, preferences)) return false;
       if (
         options.city &&
-        restaurant.city.toLowerCase() !== options.city.toLowerCase()
+        (restaurant.city ?? '').toLowerCase() !== options.city.toLowerCase()
       )
         return false;
       if (!this.isWithinRadius(restaurant, options, radiusKm)) return false;
@@ -145,5 +151,26 @@ export class GetMapRestaurantsUseCase {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return earthRadiusKm * c;
+  }
+
+  private async syncNearbyIfCoordinatesWereProvided(
+    options: GetMapRestaurantsOptions,
+  ): Promise<void> {
+    const { latitude, longitude } = options;
+
+    if (latitude == null || longitude == null) return;
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+    if (latitude === 0 && longitude === 0) return;
+
+    try {
+      await this.discoverySyncService.syncNearbyRestaurants({
+        location: { latitude, longitude },
+        radiusMeters: (options.radiusKm ?? DEFAULT_RADIUS_KM) * 1000,
+        maxResultCount: DEFAULT_GOOGLE_MAX_RESULT_COUNT,
+      });
+    } catch (error) {
+      if (error instanceof PlacesProviderError) return;
+      throw error;
+    }
   }
 }

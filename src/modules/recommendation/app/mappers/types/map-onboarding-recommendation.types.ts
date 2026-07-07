@@ -15,10 +15,10 @@ interface PlaceType {
 }
 
 export type PlainRestaurant = {
-  address: string;
+  address: string | null;
   average_price: number;
   average_rating: number;
-  city: string;
+  city: string | null;
   description?: string | null;
   foodType?: FoodType;
   id: string;
@@ -30,6 +30,6 @@ export type PlainRestaurant = {
   phone?: string | null;
   placeType?: PlaceType;
   slug: string;
-  state: string;
+  state: string | null;
   whatsapp?: string | null;
 };

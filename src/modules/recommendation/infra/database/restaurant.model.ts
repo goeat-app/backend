@@ -28,10 +28,22 @@ export class RestaurantsModel extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
     unique: true,
   })
   declare slug: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare provider: string | null;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare provider_place_id: string | null;
 
   @ForeignKey(() => PlaceTypeModel)
   @AllowNull(true)
@@ -69,27 +81,99 @@ export class RestaurantsModel extends Model {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  declare address: string;
+  declare primary_type: string | null;
+
+  @Column({
+    type: DataType.ARRAY(DataType.STRING),
+    allowNull: true,
+  })
+  declare types: string[] | null;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  declare price_level: number | null;
+
+  @Column({
+    type: DataType.DECIMAL,
+    allowNull: true,
+  })
+  declare google_rating: number | null;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  declare google_rating_count: number | null;
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  declare city: string;
+  declare business_status: string | null;
+
+  @Column({
+    type: DataType.JSONB,
+    allowNull: true,
+  })
+  declare opening_hours: Record<string, unknown> | null;
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  declare state: string;
+  declare website: string | null;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  declare editorial_summary: string | null;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  declare first_seen_at: Date | null;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  declare last_seen_at: Date | null;
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  declare last_synced_at: Date | null;
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  declare postal_code: string;
+  declare address: string | null;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare city: string | null;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare state: string | null;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare postal_code: string | null;
 
   @Column({
     type: DataType.DECIMAL,
