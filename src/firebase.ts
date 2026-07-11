@@ -1,5 +1,6 @@
 import 'tsconfig-paths/register';
 import * as functions from 'firebase-functions/v1';
+import { onRequest } from 'firebase-functions/v2/https';
 import { createNestApplication } from './nest-application.factory';
 import { ensureFirebaseAdminInitialized } from './lib/infra/firebase/firebase-admin.bootstrap';
 import { CreateUserUseCase } from './modules/auth/app/use-cases/register.use-case';
@@ -22,7 +23,7 @@ async function getServer(): Promise<ExpressHandler> {
   return cachedServer;
 }
 
-export const api = functions.https.onRequest(async (req, res) => {
+export const api = onRequest({ invoker: 'public' }, async (req, res) => {
   // Allow CORS preflight requests to reach the NestJS CORS middleware
   // so the correct Access-Control-Allow-* headers are returned.
   // if (req.method === 'OPTIONS') {
