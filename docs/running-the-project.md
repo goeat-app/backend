@@ -4,7 +4,7 @@
 
 - Node.js 22
 - Docker (com Docker Compose)
-- Firebase CLI (`npm install -g firebase-tools` e `firebase login`)
+- Firebase CLI apenas para executar os emuladores sem Docker
 
 ## Configuração
 
@@ -147,7 +147,15 @@ Isso cria todas as tabelas necessárias em sua instância local do PostgreSQL.
 
 ## Passo 4: Iniciar a Suite de Emuladores do Firebase
 
-**No Terminal 1**, inicie a Suite de Emuladores do Firebase:
+**No Terminal 1**, inicie a Suite de Emuladores pelo Docker (não requer Firebase CLI):
+
+```bash
+docker compose up firebase-emulator
+```
+
+O container usa os arquivos `firebase.json` e `.firebaserc` da raiz e executa o equivalente a `firebase emulators:start --only functions,auth` nesse diretório.
+
+Como alternativa, se você tiver a Firebase CLI instalada, execute diretamente na raiz:
 
 ```bash
 yarn firebase:emulator

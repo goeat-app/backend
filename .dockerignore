@@ -1,0 +1,11 @@
+.firebase
+.git
+.github
+coverage
+dist
+docker/firebase-emulator/data
+firebase-debug.log
+firebase-debug.*.log
+node_modules
+npm-debug.log
+yarn-error.log

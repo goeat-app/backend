@@ -20,8 +20,8 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 - **Node.js 22+** (confira com `node --version`)
 - **Yarn** (confira com `yarn --version`)
-- **Docker** e **Docker Compose** para rodar PostgreSQL localmente
-- **Firebase CLI** (para trabalhar com Firebase): `npm install -g firebase-tools`
+- **Docker** e **Docker Compose** para rodar PostgreSQL e, opcionalmente, os emuladores Firebase
+- **Firebase CLI** apenas se você preferir rodar os emuladores sem Docker: `npm install -g firebase-tools`
 
 ## 🔐 Fluxo de Autenticação
 
@@ -83,7 +83,7 @@ yarn db:migrate
 
 ### Modo de Desenvolvimento com Firebase Emulator (recomendado)
 
-**Terminal único** — sobe Postgres + emulador (Docker) e o backend:
+**Terminal único** — sobe Postgres + emuladores de Auth e Functions (Docker) e o backend:
 
 ```bash
 yarn start:local
@@ -97,6 +97,8 @@ yarn start:emulator
 ```
 
 O servidor inicia em [http://localhost:3000](http://localhost:3000) e a UI do emulador em [http://localhost:4000](http://localhost:4000).
+
+O container executa o equivalente a `firebase emulators:start --only functions,auth` na raiz do projeto. Não é necessário instalar a Firebase CLI na máquina. A Functions API fica disponível em [http://127.0.0.1:5001/demo-goeat/us-central1/api](http://127.0.0.1:5001/demo-goeat/us-central1/api).
 
 > Fallback sem Docker: `yarn firebase:emulator` em um terminal e `yarn start:emulator` em outro (requer Firebase CLI).
 
