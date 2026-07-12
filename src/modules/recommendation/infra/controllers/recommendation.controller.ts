@@ -33,12 +33,17 @@ export class RecommendationController {
       throw new BadRequestException('User not authenticated');
     }
 
-    return await this.getMapRestaurantsUseCase.execute(req.user.id, {
-      latitude: latitude !== undefined ? Number(latitude) : undefined,
-      longitude: longitude !== undefined ? Number(longitude) : undefined,
-      radiusKm: radiusKm !== undefined ? Number(radiusKm) : undefined,
-      city,
-    });
+    try {
+      return await this.getMapRestaurantsUseCase.execute(req.user.id, {
+        latitude: latitude !== undefined ? Number(latitude) : undefined,
+        longitude: longitude !== undefined ? Number(longitude) : undefined,
+        radiusKm: radiusKm !== undefined ? Number(radiusKm) : undefined,
+        city,
+      });
+    } catch (error) {
+      console.error('Recommendation Map Error:', error);
+      throw new BadRequestException('Error processing recommendation request.');
+    }
   }
 
   @Get('onboarding')
@@ -55,17 +60,22 @@ export class RecommendationController {
       throw new BadRequestException('User not authenticated');
     }
 
-    const sessionFilters = parseRestaurantQueryFilters({
-      minRating,
-      foodTypes,
-      restaurantStyles,
-      minPrice,
-      maxPrice,
-    });
+    try {
+      const sessionFilters = parseRestaurantQueryFilters({
+        minRating,
+        foodTypes,
+        restaurantStyles,
+        minPrice,
+        maxPrice,
+      });
 
-    return await this.getOnboardingRecommendationUseCase.execute(
-      req.user.id,
-      sessionFilters,
-    );
+      return await this.getOnboardingRecommendationUseCase.execute(
+        req.user.id,
+        sessionFilters,
+      );
+    } catch (error) {
+      console.error('Recommendation Onboarding Error:', error);
+      throw new BadRequestException('Error processing recommendation request.');
+    }
   }
 }
