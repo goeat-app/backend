@@ -1,6 +1,8 @@
 .firebase
 .git
 .github
+.env
+.env.*
 coverage
 dist
 docker/firebase-emulator/data
