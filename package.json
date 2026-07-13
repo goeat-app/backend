@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "nest build",
+    "build:watch": "nest build --watch",
     "start": "nest start  --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

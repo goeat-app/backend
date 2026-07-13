@@ -3,11 +3,13 @@ FROM node:22-alpine
 RUN apk add --no-cache openjdk17-jre-headless wget \
   && npm install -g firebase-tools
 
-WORKDIR /firebase
+WORKDIR /workspace
 
-COPY firebase.json .firebaserc entrypoint.sh ./
-RUN chmod +x entrypoint.sh
+RUN corepack enable
 
-EXPOSE 9099 4000
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
-ENTRYPOINT ["./entrypoint.sh"]
+EXPOSE 4000 5001 9099
+
+CMD ["firebase", "emulators:start", "--only", "functions,auth"]

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -20,16 +18,23 @@ services:
 
   firebase-emulator:
     build:
-      context: ./docker/firebase-emulator
+      context: .
+      dockerfile: docker/firebase-emulator/Dockerfile
     container_name: goeat-firebase-emulator
-    environment:
-      EMULATOR_PROJECT_ID: demo-goeat
+    working_dir: /workspace
+    command: firebase emulators:start --only functions,auth
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - '9099:9099'
+      - '5001:5001'
       - '4000:4000'
     volumes:
-      - ./docker/firebase-emulator/data:/data
-      - ./docker/firebase-emulator/seed-users.sh:/seed-users.sh
+      - .:/workspace
+      - firebase_node_modules:/workspace/node_modules
     healthcheck:
       test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:4000']
       interval: 10s
@@ -39,3 +44,4 @@ services:
 
 volumes:
   postgres_data:
+  firebase_node_modules:

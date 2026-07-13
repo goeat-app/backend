@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProfileMappingDto } from '../../dtos/create-profile.dto';
 import { IProfileMappingRepository } from '../../domain/interfaces/profile-mapping.interface';
+import { ProfileMappingResponseType } from '../../dtos/profile-response.dto';
 
 @Injectable()
 export class ProfileMappingUseCase {
@@ -17,5 +18,16 @@ export class ProfileMappingUseCase {
       placeTypes: profileMapping.placeTypes,
       priceRange: profileMapping.priceRange,
     });
+  }
+
+  async getProfileMapping(userId: string): Promise<ProfileMappingResponseType> {
+    const profileMapping =
+      await this.profileMappingRepository.findByUserId(userId);
+
+    if (!profileMapping) {
+      throw new NotFoundException('Profile mapping not found');
+    }
+
+    return profileMapping;
   }
 }
