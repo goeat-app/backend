@@ -1,5 +1,4 @@
 import { ReviewEntity } from '@/modules/recommendation/domain/entities/reviews.entity';
-import { RestaurantEntity } from '@/modules/recommendation/domain/entities/restaurant.entity';
 import {
   RecommendationServiceRequestDto,
   Restaurant,
@@ -9,28 +8,13 @@ import { UserPreferenceEntity } from '@/modules/recommendation/domain/entities/u
 import { ReviewModel } from '@/modules/recommendation/infra/database/review.model';
 import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
 import { RestaurantRecommendationResponseDto } from '../../dtos/response/restaurant-recommendation-response.dto';
-
-type PlainReview = {
-  id: string;
-  user_id: string;
-  restaurant_id: string;
-  rating: number;
-};
-
-type PlainRestaurant = {
-  address: string;
-  average_price: number;
-  average_rating: number;
-  city: string;
-  foodType?: { name?: string } | null;
-  id: string;
-  is_active: boolean;
-  latitude: number;
-  longitude: number;
-  name: string;
-  placeType?: { name?: string; slug?: string } | null;
-  state: string;
-};
+import { RestaurantDetailsResponseDto } from '@/lib/repositories/restaurant/dtos/response/restaurant-details-response.dto';
+import {
+  PlainRestaurant,
+  PlainReview,
+} from '../types/map-onboarding-recommendation.types';
+import { RestaurantEntity } from '@/lib/repositories/restaurant/domain/restaurant.entity';
+import { normalizePhoneNumber } from '@/lib/helpers/normalize-phone-number.helper';
 
 export class RestaurantOnboardingMapper {
   static toReviewEntity(review: ReviewModel): ReviewEntity {
@@ -52,15 +36,20 @@ export class RestaurantOnboardingMapper {
       Number(plain.average_price),
       Number(plain.average_rating),
       plain.city,
+      plain.description ?? null,
       plain.foodType?.name ?? '',
       plain.id,
       Boolean(plain.is_active),
       Number(plain.latitude),
       Number(plain.longitude),
       plain.name,
+      normalizePhoneNumber(plain.phone ?? null),
       plain.placeType?.name ?? '',
       plain.placeType?.slug ?? '',
       plain.state,
+      plain.slug,
+      plain.image_url ?? null,
+      normalizePhoneNumber(plain.whatsapp ?? null),
     );
   }
 
@@ -117,19 +106,76 @@ export class RestaurantOnboardingMapper {
       return {
         address: restaurant.address,
         averagePrice: restaurant.averagePrice,
-        averageRating: restaurant.averageRating,
+        avgRating: restaurant.averageRating,
         city: restaurant.city,
         foodType: restaurant.foodType,
         id: restaurant.id,
+        imageUrl: restaurant.imageUrl,
         isActive: restaurant.isActive,
         latitude: restaurant.latitude,
         longitude: restaurant.longitude,
         name: restaurant.name,
         placeType: restaurant.placeType,
         priceLevel: restaurant.priceLevel,
-        slug: restaurant.slug,
+        slug: restaurant.placeTypeSlug,
+        restaurantSlug: restaurant.restaurantSlug,
         state: restaurant.state,
       };
     });
+  }
+
+  static toRestaurantResponseDto(
+    restaurant: RestaurantsModel,
+  ): RestaurantRecommendationResponseDto {
+    const restaurantEntities = this.toRestaurantEntity(restaurant);
+
+    return {
+      address: restaurantEntities.address,
+      averagePrice: restaurantEntities.averagePrice,
+      avgRating: restaurantEntities.averageRating,
+      city: restaurantEntities.city,
+      foodType: restaurantEntities.foodType,
+      id: restaurantEntities.id,
+      imageUrl: restaurantEntities.imageUrl,
+      isActive: restaurantEntities.isActive,
+      latitude: restaurantEntities.latitude,
+      longitude: restaurantEntities.longitude,
+      name: restaurantEntities.name,
+      placeType: restaurantEntities.placeType,
+      priceLevel: restaurantEntities.priceLevel,
+      slug: restaurantEntities.placeTypeSlug,
+      restaurantSlug: restaurantEntities.restaurantSlug,
+      state: restaurantEntities.state,
+    };
+  }
+
+  static toRestaurantDetailsResponseDto(
+    restaurant: RestaurantsModel,
+    photos: string[] = [],
+  ): RestaurantDetailsResponseDto {
+    const entity = this.toRestaurantEntity(restaurant);
+
+    return {
+      address: entity.address,
+      averagePrice: entity.averagePrice,
+      avgRating: entity.averageRating,
+      city: entity.city,
+      description: entity.description,
+      foodType: entity.foodType,
+      id: entity.id,
+      imageUrl: entity.imageUrl,
+      isActive: entity.isActive,
+      latitude: entity.latitude,
+      longitude: entity.longitude,
+      name: entity.name,
+      phone: entity.phone,
+      photos,
+      placeType: entity.placeType,
+      priceLevel: entity.priceLevel,
+      slug: entity.placeTypeSlug,
+      restaurantSlug: entity.restaurantSlug,
+      state: entity.state,
+      whatsapp: entity.whatsapp,
+    };
   }
 }

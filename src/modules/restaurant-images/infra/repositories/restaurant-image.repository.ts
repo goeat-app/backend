@@ -30,6 +30,24 @@ export class SequelizeRestaurantImageRepository implements IRestaurantImageRepos
     };
   }
 
+  async findByRestaurantId(restaurantId: string) {
+    const records = await this.model.findAll({
+      where: { restaurant_id: restaurantId },
+      order: [
+        ['is_cover', 'DESC'],
+        ['created_at', 'ASC'],
+      ],
+    });
+
+    return records.map((record) => ({
+      id: record.id,
+      restaurant_id: record.restaurant_id,
+      image_key: record.image_key,
+      is_cover: record.is_cover,
+      created_at: record.created_at,
+    }));
+  }
+
   async findByIdAndRestaurantId(imageId: string, restaurantId: string) {
     const record = await this.model.findOne({
       where: {

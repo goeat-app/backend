@@ -210,4 +210,16 @@ export class RestaurantsModel extends Model {
     allowNull: false,
   })
   declare is_active: boolean;
+
+  @Column({ type: DataType.STRING, allowNull: true })
+  declare image_url: string | null;
+
+  @Column({ type: DataType.TEXT, allowNull: true })
+  declare description: string | null;
+
+  @Column({ type: DataType.STRING(20), allowNull: true })
+  declare phone: string | null;
+
+  @Column({ type: DataType.STRING(20), allowNull: true })
+  declare whatsapp: string | null;
 }

@@ -4,15 +4,20 @@ export class RestaurantEntity {
     public readonly averagePrice: number,
     public readonly averageRating: number,
     public readonly city: string,
+    public readonly description: string | null,
     public readonly foodType: string,
     public readonly id: string,
     public readonly isActive: boolean,
     public readonly latitude: number,
     public readonly longitude: number,
     public readonly name: string,
+    public readonly phone: string | null,
     public readonly placeType: string,
-    public readonly slug: string,
+    public readonly placeTypeSlug: string,
     public readonly state: string,
+    public readonly restaurantSlug: string,
+    public readonly imageUrl: string | null,
+    public readonly whatsapp: string | null,
   ) {}
 
   /**
