@@ -48,16 +48,16 @@ yarn firebase:emulator   # terminal 1
 yarn start:emulator      # terminal 2
 ```
 
-Configure `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` no `.env`. O
+Configure `AUTH_EMULATOR_HOST=localhost:9099` no `.env`. O
 `firebase-admin` lê essa variável e redireciona as chamadas de Auth para o
 emulador.
 
 ### Variáveis de ambiente do emulador
 
-| Variável                      | Valor                 | Observação                                   |
-| ----------------------------- | --------------------- | -------------------------------------------- |
-| `FIREBASE_AUTH_EMULATOR_HOST` | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
-| `EMULATOR_PROJECT_ID`         | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
+| Variável              | Valor                 | Observação                                   |
+| --------------------- | --------------------- | -------------------------------------------- |
+| `AUTH_EMULATOR_HOST`  | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
+| `EMULATOR_PROJECT_ID` | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
 
 Você também pode exportá-las no shell ou adicioná-las a um arquivo `.env.local`
 (não versionado).
@@ -134,7 +134,7 @@ variável de ambiente adicional é necessária.
 ## Como o bootstrap decide qual modo usar
 
 ```
-FIREBASE_AUTH_EMULATOR_HOST definida?
+AUTH_EMULATOR_HOST definida?
   └─ sim → initializeApp({ projectId }) — sem credenciais, aponta para o emulador
   └─ não → firebase-service-account.json existe na raiz?
               └─ sim → initializeApp com as credenciais do arquivo
