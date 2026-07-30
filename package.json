@@ -39,7 +39,8 @@
     "start:local": "docker compose up -d && nest start --watch",
     "start:emulator": "nest start --watch",
     "start:local:firebase": "npm run start:local",
-    "prepare": "husky"
+    "prepare": "husky",
+    "seed:images": "ts-node --project tsconfig.json scripts/seed-images.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
