@@ -20,8 +20,8 @@ export class RestaurantImageUrlResolver {
    */
   async resolve(
     imageKey: string,
-    bucket =
-      process.env.FIREBASE_STORAGE_BUCKET ?? FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME,
+    bucket = process.env.FIREBASE_STORAGE_BUCKET ??
+      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME,
   ): Promise<string> {
     // If it's already a URL, return as-is
     if (imageKey.startsWith('http://') || imageKey.startsWith('https://')) {
