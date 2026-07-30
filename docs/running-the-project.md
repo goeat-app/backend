@@ -112,7 +112,7 @@ PORT=3000
 DATABASE_URL=postgresql://admin:goeat-admin@localhost:5432/goeat_db
 
 # Firebase Auth Emulator
-FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+AUTH_EMULATOR_HOST=localhost:9099
 EMULATOR_PROJECT_ID=demo-goeat
 
 # Storage (opcional para desenvolvimento local)
@@ -187,7 +187,7 @@ yarn start:emulator
 
 Isso inicia a aplicação com:
 
-- `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` (conecta ao Auth Emulator)
+- `AUTH_EMULATOR_HOST=localhost:9099` (conecta ao Auth Emulator)
 - flag `--watch` habilitada (hot-reload ao salvar arquivos)
 - Ouvindo na porta `3000`
 
@@ -345,14 +345,14 @@ Isso habilita Node Inspector. Conecte com o debugger do seu IDE em `127.0.0.1:92
 
 ## Referência de Variáveis de Ambiente
 
-| Variável                      | Propósito                            | Exemplo            |
-| ----------------------------- | ------------------------------------ | ------------------ |
-| `NODE_ENV`                    | Modo de ambiente                     | `development`      |
-| `PORT`                        | Porta do servidor NestJS             | `3000`             |
-| `DATABASE_URL`                | Conexão PostgreSQL                   | `postgresql://...` |
-| `FIREBASE_AUTH_EMULATOR_HOST` | Endereço do Firebase Auth Emulator   | `localhost:9099`   |
-| `EMULATOR_PROJECT_ID`         | ID do projeto Firebase para emulator | `demo-goeat`       |
-| `UPLOADS_PATH`                | Diretório para uploads de arquivos   | `./uploads`        |
+| Variável              | Propósito                            | Exemplo            |
+| --------------------- | ------------------------------------ | ------------------ |
+| `NODE_ENV`            | Modo de ambiente                     | `development`      |
+| `PORT`                | Porta do servidor NestJS             | `3000`             |
+| `DATABASE_URL`        | Conexão PostgreSQL                   | `postgresql://...` |
+| `AUTH_EMULATOR_HOST`  | Endereço do Firebase Auth Emulator   | `localhost:9099`   |
+| `EMULATOR_PROJECT_ID` | ID do projeto Firebase para emulator | `demo-goeat`       |
+| `UPLOADS_PATH`        | Diretório para uploads de arquivos   | `./uploads`        |
 
 ---
 
@@ -387,7 +387,7 @@ yarn db:migrate
 
 ### Auth Emulator Não Encontrado
 
-Certifique-se de que `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` está configurado e Firebase Emulator está rodando:
+Certifique-se de que `AUTH_EMULATOR_HOST=localhost:9099` está configurado e Firebase Emulator está rodando:
 
 ```bash
 # Verificar se Firebase Emulator está rodando na porta 9099
@@ -412,7 +412,7 @@ Se arquivos não estão sendo detectados:
 Certifique-se de que:
 
 1. O token foi gerado no Firebase Auth Emulator (http://localhost:4000/auth)
-2. `FIREBASE_AUTH_EMULATOR_HOST=localhost:9099` está configurado no seu `.env`
+2. `AUTH_EMULATOR_HOST=localhost:9099` está configurado no seu `.env`
 3. O middleware de autenticação está configurado para usar o emulator
 
 ---

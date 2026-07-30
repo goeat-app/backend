@@ -49,4 +49,10 @@ export class LocalDiskStorageService extends IStorageService {
       );
     }
   }
+
+  /* eslint-disable-next-line @typescript-eslint/require-await */
+  async getDownloadUrl(bucket: string, path: string): Promise<string> {
+    // For local disk storage, return a relative path that can be served by the application
+    return `/uploads/${bucket}/${path}`;
+  }
 }

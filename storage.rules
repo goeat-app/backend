@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /items/{allPaths=**} {
+      allow read: if true;
+    }
+    match /environments/{allPaths=**} {
+      allow read: if true;
+    }
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+    match /restaurants/{allPaths=**} {
+      allow read: if request.auth != null;
+    }
+  }
+}
