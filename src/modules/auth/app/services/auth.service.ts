@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { DecodedIdToken } from 'firebase-admin/auth';
 import { UniqueConstraintError } from 'sequelize';
 import { UserModel } from '../../infra/database/user.model';
+import { ProfileMappingModel } from '@/modules/profile-mapping/infra/database/profile-mapping-model';
 
 @Injectable()
 export class AuthService {
@@ -76,7 +77,25 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    return user;
+    const profileMapping = await ProfileMappingModel.findOne({
+      where: { userId },
+    });
+
+    if (!profileMapping) {
+      return {
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        hasCompletedProfile: false,
+      };
+    }
+
+    return {
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      hasCompletedProfile: true,
+    };
   }
 
   private async provisionFirebaseUser(
