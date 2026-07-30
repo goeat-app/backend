@@ -22,7 +22,7 @@ services:
       dockerfile: docker/firebase-emulator/Dockerfile
     container_name: goeat-firebase-emulator
     working_dir: /workspace
-    command: firebase emulators:start --only functions,auth
+    command: firebase emulators:start --only functions,auth,storage
     env_file:
       - .env
     environment:
