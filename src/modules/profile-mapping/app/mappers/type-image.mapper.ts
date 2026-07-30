@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { FIREBASE_STORAGE_CONFIG } from '../../../../lib/infra/firebase/storage-config';
 
 /**
  * Maps type icon_key to Firebase Storage URL
@@ -21,16 +22,17 @@ export class TypeImageMapper {
     }
 
     const isEmulator = !!process.env.AUTH_EMULATOR_HOST;
-    const bucket = 'restaurant-images';
+    const bucketName =
+      process.env.FIREBASE_STORAGE_BUCKET ??
+      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
 
     if (isEmulator) {
       // Local emulator URL
-      const projectId = process.env.EMULATOR_PROJECT_ID || 'demo-goeat';
       const path = `${folder}/${iconKey}`;
-      return `http://localhost:9199/storage/v1/b/${bucket}/o/${encodeURIComponent(path)}?alt=media`;
+      return `http://localhost:9199/storage/v1/b/${bucketName}/o/${encodeURIComponent(path)}?alt=media`;
     }
 
     // Production: Return gs:// URL (will be resolved server-side via Admin SDK if needed)
-    return `gs://${bucket}/${folder}/${iconKey}`;
+    return `gs://${bucketName}/${folder}/${iconKey}`;
   }
 }
