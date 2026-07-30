@@ -24,7 +24,7 @@ export class UploadRestaurantImageUseCase {
       process.env.FIREBASE_STORAGE_BUCKET ??
       FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
 
-    const storagePath = `${params.restaurantId}/${fileId}.${params.mimetype.split('/')[1]}`;
+    const storagePath = `restaurants/${params.restaurantId}/pictures/${fileId}.${params.mimetype.split('/')[1]}`;
 
     await this.storageService.uploadFile(
       bucketName,

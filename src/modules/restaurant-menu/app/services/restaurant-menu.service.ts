@@ -511,7 +511,7 @@ export class RestaurantMenuService {
     const item = await this.requireItem(params.restaurantId, params.itemId);
     const previousImageKey = item.image_key;
     const fileId = randomUUID();
-    const storagePath = `${params.restaurantId}/menu_items/${params.itemId}/${fileId}.${params.mimetype.split('/')[1]}`;
+    const storagePath = `restaurants/${params.restaurantId}/menu_items/${params.itemId}/${fileId}.${params.mimetype.split('/')[1]}`;
     const bucketName =
       process.env.FIREBASE_STORAGE_BUCKET ??
       FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
