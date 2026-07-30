@@ -512,7 +512,7 @@ export class RestaurantMenuService {
     const item = await this.requireItem(params.restaurantId, params.itemId);
     const previousImageKey = item.image_key;
     const fileId = randomUUID();
-    const storagePath = `${params.restaurantId}/menu_items/${params.itemId}/${fileId}`;
+    const storagePath = `${params.restaurantId}/menu_items/${params.itemId}/${fileId}.${params.mimetype.split('/')[1]}`;
 
     await this.storageService.uploadFile(
       BUCKET,

@@ -27,4 +27,10 @@ export class FoodTypeModel extends Model {
     allowNull: false,
   })
   declare slug: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare icon_key: string | null;
 }

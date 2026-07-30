@@ -9,8 +9,7 @@ import { MenuCategoryModel } from './infra/database/menu-category.model';
 import { MenuItemModel } from './infra/database/menu-item.model';
 import { MenuItemSizeModel } from './infra/database/menu-item-size.model';
 import { IStorageService } from '@/lib/infra/external/storage.service.interface';
-import { SupabaseStorageService } from '@/lib/infra/external/supabase-storage.service';
-import { LocalDiskStorageService } from '@/lib/infra/external/local-storage.service';
+import { FirebaseStorageService } from '@/lib/infra/firebase/firebase-storage.service';
 
 @Module({
   imports: [
@@ -29,10 +28,7 @@ import { LocalDiskStorageService } from '@/lib/infra/external/local-storage.serv
     {
       provide: IStorageService,
       useFactory: (configService: ConfigService) => {
-        const nodeEnv = configService.get<string>('NODE_ENV');
-        return nodeEnv === 'production'
-          ? new SupabaseStorageService(configService)
-          : new LocalDiskStorageService(configService);
+        return new FirebaseStorageService(configService);
       },
       inject: [ConfigService],
     },

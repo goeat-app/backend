@@ -21,7 +21,7 @@ export class UploadRestaurantImageUseCase {
     isCover: boolean;
   }) {
     const fileId = randomUUID();
-    const storagePath = `${params.restaurantId}/${fileId}`;
+    const storagePath = `${params.restaurantId}/${fileId}.${params.mimetype.split('/')[1]}`;
 
     await this.storageService.uploadFile(
       BUCKET,
