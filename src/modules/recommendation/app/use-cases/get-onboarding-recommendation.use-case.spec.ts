@@ -46,7 +46,10 @@ describe('GetOnboardingRecommendationUseCase', () => {
     const result = await useCase.execute('user-1');
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toMatchObject({ id: 'restaurant-1', name: 'Restaurante A' });
+    expect(result[0]).toMatchObject({
+      id: 'restaurant-1',
+      name: 'Restaurante A',
+    });
   });
 
   it('falls back to local restaurants when user preferences are missing', async () => {
@@ -89,6 +92,9 @@ describe('GetOnboardingRecommendationUseCase', () => {
     const result = await useCase.execute('user-1');
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toMatchObject({ id: 'restaurant-2', name: 'Restaurante B' });
+    expect(result[0]).toMatchObject({
+      id: 'restaurant-2',
+      name: 'Restaurante B',
+    });
   });
 });

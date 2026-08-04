@@ -140,7 +140,10 @@ export class GooglePlaceMapper {
     const type =
       this.humanizePrimaryType(candidate.primaryType) ?? 'Restaurante local';
     const cityPart = candidate.city ? ` em ${candidate.city}` : '';
-    const ratingPart = this.describeRating(candidate.rating, candidate.ratingCount);
+    const ratingPart = this.describeRating(
+      candidate.rating,
+      candidate.ratingCount,
+    );
     const statusPart = this.describeOpenNow(candidate.openNow);
     const extra = [ratingPart, statusPart]
       .filter((part): part is string => Boolean(part))

@@ -12,9 +12,10 @@ import { RestaurantProvider } from '../../src/modules/recommendation/domain/enum
 
 dotenvConfig({ path: path.resolve(process.cwd(), '.env') });
 
-const describeIfConfigured = process.env.GOOGLE_PLACES_API_KEY && process.env.DATABASE_URL
-  ? describe
-  : describe.skip;
+const describeIfConfigured =
+  process.env.GOOGLE_PLACES_API_KEY && process.env.DATABASE_URL
+    ? describe
+    : describe.skip;
 
 describeIfConfigured('Google Places discovery integration', () => {
   it('calls Google Places and persists discovered restaurants into PostgreSQL', async () => {
@@ -25,7 +26,8 @@ describeIfConfigured('Google Places discovery integration', () => {
 
     sequelize.addModels([RestaurantsModel, PlaceTypeModel, FoodTypeModel]);
 
-    const restaurantModel = sequelize.models.RestaurantsModel as typeof RestaurantsModel;
+    const restaurantModel = sequelize.models
+      .RestaurantsModel as typeof RestaurantsModel;
     const repository = new RestaurantRepository(restaurantModel);
     const provider = new GooglePlacesProvider(new ConfigService());
     const service = new RestaurantDiscoverySyncService(provider, repository);
@@ -65,7 +67,8 @@ describeIfConfigured('Google Places discovery integration', () => {
       expect(persisted.length).toBeGreaterThan(0);
 
       const firstPersisted = persisted.find(
-        (restaurant) => restaurant.provider_place_id === googleResults[0].provider_place_id,
+        (restaurant) =>
+          restaurant.provider_place_id === googleResults[0].provider_place_id,
       );
 
       expect(firstPersisted?.name).toBe(googleResults[0].name);
