@@ -11,7 +11,7 @@ import {
 
 export function resolveRestaurantFilters(
   session: RestaurantQueryFilters | undefined,
-  preferences: UserPreferenceEntity,
+  preferences?: UserPreferenceEntity | null,
 ): RestaurantQueryFilters {
   const filters: RestaurantQueryFilters = {};
 
@@ -32,13 +32,13 @@ export function resolveRestaurantFilters(
 
   if (sessionMinPrice !== undefined) {
     filters.minPrice = sessionMinPrice;
-  } else if (preferences.minPrice != null) {
+  } else if (preferences?.minPrice != null) {
     filters.minPrice = preferences.minPrice;
   }
 
   if (sessionMaxPrice !== undefined) {
     filters.maxPrice = sessionMaxPrice;
-  } else if (preferences.maxPrice != null) {
+  } else if (preferences?.maxPrice != null) {
     filters.maxPrice = preferences.maxPrice;
   }
 

@@ -1,5 +1,3 @@
-import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
-import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
 import {
   Column,
   DataType,
@@ -8,8 +6,6 @@ import {
   Table,
   PrimaryKey,
   AllowNull,
-  ForeignKey,
-  BelongsTo,
 } from 'sequelize-typescript';
 
 @Table({ tableName: 'restaurants', timestamps: false })
@@ -44,22 +40,6 @@ export class RestaurantsModel extends Model {
     allowNull: true,
   })
   declare provider_place_id: string | null;
-
-  @ForeignKey(() => PlaceTypeModel)
-  @AllowNull(true)
-  @Column(DataType.UUID)
-  declare place_type_id: string;
-
-  @BelongsTo(() => PlaceTypeModel, 'place_type_id')
-  placeType!: PlaceTypeModel;
-
-  @ForeignKey(() => FoodTypeModel)
-  @AllowNull(true)
-  @Column(DataType.UUID)
-  declare food_type_id: string;
-
-  @BelongsTo(() => FoodTypeModel, 'food_type_id')
-  foodType!: FoodTypeModel;
 
   @Column({
     type: DataType.DECIMAL,
@@ -128,7 +108,7 @@ export class RestaurantsModel extends Model {
   declare website: string | null;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.STRING(20),
     allowNull: true,
   })
   declare phone: string | null;
@@ -138,6 +118,12 @@ export class RestaurantsModel extends Model {
     allowNull: true,
   })
   declare editorial_summary: string | null;
+
+  @Column({
+    type: DataType.STRING(20),
+    allowNull: true,
+  })
+  declare editorial_summary_source: 'google' | 'generated' | null;
 
   @Column({
     type: DataType.DATE,
@@ -216,9 +202,6 @@ export class RestaurantsModel extends Model {
 
   @Column({ type: DataType.TEXT, allowNull: true })
   declare description: string | null;
-
-  @Column({ type: DataType.STRING(20), allowNull: true })
-  declare phone: string | null;
 
   @Column({ type: DataType.STRING(20), allowNull: true })
   declare whatsapp: string | null;

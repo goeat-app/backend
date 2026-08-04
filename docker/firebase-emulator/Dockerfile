@@ -15,9 +15,6 @@ WORKDIR /workspace
 RUN corepack enable
 
 COPY . ./
-RUN python3 -m venv ml/prediction_service/venv \
-  && ml/prediction_service/venv/bin/python -m pip install --upgrade pip \
-  && ml/prediction_service/venv/bin/python -m pip install -r ml/prediction_service/requirements.txt
 RUN yarn install --frozen-lockfile
 
 EXPOSE 4000 5001 9099

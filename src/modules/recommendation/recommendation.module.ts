@@ -171,6 +171,7 @@ import { PredictionServiceHealthProbe } from './app/services/prediction-service-
     PredictionServiceHealthProbe,
     GetOnboardingRecommendationUseCase,
     SyncNearbyRestaurantsUseCase,
+    GetMapRestaurantsUseCase,
     GenerateRecommendationsUseCase,
     ListRecommendationHistoryUseCase,
     GetUserPreferencesUseCase,
@@ -178,7 +179,7 @@ import { PredictionServiceHealthProbe } from './app/services/prediction-service-
     RecordRecommendationFeedbackUseCase,
     GenerateTrainingDatasetUseCase,
   ],
-  exports: [
+  exports:[
     GetOnboardingRecommendationUseCase,
     SyncNearbyRestaurantsUseCase,
     GenerateRecommendationsUseCase,

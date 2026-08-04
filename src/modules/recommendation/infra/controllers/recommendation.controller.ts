@@ -15,7 +15,7 @@ import { FirebaseAuthGuard } from '@/modules/auth/infra/firebase/firebase-auth.g
 import { UserModel } from '@/modules/auth/infra/database/user.model';
 import { SyncNearbyRestaurantsUseCase } from '../../app/use-cases/sync-nearby-restaurants.use-case';
 import { PlacesProviderError } from '../../domain/errors/places-provider.error';
-import { RestaurantsModel } from '../database/restaurant.model';
+import { NearbyRestaurantsResponseDto } from '../../app/dtos/response/nearby-restaurants-response.dto';
 
 @Controller('recommender')
 export class RecommendationController {
@@ -92,7 +92,7 @@ export class RecommendationController {
     @Query('radiusMeters') radiusMeters = '5000',
     @Query('maxResultCount') maxResultCount = '20',
     @Req() req: Request & { user: UserModel },
-  ): Promise<RestaurantsModel[]> {
+  ): Promise<NearbyRestaurantsResponseDto[]> {
     if (!req.user) {
       throw new BadRequestException('User not authenticated');
     }
@@ -112,12 +112,38 @@ export class RecommendationController {
     }
 
     try {
-      return await this.syncNearbyRestaurantsUseCase.execute({
+      const restaurants = await this.syncNearbyRestaurantsUseCase.execute({
         latitude: parsedLatitude,
         longitude: parsedLongitude,
         radiusMeters: parsedRadius,
         maxResultCount: parsedMaxResultCount,
       });
+
+      return restaurants.map((restaurant) => ({
+        id: restaurant.id,
+        name: restaurant.name,
+        slug: restaurant.slug,
+        provider: restaurant.provider,
+        providerPlaceId: restaurant.provider_place_id,
+        primaryType: restaurant.primary_type,
+        types: restaurant.types,
+        priceLevel: restaurant.price_level,
+        googleRating: restaurant.google_rating,
+        googleRatingCount: restaurant.google_rating_count,
+        businessStatus: restaurant.business_status,
+        openNow: restaurant.open_now,
+        website: restaurant.website,
+        phone: restaurant.phone,
+        description: restaurant.description,
+        editorialSummary: restaurant.editorial_summary,
+        editorialSummarySource: restaurant.editorial_summary_source,
+        city: restaurant.city,
+        state: restaurant.state,
+        postalCode: restaurant.postal_code,
+        latitude: Number(restaurant.latitude),
+        longitude: Number(restaurant.longitude),
+        isActive: restaurant.is_active,
+      }));
     } catch (error) {
       if (error instanceof PlacesProviderError) {
         throw new InternalServerErrorException(error.message);

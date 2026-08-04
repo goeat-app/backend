@@ -57,7 +57,7 @@ export class GetMapRestaurantsUseCase {
       if (!this.matchesPrice(restaurant, preferences)) return false;
       if (
         options.city &&
-        restaurant.city.toLowerCase() !== options.city.toLowerCase()
+        restaurant.city?.toLowerCase() !== options.city.toLowerCase()
       )
         return false;
       if (!this.isWithinRadius(restaurant, options, radiusKm)) return false;

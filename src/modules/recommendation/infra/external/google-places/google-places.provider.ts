@@ -18,6 +18,7 @@ const NEARBY_FIELD_MASK = [
   'places.id',
   'places.displayName',
   'places.location',
+  'places.addressComponents',
   'places.primaryType',
   'places.types',
   'places.priceLevel',
@@ -30,6 +31,7 @@ const DETAILS_FIELD_MASK = [
   'id',
   'displayName',
   'location',
+  'addressComponents',
   'primaryType',
   'types',
   'priceLevel',
@@ -41,6 +43,8 @@ const DETAILS_FIELD_MASK = [
   'nationalPhoneNumber',
   'internationalPhoneNumber',
   'editorialSummary',
+  'generativeSummary.overview.text',
+  'photos.name',
 ].join(',');
 
 @Injectable()
@@ -108,7 +112,9 @@ export class GooglePlacesProvider extends PlacesProvider {
           timeout: 10000,
         },
       );
-      const details = GooglePlaceMapper.toRestaurantDetails(response.data);
+      const details = GooglePlaceMapper.toRestaurantDetails(response.data, {
+        googleApiKey: apiKey,
+      });
 
       if (!details) {
         throw new PlacesProviderError('Google place details were incomplete');

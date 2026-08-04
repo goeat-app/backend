@@ -37,6 +37,8 @@ export class RecommendationMaintenanceService {
           [Op.or]: [
             { last_synced_at: null },
             { last_synced_at: { [Op.lt]: staleBefore } },
+            { description: null },
+            { editorial_summary: null },
           ],
         },
         order: [['last_synced_at', 'ASC']],

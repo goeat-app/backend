@@ -128,11 +128,6 @@ export class RecommendationSelectionService {
   }
 
   private getCuisineGroup(restaurant: RestaurantsModel): string {
-    return (
-      restaurant.primary_type ??
-      restaurant.types?.[0] ??
-      restaurant.foodType?.name ??
-      'unknown'
-    );
+    return restaurant.primary_type ?? restaurant.types?.[0] ?? 'unknown';
   }
 }

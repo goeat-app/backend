@@ -32,7 +32,7 @@ services:
       DATABASE_URL: postgresql://admin:goeat-admin@postgres:5432/goeat_db
       EMULATOR_PROJECT_ID: demo-goeat
       FEATURE_VERSION: restaurant_recommendation_v1
-      FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+      AUTH_EMULATOR_HOST: localhost:9099
       MODEL_PATH: /workspace/ml/artifacts/restaurant_ranker_v1/model
       MODEL_VERSION: restaurant_ranker_v1
       PREDICTION_ALLOW_HEURISTIC: ${PREDICTION_ALLOW_HEURISTIC:-true}

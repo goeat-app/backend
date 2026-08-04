@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ProfileMappingModel } from '@/modules/profile-mapping/infra/database/profile-mapping-model';
 import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
-import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import {
   IUserPreferenceRepository,
   UpsertUserPreferencesInput,
@@ -98,7 +97,8 @@ export class UserPreferenceRepository implements IUserPreferenceRepository {
       record.user_id,
       null,
       null,
-      record.preferred_ambiance ?? [],
+      [],
+      [],
       null,
       null,
       record.favorite_cuisines ?? [],

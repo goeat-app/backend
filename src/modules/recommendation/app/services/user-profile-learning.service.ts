@@ -123,17 +123,13 @@ export class UserProfileLearningService {
   }
 
   private getCuisineSignals(restaurant: RestaurantsModel): string[] {
-    return [
-      restaurant.primary_type,
-      ...(restaurant.types ?? []),
-      restaurant.foodType?.name,
-    ]
+    return [restaurant.primary_type, ...(restaurant.types ?? [])]
       .filter((value): value is string => Boolean(value))
       .map((value) => this.normalize(value));
   }
 
   private getAmbianceSignals(restaurant: RestaurantsModel): string[] {
-    return [restaurant.placeType?.name, restaurant.primary_type]
+    return [restaurant.primary_type]
       .filter((value): value is string => Boolean(value))
       .map((value) => this.normalize(value));
   }

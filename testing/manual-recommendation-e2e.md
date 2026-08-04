@@ -63,7 +63,7 @@ For rule-based scenarios:
 ```env
 RECOMMENDATION_SCORER=rule_based
 GOOGLE_PLACES_API_KEY=<google-places-api-key>
-FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+AUTH_EMULATOR_HOST=localhost:9099
 EMULATOR_PROJECT_ID=demo-goeat
 DATABASE_URL=postgresql://admin:goeat-admin@localhost:5432/goeat_db
 ```
@@ -76,7 +76,7 @@ PREDICTION_SERVICE_URL=http://localhost:8000
 PREDICTION_SERVICE_TOKEN=local-prediction-token
 RECOMMENDATION_MODEL_VERSION=restaurant_ranker_v1
 GOOGLE_PLACES_API_KEY=<google-places-api-key>
-FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+AUTH_EMULATOR_HOST=localhost:9099
 EMULATOR_PROJECT_ID=demo-goeat
 DATABASE_URL=postgresql://admin:goeat-admin@localhost:5432/goeat_db
 ```

@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op, type IncludeOptions } from 'sequelize';
+import { Op } from 'sequelize';
 import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
-import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
-import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import { IRestaurantRepository } from '@/modules/recommendation/domain/interfaces/repositories/restaurant-repository.interface';
 import { RestaurantCandidate } from '@/modules/recommendation/domain/interfaces/places-provider.interface';
 import { calculateDistanceMeters } from '@/modules/recommendation/app/utils/distance';
@@ -16,17 +14,6 @@ export class RestaurantRepository implements IRestaurantRepository {
     @InjectModel(RestaurantsModel)
     private readonly restaurantModel: typeof RestaurantsModel,
   ) {}
-
-  private readonly defaultIncludes = [
-    {
-      model: PlaceTypeModel,
-      attributes: ['id', 'name', 'slug'],
-    },
-    {
-      model: FoodTypeModel,
-      attributes: ['id', 'name', 'slug'],
-    },
-  ];
 
   async findAllActiveRestaurants(
     filters?: RestaurantQueryFilters,
@@ -47,50 +34,8 @@ export class RestaurantRepository implements IRestaurantRepository {
       where.average_price = { [Op.lte]: filters.maxPrice };
     }
 
-    const placeTypeInclude: IncludeOptions = {
-      model: PlaceTypeModel,
-      attributes: ['id', 'name', 'slug'],
-    };
-    const foodTypeInclude: IncludeOptions = {
-      model: FoodTypeModel,
-      attributes: ['id', 'name', 'slug'],
-    };
-
-    const hasFoodFilter = Boolean(filters?.foodTypes?.length);
-    const hasPlaceFilter = Boolean(filters?.restaurantStyles?.length);
-
-    if (hasFoodFilter && hasPlaceFilter) {
-      placeTypeInclude.required = true;
-      foodTypeInclude.required = true;
-
-      return await this.restaurantModel.findAll({
-        where: {
-          ...where,
-          [Op.or]: [
-            { '$foodType.name$': { [Op.in]: filters!.foodTypes } },
-            { '$placeType.name$': { [Op.in]: filters!.restaurantStyles } },
-          ],
-        },
-        include: [placeTypeInclude, foodTypeInclude],
-        raw: false,
-      });
-    }
-
-    if (hasPlaceFilter) {
-      placeTypeInclude.where = {
-        name: { [Op.in]: filters!.restaurantStyles },
-      };
-      placeTypeInclude.required = true;
-    }
-
-    if (hasFoodFilter) {
-      foodTypeInclude.where = { name: { [Op.in]: filters!.foodTypes } };
-      foodTypeInclude.required = true;
-    }
-
     return await this.restaurantModel.findAll({
       where,
-      include: [placeTypeInclude, foodTypeInclude],
       raw: false,
     });
   }
@@ -102,7 +47,6 @@ export class RestaurantRepository implements IRestaurantRepository {
 
     return await this.restaurantModel.findAll({
       where: { id: { [Op.in]: ids } },
-      include: this.defaultIncludes,
       raw: false,
     });
   }
@@ -117,7 +61,6 @@ export class RestaurantRepository implements IRestaurantRepository {
         latitude: { [Op.ne]: null },
         longitude: { [Op.ne]: null },
       },
-      include: this.defaultIncludes,
       raw: false,
     });
 
@@ -147,14 +90,22 @@ export class RestaurantRepository implements IRestaurantRepository {
       const details = candidate as RestaurantCandidate & {
         website?: string;
         phone?: string;
+        whatsapp?: string;
+        description?: string;
+        imageUrl?: string;
         editorialSummary?: string;
+        editorialSummarySource?: 'google' | 'generated';
       };
       const googleFields = {
         provider: candidate.provider,
         provider_place_id: candidate.providerPlaceId,
         name: candidate.name,
+        address: candidate.address ?? null,
         latitude: candidate.location.latitude,
         longitude: candidate.location.longitude,
+        city: candidate.city ?? 'Unknown',
+        state: candidate.state ?? 'Unknown',
+        postal_code: candidate.postalCode ?? '00000',
         primary_type: candidate.primaryType ?? null,
         types: candidate.types,
         price_level: candidate.priceLevel ?? null,
@@ -164,8 +115,20 @@ export class RestaurantRepository implements IRestaurantRepository {
         open_now: candidate.openNow ?? null,
         ...(details.website !== undefined ? { website: details.website } : {}),
         ...(details.phone !== undefined ? { phone: details.phone } : {}),
+        ...(details.whatsapp !== undefined
+          ? { whatsapp: details.whatsapp }
+          : {}),
+        ...(details.description !== undefined
+          ? { description: details.description }
+          : {}),
+        ...(details.imageUrl !== undefined
+          ? { image_url: details.imageUrl }
+          : {}),
         ...(details.editorialSummary !== undefined
           ? { editorial_summary: details.editorialSummary }
+          : {}),
+        ...(details.editorialSummarySource !== undefined
+          ? { editorial_summary_source: details.editorialSummarySource }
           : {}),
         last_seen_at: now,
         last_synced_at: now,
@@ -202,7 +165,6 @@ export class RestaurantRepository implements IRestaurantRepository {
           provider_place_id: candidate.providerPlaceId,
         })),
       },
-      include: this.defaultIncludes,
       raw: false,
     });
   }

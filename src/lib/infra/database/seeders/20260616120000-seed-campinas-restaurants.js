@@ -13,21 +13,19 @@ module.exports = {
         await queryInterface.sequelize.query(
           `
           INSERT INTO restaurants (
-            id, name, slug, place_type_id, food_type_id,
+            id, name, slug,
             average_rating, total_reviews, average_price,
             address, city, state, postal_code,
             latitude, longitude, is_active
           )
           VALUES (
-            :id, :name, :slug, :place_type_id, :food_type_id,
+            :id, :name, :slug,
             :average_rating, :total_reviews, :average_price,
             :address, :city, :state, :postal_code,
             :latitude, :longitude, :is_active
           )
           ON CONFLICT (slug) DO UPDATE SET
             name = EXCLUDED.name,
-            place_type_id = EXCLUDED.place_type_id,
-            food_type_id = EXCLUDED.food_type_id,
             average_rating = EXCLUDED.average_rating,
             total_reviews = EXCLUDED.total_reviews,
             average_price = EXCLUDED.average_price,
@@ -44,8 +42,6 @@ module.exports = {
               id: randomUUID(),
               name: restaurant.name,
               slug: restaurant.slug,
-              place_type_id: restaurant.place_type_id,
-              food_type_id: restaurant.food_type_id,
               average_rating: restaurant.average_rating,
               total_reviews: restaurant.total_reviews,
               average_price: restaurant.average_price,

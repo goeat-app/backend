@@ -13,6 +13,10 @@ export interface RestaurantCandidate {
   providerPlaceId: string;
   name: string;
   location: Location;
+  address?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
   types: string[];
   primaryType?: string;
   priceLevel?: number;
@@ -25,7 +29,11 @@ export interface RestaurantCandidate {
 export interface RestaurantDetails extends RestaurantCandidate {
   website?: string;
   phone?: string;
+  whatsapp?: string;
+  description?: string;
+  imageUrl?: string;
   editorialSummary?: string;
+  editorialSummarySource?: 'google' | 'generated';
 }
 
 export abstract class PlacesProvider {
