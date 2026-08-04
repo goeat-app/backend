@@ -17,7 +17,6 @@ function registerUnhandledErrorLogging() {
 }
 
 async function bootstrap() {
-  dotenv.config({ path: '.env.local' });
   dotenv.config();
 
   registerUnhandledErrorLogging();

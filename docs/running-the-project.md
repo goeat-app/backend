@@ -345,14 +345,14 @@ Isso habilita Node Inspector. Conecte com o debugger do seu IDE em `127.0.0.1:92
 
 ## Referência de Variáveis de Ambiente
 
-| Variável                      | Propósito                            | Exemplo            |
-| ----------------------------- | ------------------------------------ | ------------------ |
-| `NODE_ENV`                    | Modo de ambiente                     | `development`      |
-| `PORT`                        | Porta do servidor NestJS             | `3000`             |
-| `DATABASE_URL`                | Conexão PostgreSQL                   | `postgresql://...` |
-| `AUTH_EMULATOR_HOST` | Endereço do Firebase Auth Emulator   | `localhost:9099`   |
-| `EMULATOR_PROJECT_ID`         | ID do projeto Firebase para emulator | `demo-goeat`       |
-| `UPLOADS_PATH`                | Diretório para uploads de arquivos   | `./uploads`        |
+| Variável              | Propósito                            | Exemplo            |
+| --------------------- | ------------------------------------ | ------------------ |
+| `NODE_ENV`            | Modo de ambiente                     | `development`      |
+| `PORT`                | Porta do servidor NestJS             | `3000`             |
+| `DATABASE_URL`        | Conexão PostgreSQL                   | `postgresql://...` |
+| `AUTH_EMULATOR_HOST`  | Endereço do Firebase Auth Emulator   | `localhost:9099`   |
+| `EMULATOR_PROJECT_ID` | ID do projeto Firebase para emulator | `demo-goeat`       |
+| `UPLOADS_PATH`        | Diretório para uploads de arquivos   | `./uploads`        |
 
 ---
 

@@ -54,10 +54,10 @@ emulador.
 
 ### Variáveis de ambiente do emulador
 
-| Variável                      | Valor                 | Observação                                   |
-| ----------------------------- | --------------------- | -------------------------------------------- |
-| `AUTH_EMULATOR_HOST` | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
-| `EMULATOR_PROJECT_ID`         | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
+| Variável              | Valor                 | Observação                                   |
+| --------------------- | --------------------- | -------------------------------------------- |
+| `AUTH_EMULATOR_HOST`  | `localhost:9099`      | Lida automaticamente pelo SDK firebase-admin |
+| `EMULATOR_PROJECT_ID` | `demo-goeat` (padrão) | Usada apenas quando o emulador está ativo    |
 
 Você também pode exportá-las no shell ou adicioná-las a um arquivo `.env.local`
 (não versionado).

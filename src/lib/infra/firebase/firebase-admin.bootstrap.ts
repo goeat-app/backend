@@ -10,13 +10,9 @@ export function ensureFirebaseAdminInitialized() {
   }
 
   // When the Firebase Auth Emulator is active, firebase-admin reads
-  // FIREBASE_AUTH_EMULATOR_HOST and EMULATOR_PROJECT_ID automatically.
-  // Support the older AUTH_EMULATOR_HOST variable used in local docs/config.
-  const emulatorHost =
-    process.env.FIREBASE_AUTH_EMULATOR_HOST ?? process.env.AUTH_EMULATOR_HOST;
-
-  if (emulatorHost) {
-    process.env.FIREBASE_AUTH_EMULATOR_HOST = emulatorHost;
+  // EMULATOR_HOST and EMULATOR_PROJECT_ID automatically and routes all Auth calls to it.
+  // No real credentials are required in this mode.
+  if (process.env.AUTH_EMULATOR_HOST) {
     const projectId = process.env.EMULATOR_PROJECT_ID ?? 'demo-goeat';
     initializeApp({ projectId });
     return;

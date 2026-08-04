@@ -17,6 +17,6 @@ RUN corepack enable
 COPY . ./
 RUN yarn install --frozen-lockfile
 
-EXPOSE 4000 5001 9099
+EXPOSE 4000 5001 9099 9199
 
-CMD ["firebase", "emulators:start", "--only", "functions,auth"]
+CMD ["firebase", "emulators:start", "--only", "functions,auth,storage"]

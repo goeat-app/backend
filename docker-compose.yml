@@ -22,9 +22,11 @@ services:
       dockerfile: docker/firebase-emulator/Dockerfile
     container_name: goeat-firebase-emulator
     working_dir: /workspace
-    command: firebase emulators:start --only functions,auth
+    command: firebase emulators:start --only functions,auth,storage
     env_file:
       - .env
+    environment:
+      EMULATOR_PROJECT_ID: demo-goeat
     depends_on:
       postgres:
         condition: service_healthy
@@ -42,6 +44,7 @@ services:
       - '9099:9099'
       - '5001:5001'
       - '4000:4000'
+      - '9199:9199'
     volumes:
       - firebase_emulator_data:/data
       - ./ml/artifacts:/workspace/ml/artifacts:ro

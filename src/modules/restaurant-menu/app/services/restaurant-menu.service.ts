@@ -19,8 +19,7 @@ import { MenuItemModel } from '../../infra/database/menu-item.model';
 import { UpdateMenuCategoryType } from '../../dtos/update-menu-category.dto';
 import { UpdateMenuItemType } from '../../dtos/update-menu-item.dto';
 import { UpdateMenuItemAvailabilityType } from '../../dtos/update-menu-item-availability.dto';
-
-const BUCKET = 'restaurant_pictures';
+import { FIREBASE_STORAGE_CONFIG } from '../../../../lib/infra/firebase/storage-config';
 
 @Injectable()
 export class RestaurantMenuService {
@@ -512,10 +511,12 @@ export class RestaurantMenuService {
     const item = await this.requireItem(params.restaurantId, params.itemId);
     const previousImageKey = item.image_key;
     const fileId = randomUUID();
-    const storagePath = `${params.restaurantId}/menu_items/${params.itemId}/${fileId}`;
-
+    const storagePath = `restaurants/${params.restaurantId}/menu_items/${params.itemId}/${fileId}.${params.mimetype.split('/')[1]}`;
+    const bucketName =
+      process.env.FIREBASE_STORAGE_BUCKET ??
+      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
     await this.storageService.uploadFile(
-      BUCKET,
+      bucketName,
       storagePath,
       params.buffer,
       params.mimetype,
@@ -526,15 +527,17 @@ export class RestaurantMenuService {
     try {
       await item.save();
     } catch (error: unknown) {
-      await this.storageService.deleteFile(BUCKET, storagePath).catch(() => {
-        return undefined;
-      });
+      await this.storageService
+        .deleteFile(bucketName, storagePath)
+        .catch(() => {
+          return undefined;
+        });
       throw error;
     }
 
     if (previousImageKey && previousImageKey !== storagePath) {
       await this.storageService
-        .deleteFile(BUCKET, previousImageKey)
+        .deleteFile(bucketName, previousImageKey)
         .catch(() => {
           return undefined;
         });
@@ -554,8 +557,10 @@ export class RestaurantMenuService {
     }
 
     const previousImageKey = item.image_key;
-
-    await this.storageService.deleteFile(BUCKET, previousImageKey);
+    const bucketName =
+      process.env.FIREBASE_STORAGE_BUCKET ??
+      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
+    await this.storageService.deleteFile(bucketName, previousImageKey);
 
     item.image_key = null;
     await item.save();

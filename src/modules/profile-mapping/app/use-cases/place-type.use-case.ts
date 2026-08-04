@@ -6,10 +6,14 @@ import {
 import { PlaceTypeDto } from '../../dtos/place-type.dto';
 import { IPlaceTypeRepository } from '../../domain/interfaces/place-type.interface';
 import { FoodTypeByNameDto } from '../../dtos/food-type.dto';
+import { TypeImageMapper } from '../mappers/type-image.mapper';
 
 @Injectable()
 export class PlaceTypeUseCase {
-  constructor(private readonly placeTypeRepository: IPlaceTypeRepository) {}
+  constructor(
+    private readonly placeTypeRepository: IPlaceTypeRepository,
+    private readonly typeImageMapper: TypeImageMapper,
+  ) {}
 
   async getCategories(): Promise<PlaceTypeDto> {
     const response = await this.placeTypeRepository.findAll();
@@ -20,6 +24,10 @@ export class PlaceTypeUseCase {
       id: item.id,
       name: item.name,
       slug: item.slug,
+      image_url: this.typeImageMapper.mapIconToUrl(
+        item.icon_key,
+        'environments',
+      ),
     }));
 
     return data;
@@ -33,8 +41,13 @@ export class PlaceTypeUseCase {
     if (!response) throw new NotFoundException(404, 'Place type not found');
 
     const data = {
-      ...response,
+      id: response.id,
+      name: response.name,
       slug: response.slug,
+      image_url: this.typeImageMapper.mapIconToUrl(
+        response.icon_key,
+        'environments',
+      ),
     };
 
     return data;
