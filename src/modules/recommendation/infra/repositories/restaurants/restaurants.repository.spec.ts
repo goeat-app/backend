@@ -1,5 +1,7 @@
 import { RestaurantRepository } from './restaurants.repository';
 import { RestaurantProvider } from '@/modules/recommendation/domain/enums/restaurant-provider.enum';
+import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
+import { RestaurantDetails } from '@/modules/recommendation/domain/interfaces/places-provider.interface';
 
 describe('RestaurantRepository', () => {
   it('creates discovered Google restaurants with fallback address fields', async () => {
@@ -11,9 +13,9 @@ describe('RestaurantRepository', () => {
       findOne,
       create,
       findAll,
-    } as any);
+    } as unknown as typeof RestaurantsModel);
 
-    await repository.upsertDiscoveredRestaurants([
+    const candidates: RestaurantDetails[] = [
       {
         provider: RestaurantProvider.GooglePlaces,
         providerPlaceId: 'place-123',
@@ -28,8 +30,10 @@ describe('RestaurantRepository', () => {
         imageUrl: 'https://cdn.example.com/photo.jpg',
         editorialSummary: 'Ambiente acolhedor.',
         editorialSummarySource: 'generated',
-      } as any,
-    ]);
+      },
+    ];
+
+    await repository.upsertDiscoveredRestaurants(candidates);
 
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({
