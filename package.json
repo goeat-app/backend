@@ -1,7 +1,7 @@
 {
   "name": "go-eat",
   "version": "0.0.1",
-  "main": "dist/firebase.js",
+  "main": "dist/src/firebase.js",
   "description": "",
   "author": "",
   "private": true,
