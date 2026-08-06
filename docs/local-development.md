@@ -23,6 +23,12 @@ A stack local usa:
 > Firebase CLI para desenvolvimento local. A CLI continua útil apenas para deploy
 > (`yarn firebase:deploy`).
 
+> **Python não é obrigatório para rodar localmente com Docker.** O container
+> `prediction-service` já inclui o runtime Python e as dependências do serviço
+> ML. Você só precisa instalar Python na máquina se quiser executar comandos como
+> `python ml/training/train_ranker.py`, preparar datasets externos ou rodar os
+> testes Python fora do container.
+
 ---
 
 ## 1. Instalar dependências
@@ -65,6 +71,13 @@ FIREBASE_APP_ID=demo-app-id
 
 # Uploads locais (fallback for non-emulator environments)
 UPLOADS_PATH=./uploads
+
+# Recomendação / ML local (opcional)
+GOOGLE_PLACES_API_KEY=<google-places-api-key>
+RECOMMENDATION_SCORER=rule_based
+PREDICTION_SERVICE_URL=http://localhost:5001/demo-goeat/us-central1
+PREDICTION_SERVICE_TOKEN=local-prediction-token
+RECOMMENDATION_MODEL_VERSION=restaurant_ranker_v1
 ```
 
 > Firebase Storage is automatically configured to use the local emulator when
@@ -108,6 +121,35 @@ Com o banco no ar, aplique as migrations para criar as tabelas:
 ```bash
 yarn db:migrate
 ```
+
+### Prediction service local
+
+O Docker Compose também pode subir o serviço Python de predição:
+
+```bash
+docker compose up -d prediction-service
+```
+
+Para ativar scoring por ML no NestJS:
+
+```env
+RECOMMENDATION_SCORER=tensorflow
+PREDICTION_SERVICE_URL=http://localhost:8000
+PREDICTION_SERVICE_TOKEN=local-prediction-token
+RECOMMENDATION_MODEL_VERSION=restaurant_ranker_v1
+```
+
+O container monta o modelo em:
+
+```text
+ml/artifacts/restaurant_ranker_v1/model
+```
+
+Se esse artefato ainda não existir, o serviço roda em modo heurístico local
+quando `PREDICTION_ALLOW_HEURISTIC=true`. Veja detalhes em
+[recommendation-ml.md](recommendation-ml.md).
+
+Não é necessário instalar Python no host para usar esse container.
 
 ### Containers disponíveis
 
@@ -206,6 +248,7 @@ backend/
 ├── .env.example             # Template de variáveis (versionado)
 ├── .env                     # Seu arquivo local (não versionado)
 ├── docker-compose.yml       # PostgreSQL local
+├── ml/                       # Serviço Python, treino e artefatos ML
 └── firebase.json            # Configuração Firebase
 ```
 

@@ -1,7 +1,7 @@
 {
   "name": "go-eat",
   "version": "0.0.1",
-  "main": "dist/firebase.js",
+  "main": "dist/src/firebase.js",
   "description": "",
   "author": "",
   "private": true,
@@ -107,6 +107,12 @@
     ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^@modules/(.*)$": "<rootDir>/modules/$1",
+      "^@config/(.*)$": "<rootDir>/config/$1",
+      "^@shared/(.*)$": "<rootDir>/shared/$1"
+    },
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },

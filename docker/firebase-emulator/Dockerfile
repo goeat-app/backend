@@ -1,13 +1,20 @@
-FROM node:22-alpine
+FROM node:22-bookworm-slim
 
-RUN apk add --no-cache openjdk17-jre-headless wget \
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    python3 \
+    python3-pip \
+    python3-venv \
+    wget \
+  && rm -rf /var/lib/apt/lists/* \
   && npm install -g firebase-tools
 
 WORKDIR /workspace
 
 RUN corepack enable
 
-COPY package.json yarn.lock ./
+COPY . ./
 RUN yarn install --frozen-lockfile
 
 EXPOSE 4000 5001 9099 9199

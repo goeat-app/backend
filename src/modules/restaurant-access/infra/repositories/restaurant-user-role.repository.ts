@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
-import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
-import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
 import { RestaurantRole } from '../../domain/enums/restaurant-role.enum';
 import {
   IRestaurantUserRoleRepository,
@@ -55,16 +53,6 @@ export class SequelizeRestaurantUserRoleRepository implements IRestaurantUserRol
         {
           model: RestaurantsModel,
           as: 'restaurant',
-          include: [
-            {
-              model: PlaceTypeModel,
-              attributes: ['id', 'name', 'slug'],
-            },
-            {
-              model: FoodTypeModel,
-              attributes: ['id', 'name', 'slug'],
-            },
-          ],
         },
       ],
       order: [['createdAt', 'ASC']],
@@ -161,20 +149,8 @@ export class SequelizeRestaurantUserRoleRepository implements IRestaurantUserRol
         latitude: Number(restaurant.latitude),
         longitude: Number(restaurant.longitude),
         isActive: Boolean(restaurant.is_active),
-        placeType: restaurant.placeType
-          ? {
-              id: restaurant.placeType.id,
-              name: restaurant.placeType.name,
-              slug: restaurant.placeType.slug,
-            }
-          : undefined,
-        foodType: restaurant.foodType
-          ? {
-              id: restaurant.foodType.id,
-              name: restaurant.foodType.name,
-              slug: restaurant.foodType.slug,
-            }
-          : undefined,
+        placeType: undefined,
+        foodType: undefined,
       } as RestaurantMembershipRestaurantRecord,
     };
   }

@@ -15,6 +15,14 @@ import { RestaurantUserRoleModel } from '@/modules/restaurant-access/infra/datab
 import { MenuCategoryModel } from '@/modules/restaurant-menu/infra/database/menu-category.model';
 import { MenuItemModel } from '@/modules/restaurant-menu/infra/database/menu-item.model';
 import { MenuItemSizeModel } from '@/modules/restaurant-menu/infra/database/menu-item-size.model';
+import { RecommendationInteractionModel } from '@/modules/recommendation/infra/database/recommendation-interaction.model';
+import { RecommendationFeedbackStateModel } from '@/modules/recommendation/infra/database/recommendation-feedback-state.model';
+import { RecommendationModel } from '@/modules/recommendation/infra/database/recommendation.model';
+import { RecommendationSessionModel } from '@/modules/recommendation/infra/database/recommendation-session.model';
+import { RestaurantRatingModel } from '@/modules/recommendation/infra/database/restaurant-rating.model';
+import { UserPreferenceModel } from '@/modules/recommendation/infra/database/user-preference.model';
+import { UserProfileModel } from '@/modules/recommendation/infra/database/user-profile.model';
+import { MlModel } from '@/modules/recommendation/infra/database/ml-model.model';
 
 @Module({
   imports: [
@@ -70,6 +78,14 @@ import { MenuItemSizeModel } from '@/modules/restaurant-menu/infra/database/menu
             MenuCategoryModel,
             MenuItemModel,
             MenuItemSizeModel,
+            UserPreferenceModel,
+            UserProfileModel,
+            RecommendationSessionModel,
+            RecommendationModel,
+            RecommendationInteractionModel,
+            RecommendationFeedbackStateModel,
+            RestaurantRatingModel,
+            MlModel,
           ],
         };
       },

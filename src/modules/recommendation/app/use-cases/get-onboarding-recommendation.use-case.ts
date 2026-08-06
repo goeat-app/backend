@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { RestaurantRecommendationResponseDto } from '../dtos/response/restaurant-recommendation-response.dto';
 import { IUserPreferenceRepository } from '../../domain/interfaces/repositories/user-preference-repository.interface';
 import { RestaurantOnboardingMapper } from '../mappers/map-onboarding-recommendation/map-onboarding-recommendation';
@@ -10,6 +10,8 @@ import { resolveRestaurantFilters } from '../helpers/resolve-restaurant-filters.
 
 @Injectable()
 export class GetOnboardingRecommendationUseCase {
+  private readonly logger = new Logger(GetOnboardingRecommendationUseCase.name);
+
   constructor(
     private readonly restaurantRepository: IRestaurantRepository,
     private readonly reviewRepository: IReviewRepository,
@@ -24,10 +26,6 @@ export class GetOnboardingRecommendationUseCase {
     const preferences =
       await this.userPreferenceRepository.findUserPreferencesByUserId(userId);
 
-    if (!preferences) {
-      throw new NotFoundException('User preferences not found');
-    }
-
     const filters = resolveRestaurantFilters(sessionFilters, preferences);
 
     const restaurants =
@@ -35,22 +33,39 @@ export class GetOnboardingRecommendationUseCase {
 
     const reviews = await this.reviewRepository.findAllReviews();
 
+    if (!preferences) {
+      this.logger.warn(
+        'No user preferences found for onboarding recommendations, falling back to local restaurants',
+      );
+      return RestaurantOnboardingMapper.toResponseDto(restaurants);
+    }
+
     const servicePayload = RestaurantOnboardingMapper.toServiceRequest(
       restaurants,
       reviews,
       preferences,
     );
 
-    const result = await this.recommendationService.execute(servicePayload);
+    try {
+      const result = await this.recommendationService.execute(servicePayload);
 
-    if (!result.restaurants.length) {
+      if (!result.restaurants.length) {
+        return RestaurantOnboardingMapper.toResponseDto(restaurants);
+      }
+
+      const recommended = await this.restaurantRepository.findByIds(
+        result.restaurants.map((restaurant) => restaurant.restaurantId),
+      );
+
+      return RestaurantOnboardingMapper.toResponseDto(recommended);
+    } catch (error) {
+      this.logger.warn(
+        `Onboarding recommendation service failed, falling back to local restaurants: ${
+          error instanceof Error ? error.message : 'unknown error'
+        }`,
+      );
+
       return RestaurantOnboardingMapper.toResponseDto(restaurants);
     }
-
-    const recommended = await this.restaurantRepository.findByIds(
-      result.restaurants.map((restaurant) => restaurant.restaurantId),
-    );
-
-    return RestaurantOnboardingMapper.toResponseDto(recommended);
   }
 }

@@ -8,6 +8,12 @@
       { "tsconfig": "<rootDir>/test/tsconfig.test.json" }
     ]
   },
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "^@modules/(.*)$": "<rootDir>/src/modules/$1",
+    "^@config/(.*)$": "<rootDir>/src/config/$1",
+    "^@shared/(.*)$": "<rootDir>/src/shared/$1"
+  },
   "testEnvironment": "node",
   "setupFiles": ["<rootDir>/test/jest-env.ts"],
   "testTimeout": 60000,
