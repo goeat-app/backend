@@ -6,7 +6,10 @@ import {
   RecommendationScoringInput,
   ScoredRestaurant,
 } from '@/modules/recommendation/domain/interfaces/recommendation-scorer.interface';
-import { RECOMMENDATION_FEATURE_VERSION } from '@/modules/recommendation/domain/constants/recommendation-version.constants';
+import {
+  RECOMMENDATION_FEATURE_VERSION,
+  RECOMMENDATION_FEATURE_VERSION_V2,
+} from '@/modules/recommendation/domain/constants/recommendation-version.constants';
 import { RuleBasedRecommendationScorer } from './rule-based-recommendation-scorer.service';
 
 interface PredictionResponse {
@@ -40,6 +43,11 @@ export class TensorFlowRecommendationScorer extends RecommendationScorer {
       this.configService.get<string>('RECOMMENDATION_MODEL_VERSION') ??
       'restaurant_ranker_v1';
 
+    const featureVersion =
+      modelVersion === 'restaurant_ranker_v2'
+        ? RECOMMENDATION_FEATURE_VERSION_V2
+        : RECOMMENDATION_FEATURE_VERSION;
+
     if (!predictionServiceUrl) {
       return this.scoreWithFallback(input);
     }
@@ -49,7 +57,7 @@ export class TensorFlowRecommendationScorer extends RecommendationScorer {
         `${predictionServiceUrl.replace(/\/$/, '')}/predict`,
         {
           modelVersion,
-          featureVersion: RECOMMENDATION_FEATURE_VERSION,
+          featureVersion,
           userFeatures: input.userFeatures,
           contextFeatures: input.contextFeatures,
           restaurantFeatures: input.restaurantFeatures.map((features) => ({
@@ -99,7 +107,8 @@ export class TensorFlowRecommendationScorer extends RecommendationScorer {
       throw new Error('Prediction model version mismatch');
     }
 
-    if (response.featureVersion !== RECOMMENDATION_FEATURE_VERSION) {
+    if (response.featureVersion !== RECOMMENDATION_FEATURE_VERSION &&
+        response.featureVersion !== RECOMMENDATION_FEATURE_VERSION_V2) {
       throw new Error('Prediction feature version mismatch');
     }
 
