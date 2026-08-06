@@ -12,28 +12,20 @@
         "node_modules"
       ],
       "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
-    },
-    {
-      "source": "ml/prediction_service",
-      "codebase": "prediction",
-      "runtime": "python311",
-      "ignore": [
-        ".venv",
-        "__pycache__",
-        "*.pyc",
-        "Dockerfile",
-        "test_app.py"
-      ]
     }
   ],
   "emulators": {
+    "storage": {
+      "port": 9199,
+      "host": "0.0.0.0"
+    },
     "auth": {
-      "host": "0.0.0.0",
-      "port": 9099
+      "port": 9099,
+      "host": "0.0.0.0"
     },
     "functions": {
-      "host": "0.0.0.0",
-      "port": 5001
+      "port": 5001,
+      "host": "0.0.0.0"
     },
     "ui": {
       "enabled": true,
@@ -41,5 +33,8 @@
       "port": 4000
     },
     "singleProjectMode": true
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
 }

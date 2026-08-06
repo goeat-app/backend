@@ -14,6 +14,7 @@ describe('DefaultFeatureStore', () => {
               null,
               null,
               [],
+              [],
               null,
               null,
               ['Japanese Food'],

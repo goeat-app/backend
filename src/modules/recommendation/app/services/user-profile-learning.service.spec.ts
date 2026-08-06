@@ -24,8 +24,6 @@ describe('UserProfileLearningService', () => {
         primary_type: 'sushi',
         types: ['restaurant'],
         price_level: 2,
-        foodType: { name: 'Sushi' },
-        placeType: { name: 'Casual' },
       } as RestaurantsModel,
     });
 

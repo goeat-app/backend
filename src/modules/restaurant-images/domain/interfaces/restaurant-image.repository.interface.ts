@@ -11,6 +11,16 @@ export abstract class IRestaurantImageRepository {
     created_at: Date;
   }>;
 
+  abstract findByRestaurantId(restaurantId: string): Promise<
+    {
+      id: string;
+      restaurant_id: string;
+      image_key: string;
+      is_cover: boolean;
+      created_at: Date;
+    }[]
+  >;
+
   abstract findByIdAndRestaurantId(
     imageId: string,
     restaurantId: string,

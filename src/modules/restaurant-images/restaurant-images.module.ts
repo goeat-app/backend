@@ -3,8 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { IStorageService } from '@/lib/infra/external/storage.service.interface';
-import { SupabaseStorageService } from '@/lib/infra/external/supabase-storage.service';
-import { LocalDiskStorageService } from '@/lib/infra/external/local-storage.service';
+import { FirebaseStorageService } from '@/lib/infra/firebase/firebase-storage.service';
+import { RestaurantImageUrlResolver } from '@/lib/helpers/resolve-restaurant-image-url.helper';
 import { RestaurantImageModel } from './infra/database/restaurant-image.model';
 import { SequelizeRestaurantImageRepository } from './infra/repositories/restaurant-image.repository';
 import { IRestaurantImageRepository } from './domain/interfaces/restaurant-image.repository.interface';
@@ -24,13 +24,11 @@ import { RestaurantAccessModule } from '../restaurant-access/restaurant-access.m
   providers: [
     UploadRestaurantImageUseCase,
     DeleteRestaurantImageUseCase,
+    RestaurantImageUrlResolver,
     {
       provide: IStorageService,
       useFactory: (configService: ConfigService) => {
-        const nodeEnv = configService.get<string>('NODE_ENV');
-        return nodeEnv === 'production'
-          ? new SupabaseStorageService(configService)
-          : new LocalDiskStorageService(configService);
+        return new FirebaseStorageService(configService);
       },
       inject: [ConfigService],
     },

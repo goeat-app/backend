@@ -63,8 +63,6 @@ export class DefaultFeatureStore extends FeatureStore {
     const restaurantTypes = [
       restaurant.primary_type,
       ...(restaurant.types ?? []),
-      restaurant.foodType?.name,
-      restaurant.placeType?.name,
     ]
       .filter((value): value is string => Boolean(value))
       .map((value) => this.normalizeLabel(value));

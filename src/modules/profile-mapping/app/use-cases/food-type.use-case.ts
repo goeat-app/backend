@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { IFoodTypeRepository } from '../../domain/interfaces/food-type.interface';
 import { FoodTypeByNameDto, FoodTypeDto } from '../../dtos/food-type.dto';
+import { TypeImageMapper } from '../mappers/type-image.mapper';
 
 @Injectable()
 export class FoodTypeUseCase {
-  constructor(private readonly foodTypeRepository: IFoodTypeRepository) {}
+  constructor(
+    private readonly foodTypeRepository: IFoodTypeRepository,
+    private readonly typeImageMapper: TypeImageMapper,
+  ) {}
 
   async getCategories(): Promise<FoodTypeDto> {
     const response = await this.foodTypeRepository.findAll();
@@ -19,6 +23,7 @@ export class FoodTypeUseCase {
       id: item.id,
       name: item.name,
       slug: item.slug,
+      image_url: this.typeImageMapper.mapIconToUrl(item.icon_key, 'items'),
     }));
 
     return data;
@@ -32,8 +37,10 @@ export class FoodTypeUseCase {
     if (!response) throw new NotFoundException(404, 'Food type not found');
 
     const data = {
-      ...response,
+      id: response.id,
+      name: response.name,
       slug: response.slug,
+      image_url: this.typeImageMapper.mapIconToUrl(response.icon_key, 'items'),
     };
 
     return data;

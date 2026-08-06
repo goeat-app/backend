@@ -6,6 +6,7 @@ const PlaceTypeSchema = z.array(
     id: z.string(),
     name: z.string(),
     slug: z.string(),
+    image_url: z.string().nullable().optional(),
   }),
 );
 
@@ -13,6 +14,7 @@ const PlaceTypeByNameSchema = z.object({
   id: z.string(),
   name: z.string(),
   slug: z.string(),
+  image_url: z.string().nullable().optional(),
 });
 
 export class PlaceTypeByNameDto extends createZodDto(PlaceTypeByNameSchema) {}

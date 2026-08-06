@@ -1,10 +1,11 @@
 export interface RestaurantRecommendationResponseDto {
   address: string;
   averagePrice: number;
-  averageRating: number;
+  avgRating: number;
   city: string;
   foodType: string;
   id: string;
+  imageUrl: string | null;
   isActive: boolean;
   latitude: number;
   longitude: number;
@@ -12,5 +13,6 @@ export interface RestaurantRecommendationResponseDto {
   placeType: string;
   priceLevel: number;
   slug: string;
+  restaurantSlug: string;
   state: string;
 }

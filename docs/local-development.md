@@ -5,12 +5,11 @@ serviço externo (Supabase, Firebase de produção, etc.).
 
 A stack local usa:
 
-| Serviço        | Tecnologia                         | Porta |
-| -------------- | ---------------------------------- | ----- |
-| Banco de dados | Docker + PostgreSQL 16             | 5432  |
-| Autenticação   | Docker + Firebase Auth Emulator    | 9099  |
-| Emulator UI    | Docker + Firebase Emulator Suite   | 4000  |
-| Predição ML    | Docker + FastAPI Python            | 8000  |
+| Serviço        | Tecnologia                             | Porta |
+| -------------- | -------------------------------------- | ----- |
+| Banco de dados | Docker + PostgreSQL 16                 | 5432  |
+| Autenticação   | Docker + Firebase Auth Emulator        | 9099  |
+| Emulator UI    | Docker + Firebase Emulator Suite       | 4000  |
 | Backend NestJS | `yarn start:local` ou `start:emulator` | 3000  |
 
 ---
@@ -58,10 +57,19 @@ PORT=3000
 DATABASE_URL=postgresql://admin:goeat-admin@localhost:5432/goeat_db
 
 # Firebase Auth Emulator (ver seção 4)
-FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+AUTH_EMULATOR_HOST=localhost:9099
 EMULATOR_PROJECT_ID=demo-goeat
 
-# Uploads locais
+# Firebase Storage (for local development with emulator)
+# These values are not used locally but required by the schema
+FIREBASE_API_KEY=demo-key
+FIREBASE_AUTH_DOMAIN=demo-goeat.firebaseapp.com
+FIREBASE_PROJECT_ID=demo-goeat
+FIREBASE_STORAGE_BUCKET=demo-goeat.appspot.com
+FIREBASE_MESSAGING_SENDER_ID=demo-id
+FIREBASE_APP_ID=demo-app-id
+
+# Uploads locais (fallback for non-emulator environments)
 UPLOADS_PATH=./uploads
 
 # Recomendação / ML local (opcional)
@@ -72,14 +80,9 @@ PREDICTION_SERVICE_TOKEN=local-prediction-token
 RECOMMENDATION_MODEL_VERSION=restaurant_ranker_v1
 ```
 
-O serviço `firebase-emulator` recebe as variáveis do arquivo `.env` através de
-`env_file` no Docker Compose. As configurações que precisam de endereços
-internos do Docker, como `DATABASE_URL`, são sobrescritas pelo
-`docker-compose.yml`.
-
-> As variáveis de Supabase Storage (`SUPABASE_URL`, `SUPABASE_ANON_KEY`,
-> `SUPABASE_SERVICE_ROLE_KEY`) não são necessárias para rodar localmente se você
-> não for testar upload de imagens.
+> Firebase Storage is automatically configured to use the local emulator when
+> `AUTH_EMULATOR_HOST` is set. Seed data (environments, food types) is
+> automatically uploaded to the Storage emulator on startup.
 
 ---
 
@@ -92,11 +95,10 @@ yarn docker:up
 
 Isso sobe:
 
-| Container | Serviço | Portas |
-| --------- | ------- | ------ |
-| `goeat-postgres` | PostgreSQL 16 | `5432` |
-| `goeat-firebase-emulator` | Firebase Auth Emulator + UI | `9099`, `4000` |
-| `goeat-prediction-service` | Python ML Prediction Service | `8000` |
+| Container                 | Serviço                               | Portas                 |
+| ------------------------- | ------------------------------------- | ---------------------- |
+| `goeat-postgres`          | PostgreSQL 16                         | `5432`                 |
+| `goeat-firebase-emulator` | Firebase Auth + Storage Emulator + UI | `9099`, `4000`, `9199` |
 
 Credenciais do Postgres:
 
@@ -303,11 +305,11 @@ yarn typecheck
 
 ## Resumo dos terminais
 
-| Terminal | Comando            | O que faz                              |
-| -------- | ------------------ | -------------------------------------- |
-| 1        | `yarn start:local` | Sobe Docker (Postgres + emulator) + NestJS |
-| —        | `yarn docker:up`   | Só infra Docker                        |
-| —        | `yarn start:emulator` | Só NestJS (infra já no ar)          |
+| Terminal | Comando               | O que faz                                  |
+| -------- | --------------------- | ------------------------------------------ |
+| 1        | `yarn start:local`    | Sobe Docker (Postgres + emulator) + NestJS |
+| —        | `yarn docker:up`      | Só infra Docker                            |
+| —        | `yarn start:emulator` | Só NestJS (infra já no ar)                 |
 
 ---
 

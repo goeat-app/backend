@@ -1,23 +1,18 @@
-*
+.firebase
+.git
+.github
+.env
+.env.*
+coverage
+docker/firebase-emulator/data
+firebase-debug.log
+firebase-debug.*.log
+npm-debug.log
+yarn-error.log
 
-!package.json
-!firebase.json
-!.firebaserc
-!tsconfig.json
-
-!dist/
-!dist/**
-
-!node_modules/
-!node_modules/**
 
 !ml/
 !ml/prediction_service/
 !ml/prediction_service/app.py
 !ml/prediction_service/main.py
 !ml/prediction_service/requirements.txt
-
-!docker/
-!docker/firebase-emulator/
-!docker/firebase-emulator/Dockerfile
-!docker/firebase-emulator/entrypoint.sh

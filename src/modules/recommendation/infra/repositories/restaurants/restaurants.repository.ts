@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { RestaurantsModel } from '@/modules/recommendation/infra/database/restaurant.model';
-import { PlaceTypeModel } from '@/modules/profile-mapping/infra/database/place-type.model';
-import { FoodTypeModel } from '@/modules/profile-mapping/infra/database/food-type.model';
 import { IRestaurantRepository } from '@/modules/recommendation/domain/interfaces/repositories/restaurant-repository.interface';
 import { RestaurantCandidate } from '@/modules/recommendation/domain/interfaces/places-provider.interface';
-import { Op } from 'sequelize';
 import { calculateDistanceMeters } from '@/modules/recommendation/app/utils/distance';
 import { Location } from '@/modules/recommendation/domain/value-objects/location';
+import { RestaurantQueryFilters } from '@/modules/recommendation/domain/types/restaurant-query-filters.type';
 
 @Injectable()
 export class RestaurantRepository implements IRestaurantRepository {
@@ -16,29 +15,38 @@ export class RestaurantRepository implements IRestaurantRepository {
     private readonly restaurantModel: typeof RestaurantsModel,
   ) {}
 
-  private readonly defaultIncludes = [
-    {
-      model: PlaceTypeModel,
-      attributes: ['id', 'name', 'slug'],
-    },
-    {
-      model: FoodTypeModel,
-      attributes: ['id', 'name', 'slug'],
-    },
-  ];
+  async findAllActiveRestaurants(
+    filters?: RestaurantQueryFilters,
+  ): Promise<RestaurantsModel[]> {
+    const where: Record<string, unknown> = { is_active: true };
 
-  async findAllActiveRestaurants(): Promise<RestaurantsModel[]> {
+    if (filters?.minRating) {
+      where.average_rating = { [Op.gte]: filters.minRating };
+    }
+
+    if (filters?.minPrice !== undefined && filters?.maxPrice !== undefined) {
+      where.average_price = {
+        [Op.between]: [filters.minPrice, filters.maxPrice],
+      };
+    } else if (filters?.minPrice !== undefined) {
+      where.average_price = { [Op.gte]: filters.minPrice };
+    } else if (filters?.maxPrice !== undefined) {
+      where.average_price = { [Op.lte]: filters.maxPrice };
+    }
+
     return await this.restaurantModel.findAll({
-      where: { is_active: true },
-      include: this.defaultIncludes,
+      where,
       raw: false,
     });
   }
 
   async findByIds(ids: string[]): Promise<RestaurantsModel[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+
     return await this.restaurantModel.findAll({
-      where: { id: ids },
-      include: this.defaultIncludes,
+      where: { id: { [Op.in]: ids } },
       raw: false,
     });
   }
@@ -53,7 +61,6 @@ export class RestaurantRepository implements IRestaurantRepository {
         latitude: { [Op.ne]: null },
         longitude: { [Op.ne]: null },
       },
-      include: this.defaultIncludes,
       raw: false,
     });
 
@@ -83,14 +90,22 @@ export class RestaurantRepository implements IRestaurantRepository {
       const details = candidate as RestaurantCandidate & {
         website?: string;
         phone?: string;
+        whatsapp?: string;
+        description?: string;
+        imageUrl?: string;
         editorialSummary?: string;
+        editorialSummarySource?: 'google' | 'generated';
       };
       const googleFields = {
         provider: candidate.provider,
         provider_place_id: candidate.providerPlaceId,
         name: candidate.name,
+        address: candidate.address ?? null,
         latitude: candidate.location.latitude,
         longitude: candidate.location.longitude,
+        city: candidate.city ?? 'Unknown',
+        state: candidate.state ?? 'Unknown',
+        postal_code: candidate.postalCode ?? '00000',
         primary_type: candidate.primaryType ?? null,
         types: candidate.types,
         price_level: candidate.priceLevel ?? null,
@@ -100,8 +115,20 @@ export class RestaurantRepository implements IRestaurantRepository {
         open_now: candidate.openNow ?? null,
         ...(details.website !== undefined ? { website: details.website } : {}),
         ...(details.phone !== undefined ? { phone: details.phone } : {}),
+        ...(details.whatsapp !== undefined
+          ? { whatsapp: details.whatsapp }
+          : {}),
+        ...(details.description !== undefined
+          ? { description: details.description }
+          : {}),
+        ...(details.imageUrl !== undefined
+          ? { image_url: details.imageUrl }
+          : {}),
         ...(details.editorialSummary !== undefined
           ? { editorial_summary: details.editorialSummary }
+          : {}),
+        ...(details.editorialSummarySource !== undefined
+          ? { editorial_summary_source: details.editorialSummarySource }
           : {}),
         last_seen_at: now,
         last_synced_at: now,
@@ -138,7 +165,6 @@ export class RestaurantRepository implements IRestaurantRepository {
           provider_place_id: candidate.providerPlaceId,
         })),
       },
-      include: this.defaultIncludes,
       raw: false,
     });
   }

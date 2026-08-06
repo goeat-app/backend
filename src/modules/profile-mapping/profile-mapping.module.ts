@@ -18,6 +18,7 @@ import { SequelizeProfileMappingRepository } from './infra/repositories/profile-
 import { ProfileMappingController } from './infra/controllers/profile-mapping.controller';
 import { ProfileMappingPlaceTypeModel } from './infra/database/profile-mapping-place-type.model';
 import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-food-type.model';
+import { TypeImageMapper } from './app/mappers/type-image.mapper';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ProfileMappingFoodTypeModel } from './infra/database/profile-mapping-fo
     FoodTypeUseCase,
     PlaceTypeUseCase,
     ProfileMappingUseCase,
+    TypeImageMapper,
     {
       provide: IFoodTypeRepository,
       useClass: SequelizeFoodTypeRepository,

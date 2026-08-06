@@ -70,7 +70,7 @@ environment and deployment needs.
 Protected APIs require Firebase ID tokens. Local development can use:
 
 ```env
-FIREBASE_AUTH_EMULATOR_HOST=localhost:9099
+AUTH_EMULATOR_HOST=localhost:9099
 EMULATOR_PROJECT_ID=demo-goeat
 ```
 

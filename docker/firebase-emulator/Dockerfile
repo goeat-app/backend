@@ -12,16 +12,11 @@ RUN apt-get update \
 
 WORKDIR /workspace
 
-COPY package.json firebase.json .firebaserc tsconfig.json ./
-COPY dist ./dist
-COPY node_modules ./node_modules
-COPY ml/prediction_service ./ml/prediction_service
-COPY docker/firebase-emulator/entrypoint.sh ./entrypoint.sh
-RUN python3.11 -m venv ml/prediction_service/venv \
-  && ml/prediction_service/venv/bin/python -m pip install --upgrade pip \
-  && ml/prediction_service/venv/bin/python -m pip install -r ml/prediction_service/requirements.txt \
-  && chmod +x entrypoint.sh
+RUN corepack enable
 
-EXPOSE 9099 4000 5001
+COPY . ./
+RUN yarn install --frozen-lockfile
 
-ENTRYPOINT ["./entrypoint.sh"]
+EXPOSE 4000 5001 9099 9199
+
+CMD ["firebase", "emulators:start", "--only", "functions,auth,storage"]

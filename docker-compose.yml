@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -23,14 +21,20 @@ services:
       context: .
       dockerfile: docker/firebase-emulator/Dockerfile
     container_name: goeat-firebase-emulator
+    working_dir: /workspace
+    command: firebase emulators:start --only functions,auth,storage
     env_file:
-      - path: .env
-        required: false
+      - .env
+    environment:
+      EMULATOR_PROJECT_ID: demo-goeat
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://admin:goeat-admin@postgres:5432/goeat_db
       EMULATOR_PROJECT_ID: demo-goeat
       FEATURE_VERSION: restaurant_recommendation_v1
-      FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+      AUTH_EMULATOR_HOST: localhost:9099
       MODEL_PATH: /workspace/ml/artifacts/restaurant_ranker_v1/model
       MODEL_VERSION: restaurant_ranker_v1
       PREDICTION_ALLOW_HEURISTIC: ${PREDICTION_ALLOW_HEURISTIC:-true}
@@ -40,12 +44,12 @@ services:
       - '9099:9099'
       - '5001:5001'
       - '4000:4000'
+      - '9199:9199'
     volumes:
       - firebase_emulator_data:/data
       - ./ml/artifacts:/workspace/ml/artifacts:ro
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - .:/workspace
+      - firebase_node_modules:/workspace/node_modules
     healthcheck:
       test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:4000']
       interval: 10s
@@ -56,3 +60,4 @@ services:
 volumes:
   postgres_data:
   firebase_emulator_data:
+  firebase_node_modules:

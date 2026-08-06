@@ -69,3 +69,5 @@ ml/**/.pytest_cache/
 # Generated ML artifacts and prepared datasets
 ml/artifacts/
 ml/data/*.json
+!docker/firebase-emulator/data/
+docker/firebase-emulator/data/export/

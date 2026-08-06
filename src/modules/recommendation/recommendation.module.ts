@@ -31,6 +31,7 @@ import { RecommendationBasedOnboardingExternal } from './infra/external/recommen
 import { GetOnboardingRecommendationUseCase } from './app/use-cases/get-onboarding-recommendation.use-case';
 import { SyncNearbyRestaurantsUseCase } from './app/use-cases/sync-nearby-restaurants.use-case';
 import { RestaurantDiscoverySyncService } from './app/services/restaurant-discovery-sync.service';
+import { GetMapRestaurantsUseCase } from './app/use-cases/get-map-restaurants.use-case';
 
 import { RecommendationController } from './infra/controllers/recommendation.controller';
 import { RecommendationsApiController } from './infra/controllers/recommendations-api.controller';
@@ -170,6 +171,7 @@ import { PredictionServiceHealthProbe } from './app/services/prediction-service-
     PredictionServiceHealthProbe,
     GetOnboardingRecommendationUseCase,
     SyncNearbyRestaurantsUseCase,
+    GetMapRestaurantsUseCase,
     GenerateRecommendationsUseCase,
     ListRecommendationHistoryUseCase,
     GetUserPreferencesUseCase,
@@ -186,6 +188,7 @@ import { PredictionServiceHealthProbe } from './app/services/prediction-service-
     UpsertUserPreferencesUseCase,
     RecordRecommendationFeedbackUseCase,
     RestaurantDiscoverySyncService,
+    GetMapRestaurantsUseCase,
     IRestaurantRepository,
     IReviewRepository,
     IUserPreferenceRepository,

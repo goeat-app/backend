@@ -1,7 +1,7 @@
 {
   "name": "go-eat",
   "version": "0.0.1",
-  "main": "dist/firebase.js",
+  "main": "dist/src/firebase.js",
   "description": "",
   "author": "",
   "private": true,
@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "nest build",
+    "build:watch": "nest build --watch",
     "start": "nest start  --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -25,19 +26,21 @@
     "db:migrate:undo": "sequelize-cli db:migrate:undo",
     "db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
     "db:migration:create": "sequelize-cli migration:generate --name",
+    "db:migration:show": "sequelize-cli db:migrate:status",
     "db:seed": "sequelize-cli db:seed:all",
     "db:seed:undo": "sequelize-cli db:seed:undo:all",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "check:circular": "madge --extensions ts --ts-config tsconfig.json --circular src",
     "check": "npm run typecheck && npm run check:circular",
-    "firebase:deploy": "firebase deploy --only functions",
+    "firebase:deploy": "firebase deploy --only functions --project=prod",
     "firebase:emulator": "firebase emulators:start --only auth,functions --project=demo-goeat",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "start:local": "docker compose up -d && nest start --watch",
     "start:emulator": "nest start --watch",
     "start:local:firebase": "npm run start:local",
-    "prepare": "husky"
+    "prepare": "husky",
+    "seed:images": "ts-node --project tsconfig.json scripts/seed-images.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -47,7 +50,6 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/sequelize": "^11.0.0",
-    "@supabase/supabase-js": "^2.105.4",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
