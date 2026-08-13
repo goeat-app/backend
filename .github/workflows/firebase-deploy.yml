@@ -48,7 +48,7 @@ jobs:
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$HOME/firebase-service-account.json"
           chmod 600 "$HOME/firebase-service-account.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$HOME/firebase-service-account.json"
-          npx firebase-tools deploy --only functions --project "$FIREBASE_PROJECT_ID" --non-interactive
+          npx firebase-tools deploy --only functions --project ${{ secrets.FIREBASE_PROJECT_ID }} --non-interactive
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
