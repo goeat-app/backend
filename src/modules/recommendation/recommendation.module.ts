@@ -71,6 +71,9 @@ import { RecommendationMaintenanceSchedulerService } from './app/services/recomm
 import { RecommendationDebugService } from './app/services/recommendation-debug.service';
 import { RecommendationAdminController } from './infra/controllers/recommendation-admin.controller';
 import { PredictionServiceHealthProbe } from './app/services/prediction-service-health-probe.service';
+import { FirebaseStorageService } from '@/lib/infra/firebase/firebase-storage.service';
+import { IStorageService } from '@/lib/infra/external/storage.service.interface';
+import { RestaurantImageUrlResolver } from '@/lib/helpers/resolve-restaurant-image-url.helper';
 
 @Module({
   imports: [
@@ -136,9 +139,14 @@ import { PredictionServiceHealthProbe } from './app/services/prediction-service-
       useClass: GooglePlacesProvider,
     },
     {
+      provide: IStorageService,
+      useClass: FirebaseStorageService,
+    },
+    {
       provide: FeatureStore,
       useClass: DefaultFeatureStore,
     },
+    RestaurantImageUrlResolver,
     RuleBasedRecommendationScorer,
     TensorFlowRecommendationScorer,
     PopularNearbyRecommendationScorer,

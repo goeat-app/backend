@@ -27,7 +27,13 @@ describe('RestaurantRepository', () => {
         phone: '+5511999999999',
         whatsapp: '+5511999999999',
         description: 'Cozinha contemporanea.',
-        imageUrl: 'https://cdn.example.com/photo.jpg',
+        photos: [
+          {
+            name: 'photo.jpg',
+            widthPx: 1080,
+            authorAttributionsNames: ['Bistro do Centro'],
+          },
+        ],
         editorialSummary: 'Ambiente acolhedor.',
         editorialSummarySource: 'generated',
       },

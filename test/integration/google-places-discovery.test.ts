@@ -9,6 +9,7 @@ import { RestaurantsModel } from '../../src/modules/recommendation/infra/databas
 import { PlaceTypeModel } from '../../src/modules/profile-mapping/infra/database/place-type.model';
 import { FoodTypeModel } from '../../src/modules/profile-mapping/infra/database/food-type.model';
 import { RestaurantProvider } from '../../src/modules/recommendation/domain/enums/restaurant-provider.enum';
+import { IStorageService } from '@/lib/infra/external/storage.service.interface';
 
 dotenvConfig({ path: path.resolve(process.cwd(), '.env') });
 
@@ -29,7 +30,47 @@ describeIfConfigured('Google Places discovery integration', () => {
     const restaurantModel = sequelize.models
       .RestaurantsModel as typeof RestaurantsModel;
     const repository = new RestaurantRepository(restaurantModel);
-    const provider = new GooglePlacesProvider(new ConfigService());
+    const mockStorageService: IStorageService = {
+      // eslint-disable-next-line @typescript-eslint/require-await
+      uploadFile: async (
+        bucketName: string,
+        filePath: string,
+        buffer: Buffer,
+        mimetype: string,
+      ): Promise<string> => {
+        // Mock implementation for testing purposes
+        console.log(
+          `Mock upload to bucket: ${bucketName}, path: ${filePath}, mimetype: ${mimetype}`,
+        );
+        return `gs://${bucketName}/${filePath}`;
+      },
+      // eslint-disable-next-line @typescript-eslint/require-await
+      deleteFile: async (
+        bucketName: string,
+        filePath: string,
+      ): Promise<void> => {
+        // Mock implementation for testing purposes
+        console.log(
+          `Mock delete from bucket: ${bucketName}, path: ${filePath}`,
+        );
+      },
+      // eslint-disable-next-line @typescript-eslint/require-await
+      getDownloadUrl: async (
+        bucketName: string,
+        filePath: string,
+      ): Promise<string> => {
+        // Mock implementation for testing purposes
+        console.log(
+          `Mock get download URL from bucket: ${bucketName}, path: ${filePath}`,
+        );
+        return `https://storage.googleapis.com/${bucketName}/${filePath}`;
+      },
+    };
+
+    const provider = new GooglePlacesProvider(
+      new ConfigService(),
+      mockStorageService,
+    );
     const service = new RestaurantDiscoverySyncService(provider, repository);
 
     const insertedProviderPlaceIds: string[] = [];

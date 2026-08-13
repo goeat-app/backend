@@ -29,7 +29,11 @@ export interface GooglePlace {
     };
   };
   photos?: Array<{
-    name?: string;
+    name: string;
+    widthPx: number;
+    authorAttributions: Array<{
+      displayName: string;
+    }>;
   }>;
 }
 
@@ -108,11 +112,14 @@ export class GooglePlaceMapper {
       // Google Places does not expose a dedicated WhatsApp field.
       whatsapp: phone,
       description,
-      imageUrl: this.buildImageUrl(
-        place.photos?.[0]?.name,
-        options?.googleApiKey,
-        options?.photoMaxHeightPx,
-      ),
+      photos: place.photos?.map((photo) => ({
+        name: photo.name,
+        widthPx: photo.widthPx,
+        authorAttributionsNames:
+          photo.authorAttributions
+            ?.map((attr) => attr.displayName ?? '')
+            .filter((name): name is string => Boolean(name)) ?? [],
+      })),
       editorialSummary,
       editorialSummarySource: googleEditorialSummary ? 'google' : 'generated',
     };

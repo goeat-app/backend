@@ -95,7 +95,13 @@ describe('GooglePlaceMapper', () => {
         nationalPhoneNumber: '(11) 99999-0000',
         editorialSummary: { text: 'Tradicional cantina familiar.' },
         generativeSummary: { overview: { text: 'Massas artesanais.' } },
-        photos: [{ name: 'places/abc123/photos/photo1' }],
+        photos: [
+          {
+            name: 'places/abc123/photos/photo1',
+            widthPx: 600,
+            authorAttributions: [{ displayName: 'Cantina Boa' }],
+          },
+        ],
       },
       { googleApiKey: 'fake-key' },
     );

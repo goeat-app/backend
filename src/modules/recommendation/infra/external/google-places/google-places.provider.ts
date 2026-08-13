@@ -12,21 +12,11 @@ import {
   RestaurantCandidate,
   RestaurantDetails,
 } from '@/modules/recommendation/domain/interfaces/places-provider.interface';
+import { IStorageService } from '@/lib/infra/external/storage.service.interface';
+import { FIREBASE_STORAGE_CONFIG } from '@/lib/infra/firebase/storage-config';
 
 const GOOGLE_PLACES_BASE_URL = 'https://places.googleapis.com/v1';
-const NEARBY_FIELD_MASK = [
-  'places.id',
-  'places.displayName',
-  'places.location',
-  'places.addressComponents',
-  'places.primaryType',
-  'places.types',
-  'places.priceLevel',
-  'places.rating',
-  'places.userRatingCount',
-  'places.businessStatus',
-  'places.currentOpeningHours.openNow',
-].join(',');
+const NEARBY_FIELD_MASK = ['places.id'].join(',');
 const DETAILS_FIELD_MASK = [
   'id',
   'displayName',
@@ -45,17 +35,22 @@ const DETAILS_FIELD_MASK = [
   'editorialSummary',
   'generativeSummary.overview.text',
   'photos.name',
+  'photos.widthPx',
+  'photos.authorAttributions.displayName',
 ].join(',');
 
 @Injectable()
 export class GooglePlacesProvider extends PlacesProvider {
   private readonly logger = new Logger(GooglePlacesProvider.name);
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly storageService: IStorageService,
+  ) {
     super();
   }
 
-  async searchNearby(input: NearbySearchInput): Promise<RestaurantCandidate[]> {
+  async searchNearby(input: NearbySearchInput): Promise<Array<string>> {
     const apiKey = this.getApiKey();
 
     try {
@@ -85,8 +80,8 @@ export class GooglePlacesProvider extends PlacesProvider {
       );
 
       return (response.data?.places ?? [])
-        .map((place) => GooglePlaceMapper.toRestaurantCandidate(place))
-        .filter((place): place is RestaurantCandidate => Boolean(place));
+        .map((place) => place.id)
+        .filter((placeId): placeId is string => Boolean(placeId));
     } catch (error) {
       this.logger.warn(
         `Google Places nearby search failed: ${this.describeError(error)}`,
@@ -129,6 +124,64 @@ export class GooglePlacesProvider extends PlacesProvider {
       );
       throw new PlacesProviderError(
         'Unable to fetch restaurant details',
+        error,
+      );
+    }
+  }
+
+  async getAndSaveImageByName(
+    path: string,
+    name: string,
+    imageName: string,
+    widthPx?: number,
+    heightPx?: number,
+  ): Promise<string> {
+    const apiKey = this.getApiKey();
+
+    try {
+      const imageUrl = new URL(`${GOOGLE_PLACES_BASE_URL}/${imageName}/media`);
+      imageUrl.searchParams.append('key', apiKey);
+
+      if (!widthPx && !heightPx) {
+        imageUrl.searchParams.append('maxWidthPx', '1080');
+      }
+
+      if (widthPx) {
+        imageUrl.searchParams.append('maxWidthPx', widthPx.toString());
+      }
+      if (heightPx) {
+        imageUrl.searchParams.append('maxHeightPx', heightPx.toString());
+      }
+
+      const response = await fetch(imageUrl.toString());
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.status}`);
+      }
+
+      const buffer = Buffer.from(await response.arrayBuffer());
+      const mimetype = response.headers.get('content-type') ?? 'image/jpeg';
+      const extension = mimetype.split('/')[1] ?? 'jpg';
+      const completePath = `${path}/${name}.${extension}`;
+
+      const bucketName =
+        process.env.FIREBASE_STORAGE_BUCKET ??
+        FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
+
+      const storedPath = await this.storageService.uploadFile(
+        bucketName,
+        completePath,
+        buffer,
+        response.headers.get('content-type') ?? 'image/jpeg',
+      );
+
+      return storedPath;
+    } catch (error) {
+      this.logger.warn(
+        `Google Places image fetch failed: ${this.describeError(error)}`,
+      );
+
+      throw new PlacesProviderError(
+        `Unable to fetch image for ${name} (${imageName})`,
         error,
       );
     }

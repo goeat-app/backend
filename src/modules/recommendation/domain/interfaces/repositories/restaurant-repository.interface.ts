@@ -8,6 +8,10 @@ export abstract class IRestaurantRepository {
     filters?: RestaurantQueryFilters,
   ): Promise<RestaurantsModel[]>;
   abstract findByIds(ids: string[]): Promise<RestaurantsModel[]>;
+  abstract findByProviderPlaceIds(
+    providerPlaceIds: string[],
+    provider: string,
+  ): Promise<RestaurantsModel[]>;
   abstract findCachedNearby(input: {
     location: Location;
     radiusMeters: number;
@@ -15,4 +19,8 @@ export abstract class IRestaurantRepository {
   abstract upsertDiscoveredRestaurants(
     candidates: RestaurantCandidate[],
   ): Promise<RestaurantsModel[]>;
+  abstract updateRestaurantDetails(
+    restaurantId: string,
+    details: Partial<RestaurantsModel>,
+  ): Promise<RestaurantsModel>;
 }

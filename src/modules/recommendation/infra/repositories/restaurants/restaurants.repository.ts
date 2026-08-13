@@ -51,6 +51,23 @@ export class RestaurantRepository implements IRestaurantRepository {
     });
   }
 
+  async findByProviderPlaceIds(
+    providerPlaceIds: string[],
+    provider: string,
+  ): Promise<RestaurantsModel[]> {
+    if (providerPlaceIds.length === 0) {
+      return [];
+    }
+
+    return await this.restaurantModel.findAll({
+      where: {
+        provider,
+        provider_place_id: { [Op.in]: providerPlaceIds },
+      },
+      raw: false,
+    });
+  }
+
   async findCachedNearby(input: {
     location: Location;
     radiusMeters: number;
@@ -153,6 +170,20 @@ export class RestaurantRepository implements IRestaurantRepository {
     }
 
     return this.findByProviderPlaces(candidates);
+  }
+
+  async updateRestaurantDetails(
+    restaurantId: string,
+    details: Partial<RestaurantsModel>,
+  ): Promise<RestaurantsModel> {
+    const restaurant = await this.restaurantModel.findByPk(restaurantId);
+
+    if (!restaurant) {
+      throw new Error(`Restaurant with ID ${restaurantId} not found`);
+    }
+
+    await restaurant.update(details);
+    return restaurant;
   }
 
   private async findByProviderPlaces(

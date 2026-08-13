@@ -22,4 +22,5 @@ export interface NearbyRestaurantsResponseDto {
   latitude: number;
   longitude: number;
   isActive: boolean;
+  imageUrl: string | null;
 }
