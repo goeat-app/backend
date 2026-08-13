@@ -52,4 +52,4 @@ jobs:
           echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json" >> $GITHUB_ENV
 
       - name: Deploy Functions
-        run: firebase deploy --only functions --project goeat-c0750
+        run: firebase deploy --only functions --project prod
