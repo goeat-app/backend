@@ -84,7 +84,7 @@ describe('GooglePlaceMapper', () => {
     expect(result).toBeNull();
   });
 
-  it('maps place details including website, phones, summaries and photo URL', () => {
+  it('maps place details including website, phones, summaries and photo metadata', () => {
     const result = GooglePlaceMapper.toRestaurantDetails(
       {
         id: 'places/abc123',
@@ -114,8 +114,13 @@ describe('GooglePlaceMapper', () => {
         description: 'Massas artesanais.',
         editorialSummary: 'Tradicional cantina familiar.',
         editorialSummarySource: 'google',
-        imageUrl:
-          'https://places.googleapis.com/v1/places/abc123/photos/photo1/media?key=fake-key&maxHeightPx=600&skipHttpRedirect=true',
+        photos: [
+          {
+            name: 'places/abc123/photos/photo1',
+            widthPx: 600,
+            authorAttributionsNames: ['Cantina Boa'],
+          },
+        ],
       }),
     );
   });
