@@ -64,7 +64,7 @@ EMULATOR_PROJECT_ID=demo-goeat
 # These values are not used locally but required by the schema
 FIREBASE_API_KEY=demo-key
 FIREBASE_AUTH_DOMAIN=demo-goeat.firebaseapp.com
-FIREBASE_PROJECT_ID=demo-goeat
+PROJECT_ID=demo-goeat
 FIREBASE_STORAGE_BUCKET=demo-goeat.appspot.com
 FIREBASE_MESSAGING_SENDER_ID=demo-id
 FIREBASE_APP_ID=demo-app-id
