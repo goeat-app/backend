@@ -256,7 +256,7 @@ checkEnv() {
 ### Method 3: Monitor application behavior
 
 - Test database operations to verify `DATABASE_URL` is working
-- Test file uploads to verify `FIREBASE_STORAGE_BUCKET` is correct
+- Test file uploads to verify the Firebase Storage bucket (`<PROJECT_ID>.appspot.com`, derived from `PROJECT_ID`) is correct
 - Check recommendation features to verify `RECOMMENDER_SYSTEM_URL` is accessible
 
 ## Monitoring Deployment
