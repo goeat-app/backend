@@ -27,7 +27,7 @@ jobs:
 
       - name: Create production environment file
         run: |
-          cat > .env <<'EOF'
+          cat > .env << EOF
           NODE_ENV=production
           DATABASE_URL=${{ secrets.DATABASE_URL }}
           SUPABASE_URL=${{ secrets.SUPABASE_URL }}
