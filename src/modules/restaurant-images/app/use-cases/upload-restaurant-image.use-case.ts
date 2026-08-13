@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { IStorageService } from '@/lib/infra/external/storage.service.interface';
 import { IRestaurantImageRepository } from '../../domain/interfaces/restaurant-image.repository.interface';
-import { FIREBASE_STORAGE_CONFIG } from '../../../../lib/infra/firebase/storage-config';
+import { FIREBASE_STORAGE_CONFIG } from '@/lib/infra/firebase/storage-config';
 
 @Injectable()
 export class UploadRestaurantImageUseCase {

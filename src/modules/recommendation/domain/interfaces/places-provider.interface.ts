@@ -31,15 +31,32 @@ export interface RestaurantDetails extends RestaurantCandidate {
   phone?: string;
   whatsapp?: string;
   description?: string;
-  imageUrl?: string;
+  photos?: Array<{
+    name: string;
+    widthPx: number;
+    authorAttributionsNames: Array<string>;
+  }>;
   editorialSummary?: string;
   editorialSummarySource?: 'google' | 'generated';
 }
 
+export interface EnrichedRestaurantDetails extends Omit<
+  RestaurantDetails,
+  'photos'
+> {
+  imagePath?: string;
+}
+
 export abstract class PlacesProvider {
-  abstract searchNearby(
-    input: NearbySearchInput,
-  ): Promise<RestaurantCandidate[]>;
+  abstract searchNearby(input: NearbySearchInput): Promise<Array<string>>;
 
   abstract getPlaceDetails(providerPlaceId: string): Promise<RestaurantDetails>;
+
+  abstract getAndSaveImageByName(
+    path: string,
+    name: string,
+    imageName: string,
+    widthPx?: number,
+    heightPx?: number,
+  ): Promise<string>;
 }
