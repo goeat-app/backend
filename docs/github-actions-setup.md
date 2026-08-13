@@ -259,7 +259,7 @@ checkEnv() {
 - Test file uploads to verify the Firebase Storage bucket (`<PROJECT_ID>.appspot.com`, derived from `PROJECT_ID`) is correct
 - Check recommendation features to verify `RECOMMENDER_SYSTEM_URL` is accessible
 
-## Monitoring Deployment
+## Troubleshooting Deployment
 
 ### Error: "Permission denied"
 
