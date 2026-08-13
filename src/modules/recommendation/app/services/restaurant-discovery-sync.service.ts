@@ -3,7 +3,6 @@ import {
   PlacesProvider,
   RestaurantCandidate,
   RestaurantDetails,
-  EnrichedRestaurantDetails,
 } from '@/modules/recommendation/domain/interfaces/places-provider.interface';
 import { IRestaurantRepository } from '@/modules/recommendation/domain/interfaces/repositories/restaurant-repository.interface';
 import { Location } from '@/modules/recommendation/domain/value-objects/location';
