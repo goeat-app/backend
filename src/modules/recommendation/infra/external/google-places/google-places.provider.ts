@@ -153,13 +153,16 @@ export class GooglePlacesProvider extends PlacesProvider {
         imageUrl.searchParams.append('maxHeightPx', heightPx.toString());
       }
 
-      const response = await fetch(imageUrl.toString());
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.status}`);
-      }
+      const response = await axios.get<ArrayBuffer>(imageUrl.toString(), {
+        responseType: 'arraybuffer',
+        timeout: 10000,
+      });
 
-      const buffer = Buffer.from(await response.arrayBuffer());
-      const mimetype = response.headers.get('content-type') ?? 'image/jpeg';
+      const buffer = Buffer.from(response.data);
+      const mimetype =
+        (response.headers['content-type'] as string | undefined)
+          ?.split(';')[0]
+          ?.trim() ?? 'image/jpeg';
       const extension = mimetype.split('/')[1] ?? 'jpg';
       const completePath = `${path}/${name}.${extension}`;
 
@@ -171,7 +174,7 @@ export class GooglePlacesProvider extends PlacesProvider {
         bucketName,
         completePath,
         buffer,
-        response.headers.get('content-type') ?? 'image/jpeg',
+        mimetype,
       );
 
       return storedPath;
