@@ -146,8 +146,6 @@ export class RestaurantRepository implements IRestaurantRepository {
         ...(details.editorialSummarySource !== undefined
           ? { editorial_summary_source: details.editorialSummarySource }
           : {}),
-        last_seen_at: now,
-        last_synced_at: now,
         updated_at: now,
       };
 
@@ -163,7 +161,6 @@ export class RestaurantRepository implements IRestaurantRepository {
         total_reviews: 0,
         average_price: 0,
         is_active: true,
-        first_seen_at: now,
         created_at: now,
       });
     }

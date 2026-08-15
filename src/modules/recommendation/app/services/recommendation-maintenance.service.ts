@@ -34,14 +34,8 @@ export class RecommendationMaintenanceService {
       const restaurants = await this.restaurantModel.findAll({
         where: {
           provider_place_id: { [Op.ne]: null },
-          [Op.or]: [
-            { last_synced_at: null },
-            { last_synced_at: { [Op.lt]: staleBefore } },
-            { description: null },
-            { editorial_summary: null },
-          ],
+          [Op.or]: [{ description: null }, { editorial_summary: null }],
         },
-        order: [['last_synced_at', 'ASC']],
         limit,
       });
       const refreshed: RestaurantDetails[] = [];

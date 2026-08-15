@@ -123,24 +123,6 @@ export class RestaurantsModel extends Model {
     type: DataType.DATE,
     allowNull: true,
   })
-  declare first_seen_at: Date | null;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  declare last_seen_at: Date | null;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
-  declare last_synced_at: Date | null;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
   declare created_at: Date | null;
 
   @Column({
