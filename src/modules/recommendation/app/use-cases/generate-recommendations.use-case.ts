@@ -230,7 +230,6 @@ export class GenerateRecommendationsUseCase {
         popularityScore: clamp(
           Math.log10(Number(restaurant.google_rating_count ?? 0) + 1) / 4,
         ),
-        openNow: restaurant.open_now === false ? 0 : 1,
         distanceMeters,
       };
     });

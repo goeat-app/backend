@@ -13,7 +13,6 @@ describe('GooglePlaceMapper', () => {
       rating: 4.6,
       userRatingCount: 120,
       businessStatus: 'OPERATIONAL',
-      currentOpeningHours: { openNow: true },
     });
 
     expect(result).toEqual({
@@ -27,7 +26,6 @@ describe('GooglePlaceMapper', () => {
       rating: 4.6,
       ratingCount: 120,
       businessStatus: 'OPERATIONAL',
-      openNow: true,
     });
   });
 
@@ -135,7 +133,6 @@ describe('GooglePlaceMapper', () => {
       priceLevel: 'PRICE_LEVEL_MODERATE',
       rating: 4.3,
       userRatingCount: 87,
-      currentOpeningHours: { openNow: true },
       addressComponents: [{ longText: 'Campinas', types: ['locality'] }],
     });
 

@@ -10,7 +10,6 @@ export interface NearbyRestaurantsResponseDto {
   googleRating: number | null;
   googleRatingCount: number | null;
   businessStatus: string | null;
-  openNow: boolean | null;
   website: string | null;
   phone: string | null;
   description: string | null;

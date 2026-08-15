@@ -18,7 +18,6 @@ export interface GooglePlace {
   rating?: number;
   userRatingCount?: number;
   businessStatus?: string;
-  currentOpeningHours?: { openNow?: boolean };
   websiteUri?: string;
   nationalPhoneNumber?: string;
   internationalPhoneNumber?: string;
@@ -82,7 +81,6 @@ export class GooglePlaceMapper {
       rating: place.rating,
       ratingCount: place.userRatingCount,
       businessStatus: place.businessStatus,
-      openNow: place.currentOpeningHours?.openNow,
     };
   }
 
@@ -133,7 +131,6 @@ export class GooglePlaceMapper {
       candidate.city ? `em ${candidate.city}` : undefined,
       this.describePriceLevel(candidate.priceLevel),
       this.describeRating(candidate.rating, candidate.ratingCount),
-      this.describeOpenNow(candidate.openNow),
     ].filter((part): part is string => Boolean(part));
 
     if (!parts.length) {
@@ -151,8 +148,7 @@ export class GooglePlaceMapper {
       candidate.rating,
       candidate.ratingCount,
     );
-    const statusPart = this.describeOpenNow(candidate.openNow);
-    const extra = [ratingPart, statusPart]
+    const extra = [ratingPart]
       .filter((part): part is string => Boolean(part))
       .join(', ');
 
@@ -197,11 +193,6 @@ export class GooglePlaceMapper {
     }
 
     return `nota ${normalizedRating} (${ratingCount} avaliacoes)`;
-  }
-
-  private static describeOpenNow(openNow?: boolean): string | undefined {
-    if (openNow === undefined) return undefined;
-    return openNow ? 'aberto agora' : 'fechado no momento';
   }
 
   private static buildImageUrl(

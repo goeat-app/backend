@@ -9,7 +9,6 @@ const feature = (restaurantId: string, distanceMeters: number) => ({
   normalizedRating: 1,
   normalizedDistance: 1,
   popularityScore: 1,
-  openNow: 1,
   distanceMeters,
 });
 

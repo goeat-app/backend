@@ -25,7 +25,6 @@ export interface RestaurantFeatureVector {
   normalizedRating: number;
   normalizedDistance: number;
   popularityScore: number;
-  openNow: number;
   distanceMeters: number;
 }
 

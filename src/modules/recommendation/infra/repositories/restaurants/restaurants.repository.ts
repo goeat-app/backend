@@ -129,7 +129,6 @@ export class RestaurantRepository implements IRestaurantRepository {
         google_rating: candidate.rating ?? null,
         google_rating_count: candidate.ratingCount ?? null,
         business_status: candidate.businessStatus ?? null,
-        open_now: candidate.openNow ?? null,
         ...(details.website !== undefined ? { website: details.website } : {}),
         ...(details.phone !== undefined ? { phone: details.phone } : {}),
         ...(details.whatsapp !== undefined

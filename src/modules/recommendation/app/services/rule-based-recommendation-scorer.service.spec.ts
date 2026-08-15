@@ -37,7 +37,6 @@ describe('RuleBasedRecommendationScorer', () => {
           normalizedRating: 0.5,
           normalizedDistance: 0.5,
           popularityScore: 0,
-          openNow: 1,
           distanceMeters: 1000,
         },
         {
@@ -48,7 +47,6 @@ describe('RuleBasedRecommendationScorer', () => {
           normalizedRating: 0.8,
           normalizedDistance: 0.9,
           popularityScore: 0,
-          openNow: 1,
           distanceMeters: 500,
         },
       ],
@@ -92,7 +90,6 @@ describe('RuleBasedRecommendationScorer', () => {
           normalizedRating: 1,
           normalizedDistance: 1,
           popularityScore: 1,
-          openNow: 1,
           distanceMeters: 0,
         },
       ],

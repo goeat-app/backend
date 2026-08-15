@@ -149,7 +149,6 @@ export class CandidateGenerationService {
       ) {
         return false;
       }
-      if (restaurant.open_now === false) return false;
       if (
         !restaurant.name ||
         !(restaurant.types?.length || restaurant.primary_type)

@@ -134,7 +134,6 @@ export class RecommendationController {
           googleRating: restaurant.google_rating,
           googleRatingCount: restaurant.google_rating_count,
           businessStatus: restaurant.business_status,
-          openNow: restaurant.open_now,
           website: restaurant.website,
           phone: restaurant.phone,
           description: restaurant.description,
