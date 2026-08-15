@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Build and Deploy
+  deploy-and-migrate:
+    name: Build, Migrate, and Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +50,12 @@ jobs:
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > ${HOME}/gcp-key.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json" >> $GITHUB_ENV
+
+      - name: Run database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: production
+        run: yarn db:migrate
 
       - name: Deploy Functions
         run: firebase deploy --only functions --project prod
