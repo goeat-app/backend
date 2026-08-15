@@ -55,7 +55,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: production
-        run: yarn db:migrate
+        run: yarn db:migrate --env production
 
       - name: Deploy Functions
         run: firebase deploy --only functions --project prod
