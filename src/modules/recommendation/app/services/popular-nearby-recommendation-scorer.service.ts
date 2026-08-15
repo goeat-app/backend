@@ -16,7 +16,6 @@ export class PopularNearbyRecommendationScorer extends RecommendationScorer {
           rating: 0.45 * restaurant.normalizedRating,
           popularity: 0.25 * restaurant.popularityScore,
           distance: 0.2 * restaurant.normalizedDistance,
-          openNow: 0.1 * restaurant.openNow,
         };
 
         return {

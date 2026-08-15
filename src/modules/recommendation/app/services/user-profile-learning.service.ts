@@ -37,31 +37,23 @@ export class UserProfileLearningService {
         updated_at: now,
       },
     });
-    const cuisineAffinities = this.cloneAffinity(profile.cuisine_affinities);
-    const ambianceAffinities = this.cloneAffinity(profile.ambiance_affinities);
-    const budgetAffinity = this.cloneAffinity(profile.budget_affinity);
-
-    for (const cuisine of this.getCuisineSignals(input.restaurant)) {
-      cuisineAffinities[cuisine] = this.adjust(
-        cuisineAffinities[cuisine],
-        weight,
-      );
-    }
-
-    for (const ambiance of this.getAmbianceSignals(input.restaurant)) {
-      ambianceAffinities[ambiance] = this.adjust(
-        ambianceAffinities[ambiance],
-        weight,
-      );
-    }
-
-    if (input.restaurant.price_level !== null) {
-      const budgetKey = String(input.restaurant.price_level);
-      budgetAffinity[budgetKey] = this.adjust(
-        budgetAffinity[budgetKey],
-        weight,
-      );
-    }
+    const cuisineAffinities = this.applyWeightToAffinities(
+      this.cloneAffinity(profile.cuisine_affinities),
+      weight,
+      this.getCuisineSignals(input.restaurant),
+    );
+    const ambianceAffinities = this.applyWeightToAffinities(
+      this.cloneAffinity(profile.ambiance_affinities),
+      weight,
+      this.getAmbianceSignals(input.restaurant),
+    );
+    const budgetAffinity = this.applyWeightToAffinities(
+      this.cloneAffinity(profile.budget_affinity),
+      weight,
+      input.restaurant.price_level !== null
+        ? [String(input.restaurant.price_level)]
+        : [],
+    );
 
     await profile.update({
       profile_version: PROFILE_VERSION,
@@ -120,6 +112,26 @@ export class UserProfileLearningService {
     return Object.fromEntries(
       Object.entries(value ?? {}).map(([key, entry]) => [key, Number(entry)]),
     );
+  }
+
+  private applyWeightToAffinities(
+    values: Record<string, number>,
+    weight: number,
+    signals: string[],
+  ): Record<string, number> {
+    const result = { ...values };
+
+    for (const key of Object.keys(result)) {
+      result[key] = this.adjust(result[key], weight);
+    }
+
+    for (const signal of signals) {
+      if (!(signal in result)) {
+        result[signal] = this.adjust(undefined, weight);
+      }
+    }
+
+    return result;
   }
 
   private getCuisineSignals(restaurant: RestaurantsModel): string[] {

@@ -73,6 +73,7 @@ describe('RestaurantDiscoverySyncService', () => {
     } as unknown as PlacesProvider;
     const restaurantRepository = {
       upsertDiscoveredRestaurants: jest.fn().mockResolvedValue([{ id: '1' }]),
+      findByProviderPlaceIds: jest.fn().mockResolvedValue(candidates),
     } as unknown as IRestaurantRepository;
     const service = new RestaurantDiscoverySyncService(
       placesProvider,

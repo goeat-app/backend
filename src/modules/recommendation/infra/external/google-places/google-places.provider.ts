@@ -28,7 +28,6 @@ const DETAILS_FIELD_MASK = [
   'rating',
   'userRatingCount',
   'businessStatus',
-  'currentOpeningHours.openNow',
   'websiteUri',
   'nationalPhoneNumber',
   'internationalPhoneNumber',

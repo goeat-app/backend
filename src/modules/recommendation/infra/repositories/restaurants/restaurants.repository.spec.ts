@@ -56,7 +56,6 @@ describe('RestaurantRepository', () => {
         phone: '+5511999999999',
         whatsapp: '+5511999999999',
         description: 'Cozinha contemporanea.',
-        image_url: 'https://cdn.example.com/photo.jpg',
         editorial_summary: 'Ambiente acolhedor.',
         editorial_summary_source: 'generated',
       }),

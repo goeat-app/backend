@@ -9,10 +9,3 @@ firebase-debug.log
 firebase-debug.*.log
 npm-debug.log
 yarn-error.log
-
-
-!ml/
-!ml/prediction_service/
-!ml/prediction_service/app.py
-!ml/prediction_service/main.py
-!ml/prediction_service/requirements.txt

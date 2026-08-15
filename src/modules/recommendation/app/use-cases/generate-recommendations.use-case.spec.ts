@@ -9,7 +9,6 @@ const restaurant = {
   google_rating: 4.5,
   google_rating_count: 100,
   price_level: 2,
-  open_now: true,
 };
 const userFeatures = {
   userId: 'user-1',
@@ -36,7 +35,6 @@ const restaurantFeature = {
   normalizedRating: 0.9,
   normalizedDistance: 1,
   popularityScore: 0.5,
-  openNow: 1,
   distanceMeters: 100,
 };
 

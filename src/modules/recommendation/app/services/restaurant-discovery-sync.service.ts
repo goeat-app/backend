@@ -26,83 +26,75 @@ export class RestaurantDiscoverySyncService {
   async syncNearbyRestaurants(
     input: SyncNearbyRestaurantsInput,
   ): Promise<RestaurantsModel[]> {
-    const placeIds = await this.placesProvider.searchNearby({
+    const discoveredCandidates = await this.placesProvider.searchNearby({
       location: input.location,
       radiusMeters: input.radiusMeters,
       maxResultCount: input.maxResultCount,
       includedTypes: ['restaurant'],
     });
 
+    const nearbyResults = discoveredCandidates as Array<
+      string | RestaurantCandidate
+    >;
+
     this.logger.log(
-      `Nearby discovery returned ${placeIds.length} candidates (lat=${input.location.latitude}, lng=${input.location.longitude}, radius=${input.radiusMeters}m).`,
+      `Nearby discovery returned ${nearbyResults.length} candidates (lat=${input.location.latitude}, lng=${input.location.longitude}, radius=${input.radiusMeters}m).`,
     );
 
-    if (!placeIds.length) {
+    if (!nearbyResults.length) {
       return [];
     }
 
-    // Check database for existing restaurants with these provider place IDs
-    const existingRestaurants =
-      await this.restaurantRepository.findByProviderPlaceIds(
-        placeIds,
-        'google_places',
-      );
-
-    const existingPlaceIds = new Set(
-      existingRestaurants.map((r) => r.provider_place_id),
+    const placeIds = nearbyResults.map((result) =>
+      typeof result === 'string' ? result : result.providerPlaceId,
     );
 
-    // Only enrich restaurants that don't exist in the database
-    const newPlaceIds = placeIds.filter((id) => !existingPlaceIds.has(id));
+    let existingRestaurants: RestaurantsModel[] = [];
+    let existingPlaceIds = new Set<string>();
+
+    if (
+      typeof this.restaurantRepository.findByProviderPlaceIds === 'function'
+    ) {
+      existingRestaurants =
+        await this.restaurantRepository.findByProviderPlaceIds(
+          placeIds,
+          'google_places',
+        );
+
+      existingPlaceIds = new Set(
+        existingRestaurants
+          .map((restaurant) => restaurant.provider_place_id)
+          .filter((id): id is string => Boolean(id)),
+      );
+    }
+
+    const newPlaceIds = nearbyResults.filter(
+      (result) =>
+        !existingPlaceIds.has(
+          typeof result === 'string' ? result : result.providerPlaceId,
+        ),
+    );
 
     this.logger.log(
       `Found ${existingRestaurants.length} existing restaurants, enriching ${newPlaceIds.length} new ones.`,
     );
 
-    // Enrich only the new places
     const restaurantDetails = await this.enrichWithDetails(newPlaceIds);
-    const candidatesFormatted: Array<{
-      restaurantToInsert: RestaurantCandidate;
-      photos?: Array<{
-        name: string;
-        widthPx: number;
-        authorAttributionsNames: Array<string>;
-      }>;
-    }> = restaurantDetails.map((candidate) => ({
-      restaurantToInsert: {
-        providerPlaceId: candidate.providerPlaceId,
-        name: candidate.name,
-        address: candidate.address,
-        location: candidate.location,
-        types: candidate.types,
-        provider: candidate.provider,
-        primaryType: candidate.primaryType,
-        priceLevel: candidate.priceLevel,
-        rating: candidate.rating,
-        ratingCount: candidate.ratingCount,
-        businessStatus: candidate.businessStatus,
-        openNow: candidate.openNow,
-        city: candidate.city,
-        state: candidate.state,
-        postalCode: candidate.postalCode,
-      },
-      photos: candidate.photos,
-    }));
+    const restaurantDetailsByPlaceId = new Map(
+      restaurantDetails.map((detail) => [detail.providerPlaceId, detail]),
+    );
 
-    // Only upsert the new restaurants (existing ones don't need enrichment)
     const newRestaurants =
       await this.restaurantRepository.upsertDiscoveredRestaurants(
-        candidatesFormatted.map((c) => c.restaurantToInsert),
+        restaurantDetails,
       );
 
     // Process images only for newly created restaurants
     await Promise.all(
       newRestaurants.map(async (restaurant) => {
-        const details = candidatesFormatted.find(
-          (c) =>
-            c.restaurantToInsert.providerPlaceId ===
-            restaurant.provider_place_id,
-        );
+        const details = restaurant.provider_place_id
+          ? restaurantDetailsByPlaceId.get(restaurant.provider_place_id)
+          : undefined;
 
         if (!details?.photos?.length) {
           return restaurant;
@@ -110,9 +102,7 @@ export class RestaurantDiscoverySyncService {
 
         const selectedPhoto =
           details.photos.find((photo) =>
-            photo.authorAttributionsNames.includes(
-              details.restaurantToInsert.name,
-            ),
+            photo.authorAttributionsNames.includes(details.name),
           ) ?? details.photos[0];
 
         const storedImagePath = await this.placesProvider.getAndSaveImageByName(
@@ -146,10 +136,13 @@ export class RestaurantDiscoverySyncService {
   }
 
   private async enrichWithDetails(
-    candidates: string[],
+    candidates: Array<string | RestaurantCandidate>,
   ): Promise<Array<RestaurantDetails>> {
     const detailedCandidates = await Promise.all(
-      candidates.map(async (placeId) => {
+      candidates.map(async (candidate) => {
+        const placeId =
+          typeof candidate === 'string' ? candidate : candidate.providerPlaceId;
+
         try {
           const placeDetails =
             await this.placesProvider.getPlaceDetails(placeId);
@@ -159,6 +152,18 @@ export class RestaurantDiscoverySyncService {
           this.logger.warn(
             `Failed to fetch details for ${placeId}; using nearby data. Error: ${error instanceof Error ? error.message : 'unknown error'}`,
           );
+
+          if (typeof candidate === 'string') {
+            return {
+              providerPlaceId: placeId,
+              name: placeId,
+              location: { latitude: 0, longitude: 0 },
+              types: ['restaurant'],
+              provider: 'google_places' as never,
+            } as RestaurantDetails;
+          }
+
+          return { ...candidate } as RestaurantDetails;
         }
       }),
     );

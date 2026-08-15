@@ -23,7 +23,6 @@ export interface RestaurantCandidate {
   rating?: number;
   ratingCount?: number;
   businessStatus?: string;
-  openNow?: boolean;
 }
 
 export interface RestaurantDetails extends RestaurantCandidate {

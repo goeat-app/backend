@@ -43,7 +43,6 @@ describe('DefaultFeatureStore', () => {
         price_level: 3,
         google_rating: 4.5,
         google_rating_count: 999,
-        open_now: true,
       } as RestaurantsModel,
       {
         latitude: -22.9,
@@ -68,7 +67,6 @@ describe('DefaultFeatureStore', () => {
     expect(restaurantFeatures.budgetMatch).toBe(0.65);
     expect(restaurantFeatures.normalizedRating).toBe(0.9);
     expect(restaurantFeatures.normalizedDistance).toBe(1);
-    expect(restaurantFeatures.openNow).toBe(1);
   });
 
   it('returns empty cold-start user features when preferences are missing', async () => {

@@ -10,7 +10,6 @@ describe('CandidateGenerationService', () => {
       latitude: -22.9,
       longitude: -47.06,
       business_status: 'OPERATIONAL',
-      open_now: true,
       primary_type: 'restaurant',
       types: ['restaurant'],
     } as RestaurantsModel;
@@ -72,7 +71,6 @@ describe('CandidateGenerationService', () => {
         latitude: -22.9,
         longitude: -47.06,
         business_status: 'OPERATIONAL',
-        open_now: true,
         primary_type: 'restaurant',
         types: ['restaurant'],
       },
@@ -82,7 +80,6 @@ describe('CandidateGenerationService', () => {
         latitude: -22.9,
         longitude: -47.06,
         business_status: 'OPERATIONAL',
-        open_now: false,
         primary_type: 'restaurant',
         types: ['restaurant'],
       },
@@ -92,7 +89,6 @@ describe('CandidateGenerationService', () => {
         latitude: -22.9,
         longitude: -47.06,
         business_status: 'OPERATIONAL',
-        open_now: true,
         primary_type: 'restaurant',
         types: ['restaurant'],
       },
@@ -138,6 +134,7 @@ describe('CandidateGenerationService', () => {
 
     expect(result.candidates.map((restaurant) => restaurant.id)).toEqual([
       'good',
+      'closed',
       'recent',
     ]);
     expect(result.fallbackReason).toBe('RECENTLY_SHOWN_SUPPRESSION_RELAXED');

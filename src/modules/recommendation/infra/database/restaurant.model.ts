@@ -96,12 +96,6 @@ export class RestaurantsModel extends Model {
   declare business_status: string | null;
 
   @Column({
-    type: DataType.BOOLEAN,
-    allowNull: true,
-  })
-  declare open_now: boolean | null;
-
-  @Column({
     type: DataType.STRING,
     allowNull: true,
   })

@@ -1,7 +1,7 @@
 import { PopularNearbyRecommendationScorer } from './popular-nearby-recommendation-scorer.service';
 
 describe('PopularNearbyRecommendationScorer', () => {
-  it('scores by rating, popularity, distance, and open status', async () => {
+  it('scores by rating, popularity, and distance', async () => {
     const scorer = new PopularNearbyRecommendationScorer();
 
     const result = await scorer.score({
@@ -24,36 +24,33 @@ describe('PopularNearbyRecommendationScorer', () => {
       },
       restaurantFeatures: [
         {
-          restaurantId: 'closed',
+          restaurantId: 'lower',
           cuisineMatch: 0,
           budgetMatch: 0,
           ambianceMatch: 0,
-          normalizedRating: 0.8,
-          normalizedDistance: 0.8,
-          popularityScore: 0.8,
-          openNow: 0,
+          normalizedRating: 0.4,
+          normalizedDistance: 0.4,
+          popularityScore: 0.4,
           distanceMeters: 1000,
         },
         {
-          restaurantId: 'open',
+          restaurantId: 'higher',
           cuisineMatch: 0,
           budgetMatch: 0,
           ambianceMatch: 0,
           normalizedRating: 0.8,
           normalizedDistance: 0.8,
           popularityScore: 0.8,
-          openNow: 1,
           distanceMeters: 1000,
         },
       ],
     });
 
-    expect(result[0].restaurantId).toBe('open');
+    expect(result[0].restaurantId).toBe('higher');
     expect(result[0].scoreBreakdown).toEqual({
       rating: 0.36000000000000004,
       popularity: 0.2,
       distance: 0.16000000000000003,
-      openNow: 0.1,
     });
   });
 });
