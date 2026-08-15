@@ -35,32 +35,8 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: true,
     });
-    await queryInterface.addColumn('restaurants', 'open_now', {
-      type: Sequelize.BOOLEAN,
-      allowNull: true,
-    });
     await queryInterface.addColumn('restaurants', 'website', {
       type: Sequelize.STRING,
-      allowNull: true,
-    });
-    await queryInterface.addColumn('restaurants', 'phone', {
-      type: Sequelize.STRING,
-      allowNull: true,
-    });
-    await queryInterface.addColumn('restaurants', 'editorial_summary', {
-      type: Sequelize.TEXT,
-      allowNull: true,
-    });
-    await queryInterface.addColumn('restaurants', 'first_seen_at', {
-      type: Sequelize.DATE,
-      allowNull: true,
-    });
-    await queryInterface.addColumn('restaurants', 'last_seen_at', {
-      type: Sequelize.DATE,
-      allowNull: true,
-    });
-    await queryInterface.addColumn('restaurants', 'last_synced_at', {
-      type: Sequelize.DATE,
       allowNull: true,
     });
 
@@ -414,9 +390,13 @@ module.exports = {
       name: 'ml_models_model_name_version_unique',
     });
 
-    await queryInterface.addIndex('restaurants', ['provider', 'provider_place_id'], {
-      name: 'idx_restaurants_provider_place_id',
-    });
+    await queryInterface.addIndex(
+      'restaurants',
+      ['provider', 'provider_place_id'],
+      {
+        name: 'idx_restaurants_provider_place_id',
+      },
+    );
     await queryInterface.addIndex('restaurants', ['latitude', 'longitude'], {
       name: 'idx_restaurants_location',
     });
@@ -464,13 +444,7 @@ module.exports = {
       'idx_restaurants_provider_place_id',
     );
 
-    await queryInterface.removeColumn('restaurants', 'last_synced_at');
-    await queryInterface.removeColumn('restaurants', 'last_seen_at');
-    await queryInterface.removeColumn('restaurants', 'first_seen_at');
-    await queryInterface.removeColumn('restaurants', 'editorial_summary');
-    await queryInterface.removeColumn('restaurants', 'phone');
     await queryInterface.removeColumn('restaurants', 'website');
-    await queryInterface.removeColumn('restaurants', 'open_now');
     await queryInterface.removeColumn('restaurants', 'business_status');
     await queryInterface.removeColumn('restaurants', 'google_rating_count');
     await queryInterface.removeColumn('restaurants', 'google_rating');
