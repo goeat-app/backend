@@ -1,9 +1,19 @@
 import axios from 'axios';
 import { TensorFlowRecommendationScorer } from './tensorflow-recommendation-scorer.service';
 
-jest.mock('axios');
+jest.mock('axios', () => {
+  const post = jest.fn();
 
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+  return {
+    __esModule: true,
+    default: {
+      post,
+    },
+    post,
+  };
+});
+
+const mockedAxios = axios as unknown as { post: jest.Mock };
 
 const input = {
   userFeatures: {
@@ -32,7 +42,6 @@ const input = {
       normalizedRating: 1,
       normalizedDistance: 1,
       popularityScore: 1,
-      openNow: 1,
       distanceMeters: 0,
     },
   ],
@@ -65,7 +74,7 @@ describe('TensorFlowRecommendationScorer', () => {
 
     const result = await scorer.score(input);
 
-    expect(void mockedAxios.post).toHaveBeenCalledWith(
+    expect(mockedAxios.post).toHaveBeenCalledWith(
       'http://localhost:8000/predict',
       expect.objectContaining({
         modelVersion: 'model-v1',
