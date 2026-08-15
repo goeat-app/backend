@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Build and Deploy
+  deploy-and-migrate:
+    name: Build, Migrate, and Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -53,3 +53,9 @@ jobs:
 
       - name: Deploy Functions
         run: firebase deploy --only functions --project prod
+
+      - name: Run database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: production
+        run: yarn db:migrate
