@@ -39,6 +39,10 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: true,
     });
+    await queryInterface.addColumn('restaurants', 'editorial_summary', {
+      type: Sequelize.TEXT,
+      allowNull: true,
+    });
 
     await queryInterface.addConstraint('restaurants', {
       fields: ['provider', 'provider_place_id'],
@@ -445,6 +449,7 @@ module.exports = {
     );
 
     await queryInterface.removeColumn('restaurants', 'website');
+    await queryInterface.removeColumn('restaurants', 'editorial_summary');
     await queryInterface.removeColumn('restaurants', 'business_status');
     await queryInterface.removeColumn('restaurants', 'google_rating_count');
     await queryInterface.removeColumn('restaurants', 'google_rating');
