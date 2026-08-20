@@ -61,6 +61,7 @@
     "madge": "^8.0.0",
     "mysql2": "^3.16.2",
     "nestjs-zod": "^5.0.1",
+    "p-limit": "^4.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.17.1",
@@ -102,26 +103,6 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/$1",
-      "^@modules/(.*)$": "<rootDir>/modules/$1",
-      "^@config/(.*)$": "<rootDir>/config/$1",
-      "^@shared/(.*)$": "<rootDir>/shared/$1"
-    },
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "configFile": "./jest.config.cjs"
   }
 }

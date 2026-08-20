@@ -151,6 +151,7 @@ export class RestaurantOnboardingMapper {
 
   static toRestaurantDetailsResponseDto(
     restaurant: RestaurantsModel,
+    mainImage: string | null,
     photos: string[] = [],
   ): RestaurantDetailsResponseDto {
     const entity = this.toRestaurantEntity(restaurant);
@@ -163,7 +164,6 @@ export class RestaurantOnboardingMapper {
       description: entity.description,
       foodType: entity.foodType,
       id: entity.id,
-      imageUrl: entity.imageUrl,
       isActive: entity.isActive,
       latitude: entity.latitude,
       longitude: entity.longitude,
@@ -176,6 +176,7 @@ export class RestaurantOnboardingMapper {
       restaurantSlug: entity.restaurantSlug,
       state: entity.state,
       whatsapp: entity.whatsapp,
+      imageUrl: mainImage,
     };
   }
 }

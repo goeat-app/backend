@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FIREBASE_STORAGE_CONFIG } from '../infra/firebase/storage-config';
 import { IStorageService } from '../infra/external/storage.service.interface';
+import { getStorage } from 'firebase-admin/storage';
 
 /**
  * Helper to resolve restaurant image URLs
@@ -18,11 +19,7 @@ export class RestaurantImageUrlResolver {
    * For HTTP(S) URLs, returns as-is
    * For keys, fetches the URL from Firebase Storage
    */
-  async resolve(
-    imageKey: string,
-    bucket = process.env.FIREBASE_STORAGE_BUCKET ??
-      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME,
-  ): Promise<string> {
+  async resolve(imageKey: string, bucket?: string): Promise<string> {
     // If it's already a URL, return as-is
     if (imageKey.startsWith('http://') || imageKey.startsWith('https://')) {
       return imageKey;
@@ -33,6 +30,7 @@ export class RestaurantImageUrlResolver {
       return '';
     }
 
-    return this.storageService.getDownloadUrl(bucket, imageKey);
+    const bucketName = bucket || getStorage().bucket().name;
+    return this.storageService.getDownloadUrl(bucketName, imageKey);
   }
 }

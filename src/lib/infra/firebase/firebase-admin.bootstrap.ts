@@ -14,7 +14,7 @@ export function ensureFirebaseAdminInitialized() {
   // No real credentials are required in this mode.
   if (process.env.AUTH_EMULATOR_HOST) {
     const projectId = process.env.EMULATOR_PROJECT_ID ?? 'demo-goeat';
-    initializeApp({ projectId });
+    initializeApp({ projectId, storageBucket: `${projectId}.appspot.com` });
     return;
   }
 
