@@ -19,7 +19,6 @@ import { MenuItemModel } from '../../infra/database/menu-item.model';
 import { UpdateMenuCategoryType } from '../../dtos/update-menu-category.dto';
 import { UpdateMenuItemType } from '../../dtos/update-menu-item.dto';
 import { UpdateMenuItemAvailabilityType } from '../../dtos/update-menu-item-availability.dto';
-import { FIREBASE_STORAGE_CONFIG } from '../../../../lib/infra/firebase/storage-config';
 import { getStorage } from 'firebase-admin/storage';
 
 @Injectable()
