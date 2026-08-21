@@ -1,8 +1,10 @@
+import type { Readable } from 'stream';
+
 export abstract class IStorageService {
   abstract uploadFile(
     bucket: string,
     path: string,
-    buffer: Buffer,
+    content: Buffer | Readable,
     mimetype: string,
   ): Promise<string>;
 

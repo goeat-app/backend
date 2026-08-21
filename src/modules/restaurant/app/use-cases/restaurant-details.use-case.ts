@@ -26,12 +26,16 @@ export class RestaurantDetailsUseCase {
       await this.restaurantImageRepository.findByRestaurantId(restaurantId);
 
     // Resolve image URLs asynchronously
-    const photos = await Promise.all(
-      images.map((image) => this.imageUrlResolver.resolve(image.image_key)),
-    );
+    const [mainImage, ...photos] = await Promise.all([
+      restaurant.image_url
+        ? this.imageUrlResolver.resolve(restaurant.image_url)
+        : null,
+      ...images.map((image) => this.imageUrlResolver.resolve(image.image_key)),
+    ]);
 
     return RestaurantOnboardingMapper.toRestaurantDetailsResponseDto(
       restaurant,
+      mainImage,
       photos,
     );
   }

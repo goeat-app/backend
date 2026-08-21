@@ -19,7 +19,7 @@ import { MenuItemModel } from '../../infra/database/menu-item.model';
 import { UpdateMenuCategoryType } from '../../dtos/update-menu-category.dto';
 import { UpdateMenuItemType } from '../../dtos/update-menu-item.dto';
 import { UpdateMenuItemAvailabilityType } from '../../dtos/update-menu-item-availability.dto';
-import { FIREBASE_STORAGE_CONFIG } from '../../../../lib/infra/firebase/storage-config';
+import { getStorage } from 'firebase-admin/storage';
 
 @Injectable()
 export class RestaurantMenuService {
@@ -512,9 +512,7 @@ export class RestaurantMenuService {
     const previousImageKey = item.image_key;
     const fileId = randomUUID();
     const storagePath = `restaurants/${params.restaurantId}/menu_items/${params.itemId}/${fileId}.${params.mimetype.split('/')[1]}`;
-    const bucketName =
-      process.env.FIREBASE_STORAGE_BUCKET ??
-      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
+    const bucketName = getStorage().bucket().name;
     await this.storageService.uploadFile(
       bucketName,
       storagePath,
@@ -557,9 +555,7 @@ export class RestaurantMenuService {
     }
 
     const previousImageKey = item.image_key;
-    const bucketName =
-      process.env.FIREBASE_STORAGE_BUCKET ??
-      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
+    const bucketName = getStorage().bucket().name;
     await this.storageService.deleteFile(bucketName, previousImageKey);
 
     item.image_key = null;

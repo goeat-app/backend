@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { IStorageService } from '@/lib/infra/external/storage.service.interface';
 import { IRestaurantImageRepository } from '../../domain/interfaces/restaurant-image.repository.interface';
-import { FIREBASE_STORAGE_CONFIG } from '@/lib/infra/firebase/storage-config';
+import { getStorage } from 'firebase-admin/storage';
 
 @Injectable()
 export class UploadRestaurantImageUseCase {
@@ -20,9 +20,7 @@ export class UploadRestaurantImageUseCase {
     isCover: boolean;
   }) {
     const fileId = randomUUID();
-    const bucketName =
-      process.env.FIREBASE_STORAGE_BUCKET ??
-      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
+    const bucketName = getStorage().bucket().name;
 
     const storagePath = `restaurants/${params.restaurantId}/pictures/${fileId}.${params.mimetype.split('/')[1]}`;
 

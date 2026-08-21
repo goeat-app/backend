@@ -1,5 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import type { Readable } from 'stream';
 import { IStorageService } from '../external/storage.service.interface';
 import { FIREBASE_STORAGE_CONFIG } from './storage-config';
 
@@ -20,16 +21,17 @@ export class FirebaseStorageService extends IStorageService {
   async uploadFile(
     bucket: string,
     path: string,
-    buffer: Buffer,
+    content: Buffer | Readable,
     mimetype: string,
   ): Promise<string> {
     try {
       const { getStorage } = await import('firebase-admin/storage');
+      console.log('Firebase Storage initialized for bucket:', bucket);
       const storage = getStorage();
       const bucketRef = storage.bucket(`${bucket}`);
       const file = bucketRef.file(path);
 
-      await file.save(buffer, {
+      await file.save(content, {
         metadata: {
           contentType: mimetype,
         },

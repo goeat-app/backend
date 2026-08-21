@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosError } from 'axios';
+import type { Readable } from 'stream';
 import {
   GooglePlace,
   GooglePlaceMapper,
@@ -9,13 +10,13 @@ import { PlacesProviderError } from '@/modules/recommendation/domain/errors/plac
 import {
   NearbySearchInput,
   PlacesProvider,
-  RestaurantCandidate,
   RestaurantDetails,
 } from '@/modules/recommendation/domain/interfaces/places-provider.interface';
 import { IStorageService } from '@/lib/infra/external/storage.service.interface';
-import { FIREBASE_STORAGE_CONFIG } from '@/lib/infra/firebase/storage-config';
+import { getStorage } from 'firebase-admin/storage';
 
 const GOOGLE_PLACES_BASE_URL = 'https://places.googleapis.com/v1';
+const MAX_IMAGE_WIDTH = 1080;
 const NEARBY_FIELD_MASK = ['places.id'].join(',');
 const DETAILS_FIELD_MASK = [
   'id',
@@ -31,8 +32,6 @@ const DETAILS_FIELD_MASK = [
   'websiteUri',
   'nationalPhoneNumber',
   'internationalPhoneNumber',
-  'editorialSummary',
-  'generativeSummary.overview.text',
   'photos.name',
   'photos.widthPx',
   'photos.authorAttributions.displayName',
@@ -141,23 +140,26 @@ export class GooglePlacesProvider extends PlacesProvider {
       const imageUrl = new URL(`${GOOGLE_PLACES_BASE_URL}/${imageName}/media`);
       imageUrl.searchParams.append('key', apiKey);
 
-      if (!widthPx && !heightPx) {
-        imageUrl.searchParams.append('maxWidthPx', '1080');
+      if (widthPx === undefined && heightPx === undefined) {
+        imageUrl.searchParams.append('maxWidthPx', MAX_IMAGE_WIDTH.toString());
+      } else if (widthPx !== undefined) {
+        imageUrl.searchParams.append(
+          'maxWidthPx',
+          Math.min(widthPx, MAX_IMAGE_WIDTH).toString(),
+        );
+      } else {
+        imageUrl.searchParams.append('maxWidthPx', MAX_IMAGE_WIDTH.toString());
       }
 
-      if (widthPx) {
-        imageUrl.searchParams.append('maxWidthPx', widthPx.toString());
-      }
       if (heightPx) {
         imageUrl.searchParams.append('maxHeightPx', heightPx.toString());
       }
 
-      const response = await axios.get<ArrayBuffer>(imageUrl.toString(), {
-        responseType: 'arraybuffer',
+      const response = await axios.get<Readable>(imageUrl.toString(), {
+        responseType: 'stream',
         timeout: 10000,
       });
 
-      const buffer = Buffer.from(response.data);
       const mimetype =
         (response.headers['content-type'] as string | undefined)
           ?.split(';')[0]
@@ -165,14 +167,12 @@ export class GooglePlacesProvider extends PlacesProvider {
       const extension = mimetype.split('/')[1] ?? 'jpg';
       const completePath = `${path}/${name}.${extension}`;
 
-      const bucketName =
-        process.env.FIREBASE_STORAGE_BUCKET ??
-        FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
+      const bucketName = getStorage().bucket().name;
 
       const storedPath = await this.storageService.uploadFile(
         bucketName,
         completePath,
-        buffer,
+        response.data,
         mimetype,
       );
 

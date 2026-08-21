@@ -1,7 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { createWriteStream } from 'fs';
 import { mkdir, writeFile, unlink } from 'fs/promises';
 import { join } from 'path';
+import { pipeline } from 'stream/promises';
+import type { Readable } from 'stream';
 import { IStorageService } from './storage.service.interface';
 
 @Injectable()
@@ -17,7 +20,7 @@ export class LocalDiskStorageService extends IStorageService {
   async uploadFile(
     bucket: string,
     path: string,
-    buffer: Buffer,
+    content: Buffer | Readable,
     _mimetype: string,
   ): Promise<string> {
     try {
@@ -28,8 +31,13 @@ export class LocalDiskStorageService extends IStorageService {
       // Create directory if it doesn't exist
       await mkdir(fileDir, { recursive: true });
 
-      // Write file to disk
-      await writeFile(filePath, buffer);
+      if (Buffer.isBuffer(content)) {
+        await writeFile(filePath, content);
+        return path;
+      }
+
+      const destination = createWriteStream(filePath);
+      await pipeline(content, destination);
 
       return path;
     } catch (error) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FIREBASE_STORAGE_CONFIG } from '../../../../lib/infra/firebase/storage-config';
+import { getStorage } from 'firebase-admin/storage';
 
 /**
  * Maps type icon_key to Firebase Storage URL
@@ -22,9 +22,7 @@ export class TypeImageMapper {
     }
 
     const isEmulator = !!process.env.AUTH_EMULATOR_HOST;
-    const bucketName =
-      process.env.FIREBASE_STORAGE_BUCKET ??
-      FIREBASE_STORAGE_CONFIG.DEFAULTS_BUCKET_NAME;
+    const bucketName = getStorage().bucket().name;
 
     if (isEmulator) {
       // Local emulator URL
@@ -32,7 +30,7 @@ export class TypeImageMapper {
       return `http://localhost:9199/storage/v1/b/${bucketName}/o/${encodeURIComponent(path)}?alt=media`;
     }
 
-    // Production: Return gs:// URL (will be resolved server-side via Admin SDK if needed)
-    return `gs://${bucketName}/${folder}/${iconKey}`;
+    // Production: Return HTTPS Firebase Storage media URL
+    return `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(`${folder}/${iconKey}`)}?alt=media`;
   }
 }

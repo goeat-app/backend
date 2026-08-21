@@ -9,7 +9,4 @@ export const FIREBASE_STORAGE_CONFIG = {
     RESTAURANT_IMAGES: (restaurantId: string, fileId: string) =>
       `restaurants/${restaurantId}/${fileId}`,
   },
-
-  // Default bucket name
-  DEFAULTS_BUCKET_NAME: `${process.env.PROJECT_ID}.appspot.com`,
 } as const;
