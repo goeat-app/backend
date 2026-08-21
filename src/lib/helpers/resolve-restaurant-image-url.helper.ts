@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { FIREBASE_STORAGE_CONFIG } from '../infra/firebase/storage-config';
 import { IStorageService } from '../infra/external/storage.service.interface';
 import { getStorage } from 'firebase-admin/storage';
 
