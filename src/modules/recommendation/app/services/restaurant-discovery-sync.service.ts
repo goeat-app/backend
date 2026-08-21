@@ -28,7 +28,7 @@ export class RestaurantDiscoverySyncService {
   async syncNearbyRestaurants(
     input: SyncNearbyRestaurantsInput,
   ): Promise<RestaurantsModel[]> {
-    console.log(
+    this.logger.log(
       `Starting nearby restaurant discovery (lat=${input.location.latitude}, lng=${input.location.longitude}, radius=${input.radiusMeters}m).`,
     );
     const discoveredCandidates = await this.placesProvider.searchNearby({
