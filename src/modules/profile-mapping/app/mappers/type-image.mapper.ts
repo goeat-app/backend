@@ -30,7 +30,7 @@ export class TypeImageMapper {
       return `http://localhost:9199/storage/v1/b/${bucketName}/o/${encodeURIComponent(path)}?alt=media`;
     }
 
-    // Production: Return gs:// URL (will be resolved server-side via Admin SDK if needed)
+    // Production: Return HTTPS Firebase Storage media URL
     return `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(`${folder}/${iconKey}`)}?alt=media`;
   }
 }
